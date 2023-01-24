@@ -1,0 +1,5 @@
+https://raw.githubusercontent.com/yangmingustb/planning_books_1/master/Principles%20of%20Robot%20Motion%20Theory%2C%20Algorithms%2C%20and%20Implementations.pdf
+
+Pág 90
+
+Wave-Front Planner
