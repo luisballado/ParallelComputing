@@ -50,7 +50,6 @@ int mapa[7][7] = {{0,0,0,0,255,255,0},
 
 //se declaran las funciones
 int propagate_wavefront(int robot_x, int robot_y);
-void unpropagate(int robot_x, int robot_y);
 int min_surrounding_node_value(int x, int y);
 void mostrar_mapa(void);
 
@@ -61,47 +60,17 @@ int main(void){
   sleep(1);  // dormir para visualizar el texto antes de limpiar
   
   //////////////wavefront code//////////////
-  //hacer hasta que el robot llega al objetivo
-  //TODO: usar otra condicion de paro
-  /**
-  while(mapa[robot_x][robot_y]!=goal){
-    //conocer el siguiente estado a desplazarse del robot
-    new_state=propagate_wavefront(robot_x,robot_y);
-    
-    //actualizar la nueva ubicacion del robot
-    if (new_state==1){
-      robot_x--;
-      //printf("x=%d y=%d\n\n",robot_x,robot_y);
-    }
-    if (new_state==2){
-      robot_y++;
-      //printf("x=%d y=%d\n\n",robot_x,robot_y);
-    }
-    if (new_state==3){
-      robot_x++;
-      //printf("x=%d y=%d\n\n",robot_x,robot_y);
-    }
-    if (new_state==4){
-      robot_y--;
-      //printf("x=%d y=%d\n\n",robot_x,robot_y);
-    }
-        
-    //make new state the old state
-    old_state=new_state;
-    trans--;
-  }
-  */
-  new_state=propagate_wavefront(robot_x,robot_y);
-  //////////////////////////////////////////
+  // TODO: PONER LA RUTA ENCONTRADA
   
-  printf("steps: %d\n", steps);
+  new_state=propagate_wavefront(robot_x,robot_y);
+  
   system("PAUSE");
   return 0;
 }
 
 int propagate_wavefront(int robot_x, int robot_y){
-  //clear old wavefront
-  unpropagate(robot_x, robot_y);
+  
+  mapa[robot_x][robot_y]=robot;
   
   //start location to begin scan at goal location
   mapa[goal_x][goal_y]=goal; //poner el objetivo en el mapa
@@ -128,9 +97,11 @@ int propagate_wavefront(int robot_x, int robot_y){
 	  mostrar_mapa();
 	  printf("-termine-\n\n");
 	  exit(0);
-	  //finshed! tell robot to start moving down path
+	  //termine!
+	  //hacer ciclo para mover al robot
 	  //return min_node_location;
 	}
+	
 	//record a value in to this node
 	//if this isnt here, 'nothing' will go in the location
 	else if (minimum_node!=reset_min)
@@ -145,31 +116,11 @@ int propagate_wavefront(int robot_x, int robot_y){
 	y=0;
       }	
     }
-    printf("Sweep #: %d\n",counter+1);
+    printf("#:%d\n",counter+1);
     mostrar_mapa();
     counter++;
   }
   return 0;
-}
-
-//clears old path to determine new path
-void unpropagate(int robot_x, int robot_y){	
-  //printf("Old Map:\n");
-  mostrar_mapa();
-  
-  //printf("Starting Unpropagate\n");
-  
-  //stay within boundary
-  for (x=0; x<size_n; x++)
-    for (y=0; y<size_n; y++)
-      if (mapa[x][y] != wall && mapa[x][y] != goal) //if this location is a wall or goal, just ignore it
-	mapa[x][y] = vacio;//clear that space
-  
-  //old robot location was deleted, store new robot location in map
-  mapa[robot_x][robot_y]=robot;
-  
-  //printf("Unpropagation Complete:\n");
-  mostrar_mapa();
 }
 
 //this function looks at a node and returns the lowest value around that node
