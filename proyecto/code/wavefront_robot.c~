@@ -63,7 +63,6 @@ int main(void){
   //////////////wavefront code//////////////
   //hacer hasta que el robot llega al objetivo
   //TODO: usar otra condicion de paro
-  /**
   while(mapa[robot_x][robot_y]!=goal){
     //conocer el siguiente estado a desplazarse del robot
     new_state=propagate_wavefront(robot_x,robot_y);
@@ -90,8 +89,6 @@ int main(void){
     old_state=new_state;
     trans--;
   }
-  */
-  new_state=propagate_wavefront(robot_x,robot_y);
   //////////////////////////////////////////
   
   printf("steps: %d\n", steps);
@@ -127,9 +124,9 @@ int propagate_wavefront(int robot_x, int robot_y){
 	  
 	  mostrar_mapa();
 	  printf("-termine-\n\n");
-	  exit(0);
+	  //exit(0);
 	  //finshed! tell robot to start moving down path
-	  //return min_node_location;
+	  return min_node_location;
 	}
 	//record a value in to this node
 	//if this isnt here, 'nothing' will go in the location
