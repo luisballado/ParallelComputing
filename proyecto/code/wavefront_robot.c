@@ -1,4 +1,4 @@
-//WAVEFRONT ALGORITHM
+//WAVEFRONT
 
 #include "ANSI-color-codes.h" //Colores fancy
 
@@ -7,26 +7,27 @@
 #include <unistd.h>
 #include <stdbool.h>
 
-//en main, declarar la matrix nxn
+//cosas del mapa
 int vacio=0;
-int wall=255;
-int goal=1;
+int pared=255;
+int objetivo=1;
 int robot=254;
 
-// se declara las ubicaciones del robot y objetivo
-int robot_x=0;
-int robot_y=0;
+//ubicacion robot
+int robot_x=2; 
+int robot_y=3; 
 
-int goal_x=5;
-int goal_y=3;
+//ubicacion objetivo
+int objetivo_x=6;
+int objetivo_y=6;
 
+//size de la matriz
 int size_m = 7;
 int size_n = 7;
 
 //ubicaciones mapa
 int x=0;
 int y=0;
-bool uno_a_uno = false;
 
 int counter=0;
 int steps=0; //pasos para llegar al resultado
@@ -36,14 +37,13 @@ int minimum_node=250;
 int min_node_location=250;
 int new_state=1;
 int old_state=1;
-int trans=50;
 int reset_min=250; //todo arriba de este valor es un item especial, pared o el robot
 
 //X is vertical, Y is horizontal
 int mapa[7][7] = {{0,0,0,0,255,255,0},
 		  {0,0,0,0,255,255,0},
 		  {0,0,0,0,255,255,0},
-		  {0,255,255,255,255,255,0},
+		  {0,255,255,255,255,255,255},
 		  {0,0,0,0,0,0,0},
 		  {0,0,0,0,0,0,0},
 		  {0,0,0,0,0,0,0}};
@@ -73,7 +73,7 @@ int propagate_wavefront(int robot_x, int robot_y){
   mapa[robot_x][robot_y]=robot;
   
   //start location to begin scan at goal location
-  mapa[goal_x][goal_y]=goal; //poner el objetivo en el mapa
+  mapa[objetivo_x][objetivo_y]=objetivo; //poner el objetivo en el mapa
   
   mostrar_mapa();
 
@@ -88,7 +88,7 @@ int propagate_wavefront(int robot_x, int robot_y){
     //while the map hasnt been fully scanned
     while(x<size_m && y<size_n){
       //if this location is a wall or the goal, just ignore it
-      if (mapa[x][y] != wall && mapa[x][y] != goal){	
+      if (mapa[x][y] != pared && mapa[x][y] != objetivo){	
 	mostrar_mapa();
 	
 	//a full trail to the robot has been located, finished!
@@ -164,18 +164,18 @@ int min_surrounding_node_value(int x, int y){
  ***************************/
 void mostrar_mapa(void){
 
-  usleep(20000);
+  usleep(2000);
   //sleep(1);
   system("clear");
   
   for (int i=0;i<size_n;i++){
     for (int j=0;j<size_n;j++){
-      if (mapa[i][j]==wall)
+      if (mapa[i][j]==pared)
 	//printf("# ");
 	printf(BCYN " # " RESET);
       else if (mapa[i][j]==robot)
 	printf(BYEL " R " RESET);
-      else if (mapa[i][j]==goal)
+      else if (mapa[i][j]==objetivo)
 	printf(BBLU " X " RESET);
       else
 	printf(" %d ",mapa[i][j]);
