@@ -40,8 +40,8 @@ int robot_y=6;
 /*
  * ubicacion objetivo
  */
-int objetivo_x=2;
-int objetivo_y=4;
+int objetivo_x=4;
+int objetivo_y=3;
 
 //size de la matriz
 //int size_m = 8;
@@ -63,11 +63,11 @@ int reset_min=250; //todo arriba de este valor es un item especial, pared o el r
 
 //X is vertical, Y is horizontal
 int mapa[SIZE_M][SIZE_N] = {{0,  0,  0,  0,  0,  0,  0},
-			    {0,  0,  0,  0,255,255,  0},
-			    {0,  0,  0,255,  0,255,  0},
-			    {0,  0,255,255,  0,255,  0},
-			    {0,255,255,255,  0,  0,  0},
-			    {0,255,255,255,255,255,255},
+			    {0,  0,  0,255,255,255,  0},
+			    {0,  0,255,  0,255,255,  0},
+			    {0,255,255,  0,  0,255,  0},
+			    {0,  0,255,  0,  0,  0,  0},
+			    {0,  0,  0,255,255,255,255},
 			    {0,  0,  0,  0,  0,  0,  0}};
 
 /*
