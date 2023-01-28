@@ -14,61 +14,78 @@
 #define BYEL "\e[1;33m"
 #define BBLU "\e[1;34m"
 
-#define MAX_EXP 20
-#define VACIO 0
-#define PARED 255
-#define ROBOT 1
-#define OBJETIVO 254
-
-#define SIZE_M 7
-#define SIZE_N 7
-
 /*
- * Cosas del mapa
+ * Variables HARDCODE
  */
-//int vacio=0;
-//int pared=255;
-//int objetivo=1;
-//int robot=254;
+#define MAX_EXP 20
+#define EMPTY    0
+#define PARED  255
+#define ROBOT    1
+#define GOAL   254
+
+#define X_SIZE   7
+#define Y_SIZE   7
 
 /*
  * ubicacion robot
  */
-int robot_x=6; 
-int robot_y=6; 
+int robot_x = 6; 
+int robot_y = 6; 
 
 /*
  * ubicacion objetivo
  */
-int objetivo_x=2;
-int objetivo_y=4;
+int goal_x = 0;
+int goal_y = 6;
 
-//size de la matriz
-//int size_m = 8;
-//int size_n = 8;
-
-//ubicaciones mapa
-//int x=0;
-//int y=0;
-
-int explore=0;
-int counter=0;
-int steps=0; //pasos para llegar al resultado
+int explore = 0;
+int counter = 0;
+int steps = 0; //pasos para llegar al resultado
 
 //cuando se busca por un nodo con valor minimo
-int minimum_node=250;
-int min_node_location=250;
+int minimum_node = 250;
+int min_node_location = 250;
 
-int reset_min=250; //todo arriba de este valor es un item especial, pared o el robot
+int reset_min = 250; //todo arriba de este valor es un item especial, pared o el robot
 
 //X is vertical, Y is horizontal
-int mapa[SIZE_M][SIZE_N] = {{0,  0,  0,  0,  0,  0,  0},
+/**
+int mapa[X_SIZE][Y_SIZE] = {{255,255,255,0,  0,  0,  0},
 			    {0,  0,  0,  0,255,255,  0},
 			    {0,  0,  0,255,  0,255,  0},
 			    {0,  0,255,255,  0,255,  0},
 			    {0,255,255,255,  0,  0,  0},
 			    {0,255,255,255,255,255,255},
 			    {0,  0,  0,  0,  0,  0,  0}};
+*/
+
+/**
+int mapa[X_SIZE][Y_SIZE] = {{0,  0,  0,  0,  0,  0,  0},
+			    {0,255,255,255,255,255,  0},
+			    {0,  0,255,  0,255,255,  0},
+			    {255,0,255,  0,255,255,  0},
+			    {0,  0,255,  0,  0,  0,  0},
+			    {0,255,255,255,255,255,255},
+			    {0,  0,  0,  0,  0,  0,  0}};
+*/
+/**
+int mapa[X_SIZE][Y_SIZE] = {{255,0,  0,  0,  0,  0,  0},
+			    {0,255,  0,  0,255,255,  0},
+			    {0,  0,  0,255,  0,255,  0},
+			    {0,  0,255,255,  0,255,  0},
+			    {0,255,255,255,  0,  0,  0},
+			    {0,  0,255,255,255,255,255},
+			    {0,  0,  0,  0,  0,  0,  0}};
+*/
+
+int mapa[X_SIZE][Y_SIZE] = {{255,255,255,  0,  0,  0,  0},
+			    {  0,  0,  0,  0,  0,  0,  0},
+			    {  0,  0,  0,255,  0,255,  0},
+			    {  0,  0,  0,  0,  0,255,  0},
+			    {  0,255,  0,  0,  0,  0,  0},
+			    {  0,255,255,255,255,255,255},
+			    {  0,  0,  0,  0,  0,  0,  0}};
+
 
 /*
  * Se declaran las funciones para compilar
@@ -110,11 +127,11 @@ void map_init(void){
   printf(RED "Se comienza Wavefront\n\n" RESET); //imprimir texto
   sleep(1);  // dormir para visualizar el texto antes de limpiar
   
-  //Agregar el robor en el mapa
+  //Agregar el robot en el mapa
   mapa[robot_x][robot_y]=ROBOT;
   
   //Agregar el objetivo en el mapa
-  mapa[objetivo_x][objetivo_y]=OBJETIVO; //poner el objetivo en el mapa
+  mapa[goal_x][goal_y]=GOAL; //poner el objetivo en el mapa
   
   //Pintar el mapa
   show_map();
@@ -133,20 +150,21 @@ int propagate_wavefront(int robot_x, int robot_y){
   map_init(); // Cargar las cosas al mapa
   
   //ciclos para pasadas de exploracion
-  while(counter<500){
-    
+  while(counter<50){
+        
     x = 0;
     y = 0;
 
     // hacer hasta explorar todo el mapa
-    while(x<SIZE_M && y<SIZE_N){
+    while(x<X_SIZE && y<Y_SIZE){
+      
       // si la ubicacion actual es diferente a pared y el objetivo
       if (mapa[x][y] != PARED && mapa[x][y] != ROBOT){	
 	
 	show_map(); //mostrar mapa
 	
 	// se ha encontrado el objetivo
-	if (min_neighbor(x, y) < reset_min && mapa[x][y] == OBJETIVO){
+	if (min_neighbor(x, y) < reset_min && mapa[x][y] == GOAL){
 	  
 	  show_map();
 	  
@@ -170,18 +188,18 @@ int propagate_wavefront(int robot_x, int robot_y){
 
       //hacer exploracion por fila bajo la cardinalidad del mapa
       y++;
-      if (y==SIZE_M && x!=SIZE_N){
+      if (y==X_SIZE && x!=Y_SIZE){
 	x++;
 	y=0;
       }	
     }
-
+    
     printf("#:%d\n",counter+1);
     show_map();
     counter++;
-
+    
   }
-
+  
   return counter;
 
 }
@@ -189,36 +207,38 @@ int propagate_wavefront(int robot_x, int robot_y){
 //de un nodo, explorar y regresar el valor mas bajo
 int min_neighbor(int x, int y){
 
-  minimum_node=reset_min; //reset minimum
+  minimum_node = reset_min; //reset minimum
   
-  //down
-  if(x < 6) //not out of boundary
+  // abajo
+  if(x < X_SIZE-1) //not out of boundary
     //find the lowest number node, and exclude empty nodes (0's)
-    if  (mapa[x+1][y] < minimum_node && mapa[x+1][y] != VACIO){
+    if  (mapa[x+1][y] < minimum_node && mapa[x+1][y] != EMPTY){
       minimum_node = mapa[x+1][y];
-      min_node_location=3;
+      min_node_location = 3;
     }
   
-  //up
+  // arriba
   if(x > 0)
-    if  (mapa[x-1][y] < minimum_node && mapa[x-1][y] != VACIO){
+    if  (mapa[x-1][y] < minimum_node && mapa[x-1][y] != EMPTY){
       minimum_node = mapa[x-1][y];
       min_node_location=1;
     }
   
-  //right
-  if(y < 6)
-    if  (mapa[x][y+1] < minimum_node && mapa[x][y+1] != VACIO){
+  // izquierda
+  if(y > 0)
+    if  (mapa[x][y-1] < minimum_node && mapa[x][y-1] != EMPTY){
+      minimum_node = mapa[x][y-1];
+      min_node_location=4;
+    }
+  
+  // derecha
+  if(y < Y_SIZE-1)
+    if  (mapa[x][y+1] < minimum_node && mapa[x][y+1] != EMPTY){
       minimum_node = mapa[x][y+1];
       min_node_location=2;
     }
   
-  //left
-  if(y > 0)
-    if  (mapa[x][y-1] < minimum_node && mapa[x][y-1] != VACIO){
-      minimum_node = mapa[x][y-1];
-      min_node_location=4;
-    }
+  
 
   return minimum_node;
 
@@ -234,13 +254,13 @@ void show_map(void){
   system("clear");
 
   //recorrer el arreglo
-  for (int i=0;i<SIZE_N;i++){
-    for (int j=0;j<SIZE_M;j++){
+  for (int i=0;i<X_SIZE;i++){
+    for (int j=0;j<Y_SIZE;j++){
       if (mapa[i][j]==PARED)
 	printf(WHTHB "  # " RESET);
-      else if (mapa[i][j]==ROBOT)
+      else if (mapa[i][j] == ROBOT)
 	printf(BYEL "  R " RESET);
-      else if (mapa[i][j]==OBJETIVO)
+      else if (mapa[i][j] == GOAL)
 	printf(BBLU "  X " RESET);
       else
 	if(mapa[i][j]>9){
