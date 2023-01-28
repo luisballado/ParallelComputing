@@ -19,10 +19,11 @@
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
 
-\documentclass[twoside,twocolumn]{article}
+%\documentclass{article}
+\documentclass[oneside,twocolumn]{article}
 
 \usepackage{blindtext} % Package to generate dummy text throughout this template 
-
+\usepackage{multicol}
 \usepackage[sc]{mathpazo} % Use the Palatino font
 \usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
 \linespread{1.05} % Line spacing - Palatino needs more space between lines
@@ -60,6 +61,33 @@
 
 \usepackage{hyperref} % For hyperlinks in the PDF
 
+\usepackage{listings}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{1,1,1}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\renewcommand{\lstlistingname}{Código}% Listing -> Algorithm
+\lstset{style=mystyle}
+
 %----------------------------------------------------------------------------------------
 %	TITLE SECTION
 %----------------------------------------------------------------------------------------
@@ -96,6 +124,8 @@
 %	ARTICLE CONTENTS
 %----------------------------------------------------------------------------------------
 
+
+    
 \section{Introduction}
 
 \lettrine[nindent=0em,lines=3]{L} orem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -106,46 +136,56 @@
 %------------------------------------------------
 
 \newpage
+\onecolumn
 \section{Serial Algorithm}
 
-Maecenas sed ultricies felis. Sed imperdiet dictum arcu a egestas. 
-\begin{itemize}
-\item Donec dolor arcu, rutrum id molestie in, viverra sed diam
-\item Curabitur feugiat
-\item turpis sed auctor facilisis
-\item arcu eros accumsan lorem, at posuere mi diam sit amet tortor
-\item Fusce fermentum, mi sit amet euismod rutrum
-\item sem lorem molestie diam, iaculis aliquet sapien tortor non nisi
-\item Pellentesque bibendum pretium aliquet
-\end{itemize}
-\blindtext % Dummy text
+All human things are subject to decay. And when fate summons, Monarchs must obey.
+\begin{lstlisting}[language=Python, caption=Configuración Dash]
+  import dash_bootstrap_components as dbc # importamos el paquete
+  
+  external_stylesheets = [dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP] # configuramos que tome los estilos de bootstrap asi como los iconos
+  
+  app = Dash(
+  __name__,
+  meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
+  external_stylesheets=external_stylesheets,
+  title="Distribuciones"
+  )
+  
+  app._favicon = ("assets/favicon.ico") # colocamos un favicon
+  
+  d = DistribucionFactory() # Se inicializa el objeto abstracto de las distribuciones
+  
+\end{lstlisting}
 
-Text requiring further explanation\footnote{Example footnote}.
+
+\blindtext\blindtext
 
 %------------------------------------------------
 
+\twocolumn
 \section{Results}
 
 \begin{table}
-\caption{Example table}
-\centering
-\begin{tabular}{llr}
-\toprule
-\multicolumn{2}{c}{Name} \\
-\cmidrule(r){1-2}
-First name & Last Name & Grade \\
-\midrule
-John & Doe & $7.5$ \\
-Richard & Miles & $2$ \\
-\bottomrule
-\end{tabular}
+  \caption{Example table}
+  \centering
+  \begin{tabular}{llr}
+    \toprule
+    \multicolumn{2}{c}{Name} \\
+    \cmidrule(r){1-2}
+    First name & Last Name & Grade \\
+    \midrule
+    John & Doe & $7.5$ \\
+    Richard & Miles & $2$ \\
+    \bottomrule
+  \end{tabular}
 \end{table}
 
 \blindtext % Dummy text
 
 \begin{equation}
-\label{eq:emc}
-e = mc^2
+  \label{eq:emc}
+  e = mc^2
 \end{equation}
 
 \blindtext % Dummy text
@@ -168,13 +208,13 @@ A statement requiring citation \cite{Figueredo:2009dg}.
 %----------------------------------------------------------------------------------------
 
 \begin{thebibliography}{99} % Bibliography - this is intentionally simple in this template
-
+  
 \bibitem[Figueredo and Wolf, 2009]{Figueredo:2009dg}
-Figueredo, A.~J. and Wolf, P. S.~A. (2009).
-\newblock Assortative pairing and life history strategy - a cross-cultural
+  Figueredo, A.~J. and Wolf, P. S.~A. (2009).
+  \newblock Assortative pairing and life history strategy - a cross-cultural
   study.
-\newblock {\em Human Nature}, 20:317--330.
- 
+  \newblock {\em Human Nature}, 20:317--330.
+  
 \end{thebibliography}
 
 %----------------------------------------------------------------------------------------
