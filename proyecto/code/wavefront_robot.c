@@ -32,9 +32,14 @@
 
 /*
  * ubicacion robot
+ * TODO: Hacer varios robots 
  */
-int robot_x = 0; 
-int robot_y = 0; 
+
+int robot_x = 6; 
+int robot_y = 6; 
+
+int x=0;
+int y = 0;
 
 /*
  * ubicacion objetivo
@@ -102,6 +107,7 @@ int mapa[X_SIZE][Y_SIZE] = {{ 0,88,88, 0, 0,88, 0},
 void map_init(void);
 int propagate_wavefront();
 int explore_neighbors(int x, int y);
+void unpropagate(int robot_x, int robot_y);
 void show_map(void);
 
 /*
@@ -113,7 +119,7 @@ int main(void){
    * Explorar solucion y de no encontrar
    * parar el ciclo y reportarlo
    */
-
+  
   // Medir tiempo de este
   explore = propagate_wavefront();
   
@@ -130,18 +136,17 @@ int main(void){
       explore_neighbors(min_node_x,min_node_y);
       printf("min_node_XY: %d,%d\n",min_node_x,min_node_y);
 
-      //mapa[min_node_x][min_node_y] = 44; //Agregar el robot en el mapa
-      
       if(mapa[min_node_x][min_node_y]==1)
 	route_done = 1;
     }
 
     //show_map();
-    return route_done;
+    //return route_done;
     
   }
-   
+  //
   
+  unpropagate(robot_x, robot_y);
   //Para evitar loops grandes
   /*
   if(explore == MAX_EXP){
@@ -177,6 +182,8 @@ void map_init(void){
  * return numero de iteraciones 
  ******************************/
 int propagate_wavefront(){
+
+  
   
   int x, y, min_neighbor;
   counter = 0;
@@ -280,6 +287,26 @@ int explore_neighbors(int x, int y){
 
   return min_node;
 
+}
+
+//limpiar el mapa
+void unpropagate(int robot_x, int robot_y){	
+  
+  printf("Starting Unpropagate\n");
+  printf("X_SIZE: %d",X_SIZE);
+  printf("Y_SIZE: %d",Y_SIZE);
+  
+  //stay within boundary
+  for (int x=0; x<Y_SIZE; x++)
+    for (int y=0; y<Y_SIZE; y++)
+      if (mapa[x][y] != PARED && mapa[x][y] != GOAL) //if this location is a wall or goal, just ignore it
+	mapa[x][y] = EMPTY; //limpiar espacio
+
+  //old robot location was deleted, store new robot location in map
+  mapa[robot_x][robot_y]=ROBOT;
+
+  printf("Unpropagation Complete:\n");
+  show_map();
 }
 
 /*
