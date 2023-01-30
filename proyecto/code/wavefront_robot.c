@@ -33,8 +33,8 @@
 /*
  * ubicacion robot
  */
-int robot_x = 6; 
-int robot_y = 6; 
+int robot_x = 0; 
+int robot_y = 0; 
 
 /*
  * ubicacion objetivo
@@ -50,9 +50,13 @@ int steps = 0; //pasos para llegar al resultado
 int min_node = 50;
 int min_node_x;
 int min_node_y;
+
 int min_node_location = 50;
+
 bool done = false;
+
 int route_done = 0;
+
 //X is vertical, Y is horizontal
 /**
 int mapa[X_SIZE][Y_SIZE] = {{88,88,88,0,  0, 0, 0},
@@ -112,13 +116,10 @@ int main(void){
 
   // Medir tiempo de este
   explore = propagate_wavefront();
-
+  
   //printf("Ciclos de exploracion: %d\n\n\n",explore);
   //printf("Pasos: %d\n\n\n",steps);
-
-  printf("termine: %d\n",done);
-  printf("min_node_location: %d\n",explore);
-  printf("min_node_location: %d,%d\n\n",min_node_x,min_node_y);
+  printf("min_node_XY: %d,%d\n",min_node_x,min_node_y);
 
   //Explorar para sacar la ruta
   if(done!=0){
@@ -127,17 +128,15 @@ int main(void){
     //hacer un ciclo
     while(route_done <= 0){
       explore_neighbors(min_node_x,min_node_y);
-      printf("min_node_location: %d\n",min_node_location);
       printf("min_node_XY: %d,%d\n",min_node_x,min_node_y);
+
+      //mapa[min_node_x][min_node_y] = 44; //Agregar el robot en el mapa
       
       if(mapa[min_node_x][min_node_y]==1)
 	route_done = 1;
-
-      //agregar
-      
-      
     }
-    
+
+    //show_map();
     return route_done;
     
   }
@@ -204,15 +203,11 @@ int propagate_wavefront(){
 	  show_map();
 	  done = true;
 	  printf(GRNB "-termine-\n\n" RESET);
-	  //termine!
-	  //hacer ciclo para mover al robot
 	  return min_node_location;
 	}
 	
 	//marcar el nodo como visitado
 	//indicar el costo para visitarlo
-	//record a value in to this node
-	//if this isnt here, 'nothing' will go in the location
 	else if (min_node != SPECIAL_ITEM){
 	  //printf(GRNB "-%d-\n\n" RESET,minimum_node);
 	  //sleep(2);
@@ -245,8 +240,8 @@ int explore_neighbors(int x, int y){
   min_node = SPECIAL_ITEM; //reset minimum
   
   // abajo
-  if(x < X_SIZE-1) //not out of boundary
-    //find the lowest number node, and exclude empty nodes (0's)
+  if(x < X_SIZE-1) //no salirse de la matrix
+    //encontrar el nodo de menor valor excluyendo los vacios
     if ((mapa[x+1][y] < min_node) && (mapa[x+1][y] != EMPTY)){
       min_node = mapa[x+1][y];
       min_node_location = 3;
@@ -305,6 +300,8 @@ void show_map(void){
 	printf(BYEL " -R-" RESET);
       else if (mapa[i][j] == GOAL)
 	printf(BBLU " -X-" RESET);
+      else if (mapa[i][j] == 44)
+	printf(BYEL " -R-" RESET);
       else
 	if(mapa[i][j]>9){
 	  printf(" %d " , mapa[i][j]);
