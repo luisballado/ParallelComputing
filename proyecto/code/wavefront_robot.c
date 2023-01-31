@@ -9,8 +9,9 @@
 #include <time.h>
 
 /*
- * Definir colores fancy
+ * Colores fancy
  */
+
 #define RESET "\x1B[0m"
 #define RED "\e[0;31m"
 #define GRNB "\e[42m"
@@ -19,19 +20,19 @@
 #define BBLU "\e[1;34m"
 
 /*
- * Variables
+ * Cosas del Mapa
  */
 
 #define MAX_ROBOTS 10 //Numero total de robots
 
 #define MAX_EXP  20
 #define EMPTY     0
-#define PARED    88
+#define WALL     88
 #define ROBOT     1
 #define GOAL    100
 
-#define X_SIZE   7
-#define Y_SIZE   7
+#define X_SIZE   10
+#define Y_SIZE   10
 
 #define SPECIAL_ITEM 50  //todo arriba de este valor es un item especial, pared o objetivo
 
@@ -57,43 +58,17 @@ int route_done = 0;
 double tiempos[10];
 
 //X is vertical, Y is horizontal
-/**
-int mapa[X_SIZE][Y_SIZE] = {{88,88,88,0,  0, 0, 0},
-			    { 0, 0, 0, 0,88,88, 0},
-			    { 0, 0, 0,88, 0,88, 0},
-			    { 0, 0,88,88, 0,88, 0},
-			    { 0,88,88,88, 0, 0, 0},
-			    { 0,88,88,88,88,88,88},
-			    { 0, 0, 0, 0, 0, 0, 0}};
-*/
+int mapa[X_SIZE][Y_SIZE] = {{88, 0, 0, 0, 0,88, 0,88,88, 0},
+			    {88,88, 0, 0, 0,88, 0, 0, 0, 0},
+			    { 0, 0, 0,88, 0,88, 0,88,88, 0},
+			    { 0, 0,88,88, 0,88, 0, 0, 0,88},
+			    { 0,88,88,88, 0, 0, 0, 0,88, 0},
+			    { 0, 0,88,88,88,88,88, 0,88,88},
+			    { 0, 0, 0, 0,88,88, 0, 0,88, 0},
+			    { 0, 0, 0, 0,88,88, 0, 0, 0,88},
+			    { 0, 0, 0, 0,88, 0, 0, 0, 0, 0},
+			    { 0, 0, 0, 0, 0, 0, 0, 0,88, 0}};
 
-/**
-int mapa[X_SIZE][Y_SIZE] = {{0, 0, 0, 0, 0, 0, 0},
-			    {0,88,88,88,88,88, 0},
-			    {0, 0,88, 0,88,88, 0},
-			    {88,0,88, 0,88,88, 0},
-			    {0, 0,88, 0, 0, 0, 0},
-			    {0,88,88,88,88,88,88},
-			    {0, 0, 0, 0, 0, 0, 0}};
-*/
-
-int mapa[X_SIZE][Y_SIZE] = {{88, 0, 0, 0, 0,88, 0},
-			    {88,88, 0, 0, 0,88, 0},
-			    { 0, 0, 0,88, 0,88, 0},
-			    { 0, 0,88,88, 0,88, 0},
-			    { 0,88,88,88, 0, 0, 0},
-			    { 0, 0,88,88,88,88,88},
-			    { 0, 0, 0, 0, 0, 0, 0}};
-
-/**
-int mapa[X_SIZE][Y_SIZE] = {{ 0,88,88, 0, 0,88, 0},
-			    { 0,88, 0, 0, 0,88, 0},
-			    { 0, 0, 0,88, 0, 0, 0},
-			    { 0, 0, 0,88,88,88,88},
-			    { 0,88, 0, 0, 0, 0, 0},
-			    { 0,88,88,88,88,88,88},
-			    { 0, 0, 0, 0, 0, 0, 0}};
-*/
 
 /*
  * Se declaran las funciones para compilar
@@ -143,51 +118,17 @@ int main(void){
     tiempos[i] = cpu_time_used;
     
     printf(RED "El tiempo es: %f\n" RESET , cpu_time_used);
-
-    //TODO ARREGLAR EL RESULTADO DEL CAMINO
-    /**
-    //printf("Ciclos de exploracion: %d\n\n\n",explore);
-    //printf("Pasos: %d\n\n\n",steps);
-    printf("min_node_XY: %d,%d\n",min_node_x,min_node_y);
     
-    //Explorar para sacar la ruta
-    do{
-      //se para donde tengo que ir
-      //se la ubicacion
-      //hacer un ciclo
-      do{
-	
-	explore_neighbors(min_node_x,min_node_y);
-	printf("min_node_XY: %d,%d\n",min_node_x,min_node_y);
-	
-	if(mapa[min_node_x][min_node_y]==1)
-	  route_done = 1;
-	
-	printf("route - %d\n",route_done);
-
-      }while(route_done <= 0);
-	
-      //show_map();
-      //return route_done;
-      
-    }while(done!=1);
-    */ 
     //Para evitar loops grandes
     if(explore == MAX_EXP){
       printf(RED "Problema muy grande o no encontre solucion\n\n" RESET);
     }
 
-    //agregar a tabla de tiempos
-
     sleep(1);
-    
   }
   
   for(int loop = 0; loop < MAX_ROBOTS; loop++)
     printf("Robot %d: %f\n", loop+1 ,tiempos[loop]);
-  
-  //return 0;
-
 }
 
 /***************************
@@ -232,7 +173,7 @@ int propagate_wavefront(int rx, int ry, int gx, int gy){
     while((x < X_SIZE) && (y < Y_SIZE)){
       //      exit(0);
       // si la ubicacion actual es diferente a pared y el objetivo
-      if ((mapa[x][y] != PARED) && (mapa[x][y] != ROBOT)){	
+      if ((mapa[x][y] != WALL) && (mapa[x][y] != ROBOT)){	
 	
 	show_map(); //mostrar mapa
 	min_neighbor = explore_neighbors(x,y);
@@ -250,8 +191,6 @@ int propagate_wavefront(int rx, int ry, int gx, int gy){
 	//marcar el nodo como visitado
 	//indicar el costo para visitarlo
 	else if (min_node != SPECIAL_ITEM){
-	  //printf(GRNB "-%d-\n\n" RESET,minimum_node);
-	  //sleep(2);
 	  mapa[x][y] = min_node + 1;
 	}
       }
@@ -267,15 +206,9 @@ int propagate_wavefront(int rx, int ry, int gx, int gy){
     printf("#:%d\n",counter+1);
     show_map();
     counter++;
-    
   }
-  
   return counter;
-    
 }
-  
-  
-  
 
 //de un nodo, explorar y regresar el valor mas bajo
 //min_node_location - ubicacion node 1 arriba, 2 derecha, 3 abajo, 4 izquierda
@@ -319,8 +252,6 @@ int explore_neighbors(int x, int y){
       min_node_x = x;
       min_node_y = y+1;
     }
-  
-  
 
   return min_node;
 
@@ -329,15 +260,15 @@ int explore_neighbors(int x, int y){
 //limpiar el mapa
 void clear_map(){	
   
-  printf("cleaning....\n");
+  printf("limpiando....\n");
     
   //stay within boundary
   for (int x=0; x<Y_SIZE; x++)
     for (int y=0; y<Y_SIZE; y++)
-      if (mapa[x][y] != PARED) //if this location is a wall or goal, just ignore it
+      if (mapa[x][y] != WALL) //if this location is a wall or goal, just ignore it
 	mapa[x][y] = EMPTY; //limpiar espacio
   
-  printf("new scenario compleated:\n");
+  printf("mapa limpiado\n");
   show_map();
 }
 
@@ -345,15 +276,14 @@ void clear_map(){
  * Imprimir mapa
  */
 void show_map(void){
-
+  
   usleep(2000);
-  //sleep(1);
   system("clear");
-
+  
   //recorrer el arreglo
   for (int i=0;i<X_SIZE;i++){
     for (int j=0;j<Y_SIZE;j++){
-      if (mapa[i][j]==PARED)
+      if (mapa[i][j]==WALL)
 	printf(WHTHB "####" RESET);
       else if (mapa[i][j] == ROBOT)
 	printf(BYEL " -R-" RESET);
@@ -367,7 +297,6 @@ void show_map(void){
 	}else{
 	  printf("  %d " , mapa[i][j]);
 	}
-	
     }
     printf("\n"); //salto de linea para el recorrido Y
   }
@@ -377,13 +306,13 @@ void show_map(void){
   steps++;
 }
 
+//funcion para generar un numero random dentro de un rango 0-RANGO
 int get_random(int upper){
     
     int num;
 
     for (int i = 0; i < 3; i++) {
         num = (rand() % (upper - 0 + 1)) + 0;
-        //printf("%d ", num);
     }
 
     return num;

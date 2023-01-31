@@ -1,0 +1,11 @@
+1.- Compile with gcc
+
+gcc -o robots wavefront_robot.c
+
+2.- Run it!
+
+./robots
+
+3.- Wait for results
+
+:)
