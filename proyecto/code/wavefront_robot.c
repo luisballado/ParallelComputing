@@ -6,6 +6,8 @@
 
 #include <stdbool.h> //bool stuff
 
+#include <time.h>
+
 /*
  * Definir colores fancy
  */
@@ -17,8 +19,11 @@
 #define BBLU "\e[1;34m"
 
 /*
- * Variables HARDCODE
+ * Variables
  */
+
+#define MAX_ROBOTS 10 //Numero total de robots
+
 #define MAX_EXP  20
 #define EMPTY     0
 #define PARED    88
@@ -30,24 +35,9 @@
 
 #define SPECIAL_ITEM 50  //todo arriba de este valor es un item especial, pared o objetivo
 
-#define MAX_ROBOTS 5 //Numero total de robots
-
-/*
- * ubicacion robot
- * TODO: Hacer varios robots 
- */
-
-//int robot_x = 6; 
-//int robot_y = 6; 
-
-int x = 0;
-int y = 0;
-
-/*
- * ubicacion objetivo
- */
-//int goal_x = 0;
-//int goal_y = 6;
+//cosa para los tiempos
+clock_t start, end;
+double cpu_time_used;
 
 int explore = 0;
 int counter = 0;
@@ -63,6 +53,8 @@ int min_node_location = 50;
 bool done = false;
 
 int route_done = 0;
+
+double tiempos[10];
 
 //X is vertical, Y is horizontal
 /**
@@ -84,7 +76,7 @@ int mapa[X_SIZE][Y_SIZE] = {{0, 0, 0, 0, 0, 0, 0},
 			    {0,88,88,88,88,88,88},
 			    {0, 0, 0, 0, 0, 0, 0}};
 */
-/**
+
 int mapa[X_SIZE][Y_SIZE] = {{88, 0, 0, 0, 0,88, 0},
 			    {88,88, 0, 0, 0,88, 0},
 			    { 0, 0, 0,88, 0,88, 0},
@@ -92,8 +84,8 @@ int mapa[X_SIZE][Y_SIZE] = {{88, 0, 0, 0, 0,88, 0},
 			    { 0,88,88,88, 0, 0, 0},
 			    { 0, 0,88,88,88,88,88},
 			    { 0, 0, 0, 0, 0, 0, 0}};
-**/
 
+/**
 int mapa[X_SIZE][Y_SIZE] = {{ 0,88,88, 0, 0,88, 0},
 			    { 0,88, 0, 0, 0,88, 0},
 			    { 0, 0, 0,88, 0, 0, 0},
@@ -101,7 +93,7 @@ int mapa[X_SIZE][Y_SIZE] = {{ 0,88,88, 0, 0,88, 0},
 			    { 0,88, 0, 0, 0, 0, 0},
 			    { 0,88,88,88,88,88,88},
 			    { 0, 0, 0, 0, 0, 0, 0}};
-
+*/
 
 /*
  * Se declaran las funciones para compilar
@@ -124,7 +116,7 @@ int main(void){
    */
 
   //Hacer la prueba con MAX_ROBOTS aleatorios
-  for(int i=1;i<=MAX_ROBOTS;i++){
+  for(int i=0;i<MAX_ROBOTS;i++){
 
     clear_map(); //limpiar mapa
     
@@ -141,16 +133,25 @@ int main(void){
       int goalx = get_random(X_SIZE-1);
       int goaly = get_random(Y_SIZE-1);
     }
-  
+
+    start = clock();
     // Medir tiempo de este
     explore = propagate_wavefront(robotx,roboty,goalx,goaly);
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     
+    tiempos[i] = cpu_time_used;
+    
+    printf(RED "El tiempo es: %f\n" RESET , cpu_time_used);
+
+    //TODO ARREGLAR EL RESULTADO DEL CAMINO
+    /**
     //printf("Ciclos de exploracion: %d\n\n\n",explore);
     //printf("Pasos: %d\n\n\n",steps);
     printf("min_node_XY: %d,%d\n",min_node_x,min_node_y);
     
     //Explorar para sacar la ruta
-    if(done!=0){
+    do{
       //se para donde tengo que ir
       //se la ubicacion
       //hacer un ciclo
@@ -167,21 +168,23 @@ int main(void){
       }while(route_done <= 0);
 	
       //show_map();
-      // return route_done;
+      //return route_done;
       
-    }
-    //
-    
+    }while(done!=1);
+    */ 
     //Para evitar loops grandes
     if(explore == MAX_EXP){
       printf(RED "Problema muy grande o no encontre solucion\n\n" RESET);
     }
-    
-    sleep(2);
 
-    
+    //agregar a tabla de tiempos
+
+    sleep(1);
     
   }
+  
+  for(int loop = 0; loop < MAX_ROBOTS; loop++)
+    printf("Robot %d: %f\n", loop+1 ,tiempos[loop]);
   
   //return 0;
 
@@ -375,12 +378,13 @@ void show_map(void){
 }
 
 int get_random(int upper){
-    int i;
+    
     int num;
-    for (i = 0; i < 1; i++) {
-        num = (rand() %
-        (upper - 0 + 1)) + 0;
+
+    for (int i = 0; i < 3; i++) {
+        num = (rand() % (upper - 0 + 1)) + 0;
         //printf("%d ", num);
     }
+
     return num;
 }
