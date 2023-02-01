@@ -1,17 +1,14 @@
 //WAVEFRONT
 
-#include <stdio.h>  //para el print .. etc
-#include <stdlib.h> //acceso a system
-#include <unistd.h> //sleep usleep
-
+#include <stdio.h>   //para el print .. etc
+#include <stdlib.h>  //acceso a system
+#include <unistd.h>  //sleep usleep
 #include <stdbool.h> //bool stuff
-
-#include <time.h>
+#include <time.h>    // cosas de tiempo
 
 /*
  * Colores fancy
  */
-
 #define RESET "\x1B[0m"
 #define RED "\e[0;31m"
 #define GRNB "\e[42m"
@@ -23,7 +20,7 @@
  * Cosas del Mapa
  */
 
-#define MAX_ROBOTS 10 //Numero total de robots
+//#define MAX_ROBOTS 10 //Numero total de robots
 
 #define MAX_EXP  20
 #define EMPTY     0
@@ -39,7 +36,7 @@
 //cosa para los tiempos
 clock_t start, end;
 double cpu_time_used;
-
+int MAX_ROBOTS;
 int explore = 0;
 int counter = 0;
 int steps = 0; //pasos para llegar al resultado
@@ -58,6 +55,7 @@ int route_done = 0;
 double tiempos[10];
 
 //X is vertical, Y is horizontal
+
 int mapa[X_SIZE][Y_SIZE] = {{88, 0, 0, 0, 0,88, 0,88,88, 0},
 			    {88,88, 0, 0, 0,88, 0, 0, 0, 0},
 			    { 0, 0, 0,88, 0,88, 0,88,88, 0},
@@ -68,7 +66,25 @@ int mapa[X_SIZE][Y_SIZE] = {{88, 0, 0, 0, 0,88, 0,88,88, 0},
 			    { 0, 0, 0, 0,88,88, 0, 0, 0,88},
 			    { 0, 0, 0, 0,88, 0, 0, 0, 0, 0},
 			    { 0, 0, 0, 0, 0, 0, 0, 0,88, 0}};
-
+/*
+int mapa[X_SIZE][Y_SIZE] = {
+  {88,88,88,88,88,88,88,88,88,88,88,88},
+  {88, 0, 0, 0, 0, 0, 0, 0,88, 0, 0,88},
+  {88, 0, 0, 0, 0, 0, 0, 0,88, 0, 0,88},
+  {88, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,88},
+  {88, 0, 0, 0, 0, 0, 0, 0,88, 0, 0,88},
+  {88, 0, 0, 0, 0, 0, 0, 0,88, 0, 0,88},
+  {88, 0, 0, 0, 0, 0, 0, 0,88, 0, 0,88},
+  {88, 0, 0, 0, 0, 0, 0, 0,88,88,88,88},
+  {88, 0, 0, 0, 0, 0, 0, 0,88, 0, 0,88},
+  {88, 0, 0, 0, 0, 0, 0, 0,88, 0, 0,88},
+  {88, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,88},
+  {88, 0, 0, 0, 0, 0, 0, 0,88, 0, 0,88},
+  {88, 0, 0, 0, 0, 0, 0, 0,88, 0, 0,88},
+  {88, 0, 0, 0, 0, 0, 0, 0,88, 0, 0,88},
+  {88,88,88,88,88,88,88,88,88,88,88,88}
+};
+*/
 
 /*
  * Se declaran las funciones para compilar
@@ -83,7 +99,19 @@ int get_random(int upper);
 /*
  * Programa Principal
  */
-int main(void){
+int main(int argc, char *argv[] )  {
+
+  if( argc == 2 ) {
+      printf("El # de robots es: %s\n", argv[1]);
+      MAX_ROBOTS = atoi(argv[1]); // Using atoi()
+   }
+  else if( argc > 2 ) {
+    printf("%s\n",argv[1]);
+    printf("%s\n",argv[2]);
+  }
+  else {
+    printf("please give the # of robots\n");
+  }
   
   /*
    * Explorar solucion y de no encontrar
@@ -277,7 +305,7 @@ void clear_map(){
  */
 void show_map(void){
   
-  usleep(2000);
+  //usleep(2000);
   system("clear");
   
   //recorrer el arreglo
