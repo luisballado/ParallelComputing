@@ -1,0 +1,40 @@
+George A. Bekey - Autonomous Robots From Biological Inspiration to Implementation and Control - MIT Press 2005 ISBN 0-262-02578-7
+
+Localization, Navigation, and Mapping
+
+As robot become increasingly autonomous and able to operate in unstructured environments, they will be faced with more and more difficult problems of orientation and navigation. When a robot is moving indoor on smooth surfaces over shot distances, with unobstructured visibility, these problems are not severe. In such situations the robot may have a clear view of a target location and use vision for navigation. In other cases the robot can navigate to a specified target simply by using wheel encoders and converting the distance to be traveled into wheel revolutions; this is odomety. This method is generally nor satisfactory across long distances over uneven terrain, since different wheels will experience different amounts of slippage. Even on smooth floors, since its wheels are not identical, a robot's actual path will gradually drift away from the desired path to the goal.
+The first navigation task question is "How do I get there?". In general, this task will involve obstacle, uneven terrain of varying friction properties, and obstruction of the robot's view to the target. Sometimes the robot will have maps of the area to be traversed or information aboyt known landmarks along a path that avoids obstacles and is the "best" path in some sense. "Best" can be defined by such criteria as minimum fuel consumption (or battery drainage) or minimum travel time, but many other measures are possible. Note that the navigation task described here takes place in two dimensions; navigation in three dimensions, as with underwater robots or flying robots, introduces a new set of issues.
+
+Robot Navigation
+
+Navigation is the process of derermining and maintaining a path or trajectory to a goal destination. We hace seen that animals possess a variety of remarkable abilities to assist them in navigation. To provide robots with many of the same abilities, we use sensor, such as:
+Computer vision
+GPS
+A compass
+A clock
+A map
+Wheel encoders
+Range finders
+Gyroscopes
+
+
+Consider the situation. A robot is situated at the point labeled "START" in an outdoor environment. Its assignment is to travel to the point labeled "GOAL". A straight-line path is not possible, because of the presence of obstacles. The goal and two landmarks are visible on a clear day.
+
+Clearly, there are many alternate strategies for finding a path that avoids obstacles and allows the robot to reach the goal. Finding the "best" path from start to goal is termed path planning; it is well studied problem in robotics.
+Clearly, this is an optimization problem, requiring selection of an optimization criterion and an algorithm. Typical criteria are path length and time to reach the goal. Optimization algorithms used include various gradient methods, including A*, wavefront
+
+EXPLAIN THE DIFFERENT ALGORITHMS
+
+Mapping
+
+One of the major applications of mobile robots is to create models of the environment they traverse using sensor data; this process is known as mapping. Military applications of this technology are obvious. Visualize a robot that somehow enters a vacant building in hostile territory. For example, it could be thrown through an open window, crawl through drain pipes, or climb up the side of the building. Once inside, the robot can traverse the hallways and create a map showing doors, hall crossing, stairways, and other features.
+
+The most commonly used approaches to mapping are termed "grid based or metric mapping and topological mapping".
+Metric or quantitative maps, as the name implies, are based on measurements of the space they map. An indoor metric map may include the lengths of wall sections, door-opening widths, hallways widths, distances to intersections, and so forth. A typical metric navigation instruction might be "Move 45 meters in north direction, then turn 30º clockwise and move another 65 meters.
+Path planning in metrically mapped spaces usually includes the designation of a number of way points at specific (x,y) locations, connected by straight-line segments. Paths can then be selected on the basis of some optimization criterion.
+A widely used method of generationg a metric map is to cover the environment to be mapped with an evently spaced grid. Each cell in the grid is then filled with one or more values that represent the presence or absence of an obstacle (which could be another robot or a human).Grid-based mapping was first proposed in the 1980's  by Elfes
+
+Ronald C. Arkin - Behavior Based Robotics - MIT Press 1998 ISBN 978-0-262-01165-5
+
+
+
