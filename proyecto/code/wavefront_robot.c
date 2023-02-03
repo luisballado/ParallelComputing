@@ -1,5 +1,7 @@
 //WAVEFRONT
 
+//https://www.programiz.com/c-programming/c-arrays-functions
+
 #include <stdio.h>   //para el print .. etc
 #include <stdlib.h>  //acceso a system
 #include <unistd.h>  //sleep usleep
@@ -393,17 +395,17 @@ int propagate_wavefront(int rx, int ry, int gx, int gy, int map_size){
 	else if (min_node != SPECIAL_ITEM){
 
 	  //TODO MEJORAR SELECCION DE MUNDOS
-	  if(map_size == 1){
+	  if(world == 1){
 	    world1[x][y] = min_node + 1;
-	  }else if (map_size == 2){
+	  }else if (world == 2){
 	    world2[x][y] = min_node + 1;
-	  }else if (map_size == 3){
+	  }else if (world == 3){
 	    world3[x][y] = min_node + 1;
-	  }else if (map_size == 4){
+	  }else if (world == 4){
 	    world4[x][y] = min_node + 1;
-	  }else if (map_size == 5){
+	  }else if (world == 5){
 	    world5[x][y] = min_node + 1;
-	  }else if (map_size == 6){
+	  }else if (world == 6){
 	    world6[x][y] = min_node + 1;
 	  }
 	}
@@ -478,7 +480,7 @@ int explore_neighbors(int x, int y, int map_size, int world){
     }else if (map_size == 6){
       world6[x][y] = min_node + 1;
       if ((world6[x+1][y] < min_node) && (world6[x+1][y] != EMPTY)){
-	min_node = mapa[x+1][y];
+	min_node = world6[x+1][y];
 	min_node_location = 3;
 	min_node_x = x+1;
 	min_node_y = y;
@@ -489,7 +491,7 @@ int explore_neighbors(int x, int y, int map_size, int world){
   
   // arriba
   if(x > 0)
-
+    
 
     if ((mapa[x-1][y] < min_node) && (mapa[x-1][y] != EMPTY)){
       min_node = mapa[x-1][y];
@@ -525,7 +527,7 @@ int explore_neighbors(int x, int y, int map_size, int world){
 }
 
 //limpiar el mapa
-void clear_map(int map_size){	
+void clear_map(int map_size,int world){	
   
   printf("limpiando....\n");
     
