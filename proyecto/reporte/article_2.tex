@@ -109,7 +109,13 @@
 \date{\today} % Leave empty to omit a date
 \renewcommand{\maketitlehookd}{%
 \begin{abstract}
-\noindent \blindtext % Dummy abstract text - replace \blindtext with your abstract text
+\noindent One of the major applications of mobile robots is to create models of the environment they traverse using sensor data; this process is known as mapping. Military applications of this technology are obvious. Visualize a robot that somehow enters a vacant building in hostile territory. For example, it could be thrown through an open window, crawl through drain pipes, or climb up the side of the building. Once inside, the robot can traverse the hallways and create a map showing doors, hall crossing, stairways, and other features.
+
+The most commonly used approaches to mapping are termed "grid based or metric mapping and topological mapping".
+Metric or quantitative maps, as the name implies, are based on measurements of the space they map. An indoor metric map may include the lengths of wall sections, door-opening widths, hallways widths, distances to intersections, and so forth. A typical metric navigation instruction might be "Move 45 meters in north direction, then turn 30º clockwise and move another 65 meters.
+Path planning in metrically mapped spaces usually includes the designation of a number of way points at specific (x,y) locations, connected by straight-line segments. Paths can then be selected on the basis of some optimization criterion.
+A widely used method of generationg a metric map is to cover the environment to be mapped with an evently spaced grid. Each cell in the grid is then filled with one or more values that represent the presence or absence of an obstacle (which could be another robot or a human).Grid-based mapping was first proposed in the 1980's  by Elfes
+
 \end{abstract}
 }
 
@@ -209,11 +215,26 @@ A statement requiring citation \cite{Figueredo:2009dg}.
 
 \begin{thebibliography}{99} % Bibliography - this is intentionally simple in this template
   
-\bibitem[Figueredo and Wolf, 2009]{Figueredo:2009dg}
-  Figueredo, A.~J. and Wolf, P. S.~A. (2009).
-  \newblock Assortative pairing and life history strategy - a cross-cultural
-  study.
-  \newblock {\em Human Nature}, 20:317--330.
+\bibitem[George A. Bekey, 2005]{GeorgeABekey:2005dg}
+  George A. Bekey - Autonomus Robots From Biological Inspiration to Implementation and Control - MIT Press (2005).
+  \newblock {\em ISBN}, 0-262-02578-7
+
+\bibitem[Ronald C. Arkin, 1998]{RonaldCArkin:1998dg}
+  Ronald C. Arkin - Behavior Based Robotics - MIT Press (1998).
+  \newblock {\em ISBN}, 978-0-262-01165-5
+
+\bibitem[Ronald C. Arkin, 1998]{RonaldCArkin:1998dg}
+  Ronald C. Arkin - Behavior Based Robotics - MIT Press (1998).
+  \newblock {\em ISBN}, 978-0-262-01165-5
+
+
+\bibitem[Ronald C. Arkin, 1998]{RonaldCArkin:1998dg}
+  Ronald C. Arkin - Behavior Based Robotics - MIT Press (1998).
+  \newblock {\em ISBN}, 978-0-262-01165-5
+
+\bibitem[Ronald C. Arkin, 1998]{RonaldCArkin:1998dg}
+  Ronald C. Arkin - Behavior Based Robotics - MIT Press (1998).
+  \newblock {\em ISBN}, 978-0-262-01165-5
   
 \end{thebibliography}
 
