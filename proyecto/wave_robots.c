@@ -1,4 +1,5 @@
 //WAVEFRONT
+//TODO: HACER ENTRADAS DINAMICAS PARA DIFERENTES TIPOS DE PROBLEMAS
 
 #include <stdio.h>  //para el print .. etc
 #include <stdlib.h> //acceso a system
@@ -59,7 +60,6 @@ double tiempos[10];
 
 //X is vertical, Y is horizontal
 int mapa[X_SIZE][Y_SIZE] =
-
   {
     { 0,88, 0,88, 0, 0, 0, 0,88, 0,88,88, 0, 0,88,88, 0, 0, 0,88},
     { 0, 0, 0,88, 0, 0, 0, 0,88, 0,88,88, 0, 0,88,88, 0, 0, 0,88},
@@ -228,7 +228,7 @@ int propagate_wavefront(int rx, int ry, int gx, int gy){
 //min_node_location - ubicacion node 1 arriba, 2 derecha, 3 abajo, 4 izquierda
 int explore_neighbors(int x, int y){
 
-  min_node = SPECIAL_ITEM; //reset minimum
+  min_node = SPECIAL_ITEM; //reset al minimo
     
   // abajo
   if(x < X_SIZE-1) //no salirse de la matrix
@@ -276,10 +276,10 @@ void clear_map(){
   
   printf("limpiando....\n");
     
-  //stay within boundary
+  //no salirse de la matriz
   for (int x=0; x<Y_SIZE; x++)
     for (int y=0; y<Y_SIZE; y++)
-      if (mapa[x][y] != WALL) //if this location is a wall or goal, just ignore it
+      if (mapa[x][y] != WALL) //si es la pared ignorar
 	mapa[x][y] = EMPTY; //limpiar espacio
   
   printf("mapa limpiado\n");
@@ -291,7 +291,7 @@ void clear_map(){
  */
 void show_map(void){
   
-  //usleep(2000);
+  usleep(2000);
   system("clear");
   
   //recorrer el arreglo
