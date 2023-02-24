@@ -71,8 +71,8 @@ int main(int argc, char* argv[]){
   file2 = fopen(argv[2],"r");
 
   // Determine number of threads
-  //sscanf(argv[3], "%d", &num_threads);
-  num_threads = 4;
+  sscanf(argv[3], "%d", &num_threads);
+  //num_threads = 4;
   
   if (NULL == file1){
     printf("no puedo abrir el archivo1\n");

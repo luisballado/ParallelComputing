@@ -1,0 +1,19 @@
+WaveFront Ligas
+https://link.springer.com/chapter/10.1007/978-3-642-21219-2_25
+https://www.cs.cmu.edu/~16311/s07/labs/lab05/
+https://www.hindawi.com/journals/mpe/2020/6798798/
+http://vigir.missouri.edu/~gdesouza/Research/Conference_CDs/IEEE_ICRA_2008/Planning%20Algorithm/Adapting%20the%20Wavefront%20Expansion%20in%20Presence%20of%20Strong%20Curre.pdf
+http://128.84.4.18/pdf/2010.09115
+https://ideas.repec.org/a/hin/jnlmpe/6798798.html
+https://www.societyofrobots.com/robotforum/index.php?topic=10175.0
+https://www.minia.edu.eg/eng/Files/8-2019.pdf
+https://www.cs.tufts.edu/comp/150IR/labs/wavefront.html
+https://www.societyofrobots.com/programming_wavefront.shtml#google_vignette
+https://github.com/ss892714028/Maze-PathFinder-Visualization-Python
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4262753/
+https://www.cambridge.org/core/journals/robotica/article/geometrically-constrained-path-planning-for-robotic-grasping-with-differential-evolution-and-fast-marching-square/69A648043E6B6C2473FC9B2BCAA1AAF8
+https://www3.cs.stonybrook.edu/~bghai/docs/Wave%20Front%20Method%20Based%20Path%20Planning%20Algorithm%20for%20Mobile%20Robots.pdf
+https://www.hindawi.com/journals/mpe/2020/6798798/
+https://www.mdpi.com/2073-8994/10/10/450
+https://www.researchgate.net/publication/319404402_Wavefront_and_A-Star_Algorithms_for_Mobile_Robot_Path_Planning
+
