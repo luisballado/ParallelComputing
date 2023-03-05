@@ -1,0 +1,23 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <regex>
+#include <unordered_map>
+#include <map>
+#include <fstream>
+#include <queue>
+#include <limits>
+
+// Read a file
+// m n - represent the numbers of row and columns
+// get the given matrix
+// given a matrix pass it to a adjacency list
+// run the bfs
+// make a draw rutine
+
+class Grafo{
+
+private:
+  std::vector<std::vector<>>
+
+}
