@@ -1,5 +1,8 @@
+
 //WAVEFRONT
 //TODO: HACER ENTRADAS DINAMICAS PARA DIFERENTES TIPOS DE PROBLEMAS
+
+//https://www.digitalocean.com/community/tutorials/two-dimensional-array-in-c-plus-plus
 
 #include <stdio.h>  //para el print .. etc
 #include <stdlib.h> //acceso a system

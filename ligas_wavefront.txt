@@ -1,3 +1,13 @@
+NUEVAS LIGAS PARALELISMO
+https://en.wikipedia.org/wiki/Parallel_breadth-first_search
+http://web.mit.edu/neboat/www/presentations/spaa2010.pdf
+https://cse.buffalo.edu/faculty/miller/Courses/CSE633/Aditya-Nongmeikapam-Spring-2022.pdf
+https://people.eecs.berkeley.edu/~aydin/sc11_bfs.pdf
+https://sites.cs.ucsb.edu/~gilbert/cs140/old/cs140Win2011/bfsproject/bfs.html
+https://stackoverflow.com/questions/44082755/parallelizing-a-breadth-first-search
+
+
+
 WaveFront Ligas
 https://link.springer.com/chapter/10.1007/978-3-642-21219-2_25
 https://www.cs.cmu.edu/~16311/s07/labs/lab05/
