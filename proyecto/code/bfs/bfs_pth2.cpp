@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
   pthread_t threads[4];
   
   // Create each thread and pass in its ID as an argument
-  int thread_ids[] = {0, 1, 2, 3};
+  int thread_ids[] = {0,1,2,3};
   for (int i = 0; i < 4; i++) {
     pthread_create(&threads[i], NULL, bfs, (void*)&thread_ids[i]);
   }
