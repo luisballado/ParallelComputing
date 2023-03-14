@@ -5,15 +5,25 @@
 
 using namespace std;
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////// EXPLORAR VECINOS ///////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 vector<pair<int, int>> get_neighbors(int i, int j, int rows, int cols) {
-    vector<pair<int, int>> neighbors;
-    if (i > 0) neighbors.push_back(make_pair(i-1, j));
-    if (i < rows-1) neighbors.push_back(make_pair(i+1, j));
-    if (j > 0) neighbors.push_back(make_pair(i, j-1));
-    if (j < cols-1) neighbors.push_back(make_pair(i, j+1));
-    return neighbors;
+
+  vector<pair<int, int>> neighbors;
+
+  if (i > 0) neighbors.push_back(make_pair(i-1, j));
+  if (i < rows-1) neighbors.push_back(make_pair(i+1, j));
+  if (j > 0) neighbors.push_back(make_pair(i, j-1));
+  if (j < cols-1) neighbors.push_back(make_pair(i, j+1));
+  
+  return neighbors;
+    
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////    PRINCIPAL    ////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 int main() {
   
   int rows;
@@ -38,12 +48,14 @@ int main() {
       if (grid[i][j] != '#') {
 	int node = i * cols + j;
 	vector<pair<int, int>> neighbors = get_neighbors(i, j, rows, cols);
+
 	for (auto n : neighbors) {
 	  int neighbor_node = n.first * cols + n.second;
 	  if (grid[n.first][n.second] != '#') {
 	    adj_list[node].push_back(neighbor_node);
 	  }
 	}
+	
       }
     }
   }

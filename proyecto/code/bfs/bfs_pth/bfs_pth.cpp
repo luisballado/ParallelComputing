@@ -56,7 +56,8 @@ void* bfs(void* arg) {
       int neighbor_col = n.second;
       int neighbor_node = neighbor_row * cols + neighbor_col;
       
-      if (visited.find(neighbor_node) == visited.end() && grid[neighbor_row][neighbor_col] != '#') {
+      if (visited.find(neighbor_node) == visited.end()
+	  && grid[neighbor_row][neighbor_col] != '#') {
 
 	if (neighbor_row == end_row && neighbor_col == end_col) {
 	  found = true;
