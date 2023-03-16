@@ -1,0 +1,123 @@
+#include <iostream>
+#include <vector>
+#include <map>
+#include <queue>
+#include <pthread.h>
+
+using namespace std;
+
+struct ThreadData {
+    int thread_id;
+    vector<vector<int>> *frontiers;
+    map<int, int> *visited;
+    map<int, int> *distance;
+    map<int, vector<int>> *adj_list;
+    pthread_mutex_t *mutex;
+};
+
+void *bfs_worker(void *arg) {
+    ThreadData *data = (ThreadData *) arg;
+    int thread_id = data->thread_id;
+    vector<vector<int>> *frontiers = data->frontiers;
+    map<int, int> *visited = data->visited;
+    map<int, int> *distance = data->distance;
+    map<int, vector<int>> *adj_list = data->adj_list;
+    pthread_mutex_t *mutex = data->mutex;
+
+    while (true) {
+        int curr_node = -1;
+
+        // Get the next node from the frontier
+        pthread_mutex_lock(mutex);
+        if (!frontiers->empty()) {
+            curr_node = frontiers->back().back();
+            frontiers->back().pop_back();
+            if (frontiers->back().empty()) {
+                frontiers->pop_back();
+            }
+        }
+        pthread_mutex_unlock(mutex);
+
+        if (curr_node == -1) {
+            break;
+        }
+
+        // Process the neighbors of the current node
+        for (int i = 0; i < (*adj_list)[curr_node].size(); i++) {
+            int neighbor = (*adj_list)[curr_node][i];
+
+            // Update the distance and visited arrays
+            pthread_mutex_lock(mutex);
+            if ((*visited).find(neighbor) == (*visited).end()) {
+                (*visited)[neighbor] = 1;
+                (*distance)[neighbor] = (*distance)[curr_node] + 1;
+
+                // Add the neighbor to the next frontier
+                frontiers->push_back(vector<int>());
+                frontiers->back().push_back(neighbor);
+            }
+            pthread_mutex_unlock(mutex);
+        }
+    }
+
+    pthread_exit(NULL);
+}
+
+void parallel_bfs(map<int, vector<int>> &adj_list, int start_node, map<int, int> &distance) {
+    int num_threads = 4; // Change this as needed
+    vector<pthread_t> threads(num_threads);
+    vector<vector<int>> frontiers(num_threads);
+    vector<ThreadData> thread_data(num_threads);
+    map<int, int> visited;
+    pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+    // Initialize the distance and visited arrays
+    visited[start_node] = 1;
+    distance[start_node] = 0;
+
+    // Initialize the first frontier
+    frontiers[0].push_back(start_node);
+
+    // Create the threads
+    for (int i = 0; i < num_threads; i++) {
+        thread_data[i].thread_id = i;
+        thread_data[i].frontiers = &frontiers;
+        thread_data[i].visited = &visited;
+        thread_data[i].distance = &distance;
+        thread_data[i].adj_list = &adj_list;
+        thread_data[i].mutex = &mutex;
+        pthread_create(&threads[i], NULL, bfs_worker, (void *) &thread_data[i]);
+    }
+
+    // Wait for the threads to finish
+    for (int i = 0; i < num_threads; i++) {
+        pthread_join(threads[i], NULL);
+    }
+}
+
+int main() {
+  // Assume the dungeon is represented as an adjacency list
+  map<int, vector<int>> adj_list;
+
+  adj_list = {
+	      {0, {1, 2}},
+	      {1, {0, 3}},
+	      {2, {0}},
+	      {3, {1, 4, 5}},
+	      {4, {3}},
+	      {5, {3}}
+  };
+  
+  int start_node = 0;
+  map<int, int> distance;
+  parallel_bfs(adj_list, start_node, distance);
+  
+  // Print the distances
+  cout << "Distances from node " << start_node << ":" << endl;
+  for (auto it = distance.begin(); it != distance.end(); it++) {
+    cout << "Node " << it->first << ": " << it->second << endl;
+  }
+  
+  return 0;
+}
+

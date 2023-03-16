@@ -1,13 +1,14 @@
+/////////// RESPALDO ////////////
+
 #include <iostream>
 #include <vector>
 #include <queue>
 #include <pthread.h>
-#include <map>
 
 using namespace std;
 
 struct ThreadArgs {
-  map<int, vector<int>> *adj_list;
+  vector<vector<int>> *adj_list;
   int start_node;
   vector<int> *distance;
   int *next_frontier;
@@ -16,23 +17,9 @@ struct ThreadArgs {
   pthread_barrier_t *barrier;
 };
 
-vector<pair<int, int>> get_neighbors(int i, int j, int rows, int cols) {
-  
-  vector<pair<int, int>> neighbors;
-  
-  if (i > 0) neighbors.push_back(make_pair(i-1, j));
-  if (i < rows-1) neighbors.push_back(make_pair(i+1, j));
-  if (j > 0) neighbors.push_back(make_pair(i, j-1));
-  if (j < cols-1) neighbors.push_back(make_pair(i, j+1));
-  
-  return neighbors;
-  
-}
-
 void *worker(void *arg) {
-  
   ThreadArgs *args = (ThreadArgs *) arg;
-  map<int, vector<int>> &adj_list = *(args->adj_list);
+  vector<vector<int>> &adj_list = *(args->adj_list);
   int start_node = args->start_node;
   vector<int> &distance = *(args->distance);
   int *next_frontier = args->next_frontier;
@@ -52,7 +39,6 @@ void *worker(void *arg) {
   
   // Loop until all nodes have been visited
   while (true) {
-    
     // Process the current frontier
     for (int i = 0; i < frontier_size[curr_frontier]; i++) {
       int curr_node = next_frontier[curr_frontier * adj_list.size() + i];
@@ -104,9 +90,8 @@ void *worker(void *arg) {
   return NULL;
 }
 
-void parallel_bfs(map<int,vector<int>>& adj_list, int start_node, vector<int>& distance){
-  
-  int num_threads = 4;
+void parallel_bfs(vector<vector<int>> &adj_list, int start_node, vector<int> &distance) {
+  int num_threads = 2;
   int next_frontier_size = adj_list.size() * 2;
   int next_frontier[num_threads][next_frontier_size];
   int frontier_size[num_threads] = {0, 0};
@@ -118,9 +103,8 @@ void parallel_bfs(map<int,vector<int>>& adj_list, int start_node, vector<int>& d
   // Initialize the thread arguments
   ThreadArgs args[num_threads];
   pthread_t threads[num_threads];
-
+  
   for (int i = 0; i < num_threads; i++) {
-    
     args[i].adj_list = &adj_list;
     args[i].start_node = start_node;
     args[i].distance = &distance;
@@ -141,59 +125,25 @@ void parallel_bfs(map<int,vector<int>>& adj_list, int start_node, vector<int>& d
 }
 
 int main() {
-  
-  int rows;
-  int cols;
-  
-  cin >> rows >> cols;
-  
-  vector<vector<char>> grid(rows, vector<char>(cols));
-  
-  for(int i=0;i<rows;i++){
-    string line;
-    cin >> line;
-    for (int j = 0; j < cols; j++){
-      grid[i][j] = line[j];
-    }
-  }
-  
-  map<int, vector<int>> adj_list;
-    
-  for (int i = 0; i < rows; i++) {
-    for (int j = 0; j < cols; j++) {
-      if (grid[i][j] != '#') {
-	int node = i * cols + j;
-	vector<pair<int, int>> neighbors = get_neighbors(i, j, rows, cols);
-	
-	for (auto n : neighbors) {
-	  int neighbor_node = n.first * cols + n.second;
-	  if (grid[n.first][n.second] != '#') {
-	    adj_list[node].push_back(neighbor_node);
-	  }
-	}
-      }
-    }
-  }
-  
-  // Print the adjacency list to make sure it was constructed correctly
-  for (auto node : adj_list) {
-    cout << node.first << ": ";
-    for (int neighbor : node.second) {
-      cout << neighbor << " ";
-    }
-    cout << endl;
-  }
-  
-  int num_nodes = rows*cols;
+
+  int num_nodes = 7;
   int start_node = 0;
+
+  vector<vector<int>> adj_list(num_nodes);
+
+  adj_list[0] = {1, 2};
+  adj_list[1] = {0, 3, 4};
+  adj_list[2] = {0, 4};
+  adj_list[3] = {1, 5};
+  adj_list[4] = {1, 2, 5};
+  adj_list[5] = {3, 4, 6};
+  adj_list[6] = {5};
   
   vector<int> distance(num_nodes, -1);
-
   parallel_bfs(adj_list, start_node, distance);
   
   for (int i = 0; i < num_nodes; i++) {
-    cout << "Distancia del nodo " << start_node
-	 << " a " << i << " es " << distance[i] << endl;
+    cout << "Distance from " << start_node << " to " << i << " is " << distance[i] << endl;
   }
   
   return 0;
