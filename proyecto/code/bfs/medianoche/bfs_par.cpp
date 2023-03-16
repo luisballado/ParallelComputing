@@ -81,6 +81,7 @@ void *worker(void *arg) {
     
     // Check if all nodes have been visited
     bool done = true;
+
     for (bool v : visited) {
       if (!v) {
 	done = false;
@@ -99,6 +100,7 @@ void *worker(void *arg) {
     
     // Wait for all threads to switch to the next frontier
     pthread_barrier_wait(barrier);
+    
   }
   
   return NULL;

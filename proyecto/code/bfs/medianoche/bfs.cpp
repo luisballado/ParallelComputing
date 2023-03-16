@@ -75,7 +75,7 @@ int main() {
   }
   
   // Print the adjacency list to make sure it was constructed correctly
-  
+  /**
   for (auto node : adj_list) {
     cout << node.first << ": ";
     for (int neighbor : node.second) {
@@ -83,7 +83,7 @@ int main() {
     }
     cout << endl;
   }
-  
+  **/
   
   int num_nodes = rows*cols;
   int start_node = 0;
