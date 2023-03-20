@@ -265,14 +265,11 @@ void* populate_adj_list_thread(void* args_ptr) {
     return nullptr;
 }
 
-
-
-
-int main() {
+int main(int argc, char **argv) {
   
   int rows;
   int cols;
-  //int threads = atoi(argv[1]);
+  int num_threads = atoi(argv[1]);
   std::cin >> rows >> cols;
 
   std::vector<std::vector<char>> grid(rows, std::vector<char>(cols));
@@ -315,7 +312,7 @@ int main() {
 
   std::cin >> start_node >> finish_node;
   
-  //std::cout << "THREADS " << num_threads << std::endl;
+  std::cout << "THREADS " << num_threads << std::endl;
   std::cout << "NODOS " << num_nodes << std::endl;
 
   //vector de distancias en -1
