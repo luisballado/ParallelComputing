@@ -3,24 +3,24 @@
 #include <vector>
 #include <map>
 
-using namespace std;
-
-vector<pair<int, int>> get_neighbors(int i, int j, int rows, int cols) {
+//funcion get_neighbors para obtener los vecinos respecto a la matriz
+std::vector<std::pair<int, int>> get_neighbors(int i, int j, int rows, int cols) {
   
-  vector<pair<int, int>> neighbors;
+  std::vector<std::pair<int, int>> neighbors;
   
-  if (i > 0) neighbors.push_back(make_pair(i-1, j));
-  if (i < rows-1) neighbors.push_back(make_pair(i+1, j));
-  if (j > 0) neighbors.push_back(make_pair(i, j-1));
-  if (j < cols-1) neighbors.push_back(make_pair(i, j+1));
+  if (i > 0) neighbors.push_back(std::make_pair(i-1, j));
+  if (i < rows-1) neighbors.push_back(std::make_pair(i+1, j));
+  if (j > 0) neighbors.push_back(std::make_pair(i, j-1));
+  if (j < cols-1) neighbors.push_back(std::make_pair(i, j+1));
   
   return neighbors;
   
 }
 
-void bfs(map<int, vector<int>>& adj_list, int start_node, vector<int>& distance) {
+//funcion bfs
+void bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<int>& distance) {
 
-  queue<int> q;
+  std::queue<int> q;
 
   distance[start_node] = 0;
   q.push(start_node);
@@ -43,26 +43,29 @@ int main() {
   int rows;
   int cols;
 
-  cin >> rows >> cols;
+  std::cin >> rows >> cols;
 
-  vector<vector<char>> grid(rows, vector<char>(cols));
+  std::vector<std::vector<char>> grid(rows, std::vector<char>(cols));
 
   for(int i=0;i<rows;i++){
-    string line;
-    cin >> line;
+    std::string line;
+    std::cin >> line;
     for (int j = 0; j < cols; j++){
       grid[i][j] = line[j];
     }
   }
   
-  map<int, vector<int>> adj_list;
-  
+  std::map<int, std::vector<int>> adj_list;
+
+  //crear lista de adyacencia recorriendo matriz,
+  //se omite el signo # ya que representa una pared
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
+      //si el elemento es diferente a # continuamos
       if (grid[i][j] != '#') {
 	int node = i * cols + j;
-	vector<pair<int, int>> neighbors = get_neighbors(i, j, rows, cols);
-
+	std::vector<std::pair<int, int>> neighbors = get_neighbors(i, j, rows, cols);
+	//analizamos los vecinos y si son diferentes a # los agregamos
 	for (auto n : neighbors) {
 	  int neighbor_node = n.first * cols + n.second;
 	  if (grid[n.first][n.second] != '#') {
@@ -74,29 +77,33 @@ int main() {
     }
   }
   
-  // Print the adjacency list to make sure it was constructed correctly
-  /**
-  for (auto node : adj_list) {
-    cout << node.first << ": ";
-    for (int neighbor : node.second) {
-      cout << neighbor << " ";
-    }
-    cout << endl;
-  }
-  **/
+  int num_nodes = rows*cols; //numero de nodos del grafo
   
-  int num_nodes = rows*cols;
-  int start_node = 0;
+  int start_node; //nodo inicio, donde se localiza el robot
+  int finish_node; //nodo destino
 
-  cout << "NODOS " << num_nodes << endl;
+  std::cin >> start_node >> finish_node;
   
-  vector<int> distance(num_nodes, -1);
+  std::cout << "NODOS " << num_nodes << std::endl;
 
+  //vector de distancias en -1
+  std::vector<int> distance(num_nodes, -1);
+
+  //analizar
+  //pasandole el nodo inicio
+  //nodo destino y vector de distancias
   bfs(adj_list, start_node, distance);
-  
-  for (int i = 0; i < num_nodes; i++) {
-    cout << "Distancia del Nodo " << start_node << " a " << i << " es " << distance[i] << endl;
+
+  //verificar si existe un camino
+  if(distance[finish_node] != -1){
+    std::cout << "Distancia del Nodo " << start_node
+	      << " a " << finish_node
+	      << " es " << distance[finish_node] << std::endl;
+  }else{
+    std::cout << "No existe un camino del nodo " << start_node
+	      << " a " << finish_node << std::endl;
   }
   
   return 0;
+
 }
