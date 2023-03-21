@@ -18,6 +18,7 @@ std::vector<std::pair<int, int>> get_neighbors(int i, int j, int rows, int cols)
   
 }
 
+/******
 //funcion bfs
 void bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<int>& distance) {
 
@@ -38,55 +39,53 @@ void bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<
     }
   }
 }
+***/
 
-/****
 struct bfs_thread_args {
-    std::map<int, std::vector<int>> adj_list;
-    std::vector<int> distance;
-    std::queue<int> q;
-    pthread_mutex_t* q_mutex;
-    pthread_barrier_t* barrier;
-    int start_node;
-    std::vector<int> nodes;
+  std::map<int, std::vector<int>> adj_list;
+  std::vector<int> distance;
+  std::queue<int> q;
+  pthread_mutex_t* q_mutex;
+  pthread_barrier_t* barrier;
+  int start_node;
+  std::vector<int> nodes;
 };
 
-
-
 void* bfs_thread(void* args_ptr) {
-    bfs_thread_args* args = (bfs_thread_args*) args_ptr;
-    std::map<int, std::vector<int>> adj_list = args->adj_list;
-    std::vector<int> distance = args->distance;
-    std::queue<int> q = args->q;
-    pthread_mutex_t* q_mutex = args->q_mutex;
-    pthread_barrier_t* barrier = args->barrier;
-    int start_node = args->start_node;
-    std::vector<int> nodes = args->nodes;
-
-    for (int i = 0; i < nodes.size(); i++) {
-        int node = nodes[i];
-
-        if (node == start_node) {
-            distance[start_node] = 0;
-        }
-
-        for (int neighbor : adj_list[node]) {
-            if (distance[neighbor] == -1) {
-                distance[neighbor] = distance[node] + 1;
-                pthread_mutex_lock(q_mutex);
-                q.push(neighbor);
-                pthread_mutex_unlock(q_mutex);
-            }
-        }
+  bfs_thread_args* args = (bfs_thread_args*) args_ptr;
+  std::map<int, std::vector<int>> adj_list = args->adj_list;
+  std::vector<int> distance = args->distance;
+  std::queue<int> q = args->q;
+  pthread_mutex_t* q_mutex = args->q_mutex;
+  pthread_barrier_t* barrier = args->barrier;
+  int start_node = args->start_node;
+  std::vector<int> nodes = args->nodes;
+  
+  for (int i = 0; i < nodes.size(); i++) {
+    int node = nodes[i];
+    
+    if (node == start_node) {
+      distance[start_node] = 0;
     }
-
-    pthread_barrier_wait(barrier);
-
-    return nullptr;
+    
+    for (int neighbor : adj_list[node]) {
+      if (distance[neighbor] == -1) {
+	distance[neighbor] = distance[node] + 1;
+	pthread_mutex_lock(q_mutex);
+	q.push(neighbor);
+	pthread_mutex_unlock(q_mutex);
+      }
+    }
+  }
+  
+  pthread_barrier_wait(barrier);
+  
+  return nullptr;
 }
 
-void bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<int>& distance, int num_threads) {
+void bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<int>& distance) {
   
-  //const int num_threads = 4; // number of threads to use
+  const int num_threads = 4; // number of threads to use
   
   std::queue<int> q;
   q.push(start_node);
@@ -130,8 +129,8 @@ void bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<
   
   pthread_mutex_destroy(&q_mutex);
   pthread_barrier_destroy(&barrier);
+
 }
-**/
 
 
 /***
@@ -227,44 +226,6 @@ void bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<
     }
 *****/
 
-
-struct populate_adj_list_thread_args {
-    std::vector<std::vector<char>> grid;
-    int rows;
-    int cols;
-    std::map<int, std::vector<int>> adj_list;
-    int start_row;
-    int end_row;
-};
-
-void* populate_adj_list_thread(void* args_ptr) {
-    populate_adj_list_thread_args* args = (populate_adj_list_thread_args*) args_ptr;
-    std::vector<std::vector<char>> grid = args->grid;
-    int rows = args->rows;
-    int cols = args->cols;
-    std::map<int, std::vector<int>> adj_list = args->adj_list;
-    int start_row = args->start_row;
-    int end_row = args->end_row;
-
-    for (int i = start_row; i < end_row; i++) {
-        for (int j = 0; j < cols; j++) {
-            if (grid[i][j] != '#') {
-                int node = i * cols + j;
-                std::vector<std::pair<int, int>> neighbors = get_neighbors(i, j, rows, cols);
-
-                for (auto n : neighbors) {
-                    int neighbor_node = n.first * cols + n.second;
-                    if (grid[n.first][n.second] != '#') {
-                        adj_list[node].push_back(neighbor_node);
-                    }
-                }
-            }
-        }
-    }
-
-    return nullptr;
-}
-
 int main(int argc, char **argv) {
   
   int rows;
@@ -304,7 +265,6 @@ int main(int argc, char **argv) {
     }
   }
   
-
   int num_nodes = rows*cols; //numero de nodos del grafo
   
   int start_node; //nodo inicio, donde se localiza el robot
