@@ -17,28 +17,6 @@ std::vector<std::pair<int, int>> get_neighbors(int i, int j, int rows, int cols)
   
 }
 
-// print distance from source node to each node in grid
-void print_dist(int rows,int cols,std::vector<int>& distance) {
-  //sleep(1);
-  system("clear");
-  for (int i = 0; i < rows; i++) {
-    for (int j = 0; j < cols; j++) {
-      int u = i*cols + j;
-      if (distance[u] == -1) {
-	std::cout << "  # ";
-      } else {
-	//poner distancias fancy
-	if(std::to_string(distance[u]).length() == 1){
-	  std::cout << "  " << distance[u] << " ";
-	}else{
-	  std::cout << " " << distance[u] << " ";
-	}
-      }
-    }
-    std::cout << std::endl;
-  }
-}
-
 //funcion bfs
 void bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<int>& distance) {
 
@@ -56,33 +34,19 @@ void bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<
 	distance[neighbor] = distance[node] + 1;
 	q.push(neighbor);
       }
-      //print_dist(20,20,distance);
     }
   }
 }
 
-int main(int argc, char* argv[]) {
-
-  ///////////////////////////////////////////////
-  // --PRINT  para mostrar el frente de onda
-  ///////////////////////////////////////////////
-  bool PRINT = false;
-  
-  if(argc == 2)
-    if(argv[1] == std::string("--SHOW"))
-      PRINT = true;
-  ///////////////////////////////////////////////
+int main() {
 
   int rows;
   int cols;
 
   std::cin >> rows >> cols;
 
-  //////////////////////////////////////////////////////////////////////
-  //Creamos una representacion del grid para detectar las paredes y no
-  //considerarlas como nodos en el grafo al construir la lista de adj
-  //////////////////////////////////////////////////////////////////////
   std::vector<std::vector<char>> grid(rows, std::vector<char>(cols));
+
   for(int i=0;i<rows;i++){
     std::string line;
     std::cin >> line;
@@ -90,14 +54,11 @@ int main(int argc, char* argv[]) {
       grid[i][j] = line[j];
     }
   }
-  //////////////////////////////////////////////////////////////////////
-
+  
   std::map<int, std::vector<int>> adj_list;
 
-  //////////////////////////////////////////////////////////////////////
-  //crear lista de adyacencia recorriendo matriz creada,
+  //crear lista de adyacencia recorriendo matriz,
   //se omite el signo # ya que representa una pared
-  //////////////////////////////////////////////////////////////////////
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
       //si el elemento es diferente a # continuamos
@@ -111,14 +72,13 @@ int main(int argc, char* argv[]) {
 	    adj_list[node].push_back(neighbor_node);
 	  }
 	}
+	
       }
     }
   }
-  //////////////////////////////////////////////////////////////////////
   
   int num_nodes = rows*cols; //numero de nodos del grafo
-
-  ////// TODO MANEJAR NODOS COMO COORDENADAS
+  
   int start_node; //nodo inicio, donde se localiza el robot
   int finish_node; //nodo destino
 
@@ -132,9 +92,8 @@ int main(int argc, char* argv[]) {
   //analizar
   //pasandole el nodo inicio
   //nodo destino y vector de distancias
-  //se analiza todo el mapa
   bfs(adj_list, start_node, distance);
-  
+
   //verificar si existe un camino
   if(distance[finish_node] != -1){
     std::cout << "Distancia del Nodo " << start_node
@@ -144,9 +103,6 @@ int main(int argc, char* argv[]) {
     std::cout << "No existe un camino del nodo " << start_node
 	      << " a " << finish_node << std::endl;
   }
-
-  if(PRINT)
-    print_dist(rows,cols, distance);
   
   return 0;
 

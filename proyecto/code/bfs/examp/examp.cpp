@@ -52,7 +52,7 @@ void read_grid(string filename) {
 
 // print distance from source node to each node in grid
 void print_dist() {
-  sleep(1);
+  //sleep(1);
   system("clear");
   for (int i = 0; i < N; i++) {
         for (int j = 0; j < M; j++) {
