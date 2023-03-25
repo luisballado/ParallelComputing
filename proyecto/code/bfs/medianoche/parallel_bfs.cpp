@@ -4,6 +4,8 @@
 #include <map>
 #include <pthread.h>
 
+//g++ -pthread parallel_bfs.cpp -o parallel_bfs
+
 //funcion get_neighbors para obtener los vecinos respecto a la matriz
 std::vector<std::pair<int, int>> get_neighbors(int i, int j, int rows, int cols) {
   

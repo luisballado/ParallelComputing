@@ -30,7 +30,7 @@ void *worker(void *arg) {
   // Initialize the distance and visited arrays
   vector<bool> visited(adj_list.size(), false);
   visited[start_node] = true;
-  distance[start_node] = 0;
+   distance[start_node] = 0;
   
   // Initialize the first frontier
   int curr_frontier = 0;
