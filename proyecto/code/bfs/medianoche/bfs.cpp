@@ -40,7 +40,7 @@ void print_dist(int rows,int cols,std::vector<int>& distance) {
 }
 
 //funcion bfs
-void bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<int>& distance) {
+void bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<int>& distance,int rows, int cols) {
 
   std::queue<int> q;
 
@@ -56,7 +56,11 @@ void bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<
 	distance[neighbor] = distance[node] + 1;
 	q.push(neighbor);
       }
-      //print_dist(20,20,distance);
+      
+      if(rows != -1 && cols != -1){
+	print_dist(rows,cols,distance);
+      }
+      
     }
   }
 }
@@ -81,6 +85,7 @@ int main(int argc, char* argv[]) {
   //////////////////////////////////////////////////////////////////////
   //Creamos una representacion del grid para detectar las paredes y no
   //considerarlas como nodos en el grafo al construir la lista de adj
+  //para verificar en todo momento si algun vecino es pared y omitirlo
   //////////////////////////////////////////////////////////////////////
   std::vector<std::vector<char>> grid(rows, std::vector<char>(cols));
   for(int i=0;i<rows;i++){
@@ -126,14 +131,17 @@ int main(int argc, char* argv[]) {
   
   std::cout << "NODOS " << num_nodes << std::endl;
 
-  //vector de distancias en -1
+  //inicializar vector de distancias en -1
+  //respecto a la cardinalidad num_nodes
   std::vector<int> distance(num_nodes, -1);
 
-  //analizar
-  //pasandole el nodo inicio
-  //nodo destino y vector de distancias
+  //analizar pasandole el nodo inicio, nodo destino y vector de distancias
   //se analiza todo el mapa
-  bfs(adj_list, start_node, distance);
+  if(PRINT){
+    bfs(adj_list, start_node, distance, rows, cols);
+  }else{
+    bfs(adj_list, start_node, distance, -1, -1);
+  }
   
   //verificar si existe un camino
   if(distance[finish_node] != -1){
@@ -144,9 +152,6 @@ int main(int argc, char* argv[]) {
     std::cout << "No existe un camino del nodo " << start_node
 	      << " a " << finish_node << std::endl;
   }
-
-  if(PRINT)
-    print_dist(rows,cols, distance);
   
   return 0;
 
