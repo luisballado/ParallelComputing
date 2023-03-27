@@ -27,11 +27,17 @@ void *parallel_bfs_thread(void *arg) {
   // Process nodes until there are no more nodes left
   while (!frontiers->empty()) {
     // Get the next node from the frontiers
+
+    //BLOQUEAR PARA ACTUALIZAR FRONTERA
     pthread_mutex_lock(mutex);
     int node = frontiers->back();
+    //quitar elemento de frontera por hacer
+
+    //*********************************************
+    
     frontiers->pop_back();
     pthread_mutex_unlock(mutex);
-    
+    cout << "Aqui voyyyyyy22" << endl;
     // Process the node if it hasn't been visited
     if (!(*visited)[node]) {
       // Mark the node as visited
@@ -63,9 +69,13 @@ void parallel_bfs(map<int, vector<int>> &adj_list, int start_node, map<int, int>
   for (auto it = adj_list.begin(); it != adj_list.end(); it++) {
     distance[it->first] = -1;
   }
+  
   distance[start_node] = 0;
+
   map<int, bool> visited;
   visited[start_node] = true;
+
+  
   
   // Create the first frontier
   vector<int> frontiers;

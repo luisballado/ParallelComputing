@@ -1,0 +1,8 @@
+bfs.cpp          - Programa secuencial con el algoritmo bfs
+bfs_par.cpp      - Intento paralelización
+dungeon.cpp      - Intento paralelo versión dungeon
+ejem.cpp         - bfs paralelo (Parece funcionar)
+grid_bfs.cpp     - PRIMERA VERSION DE bfs.cpp
+otra_vez_par.cpp - VERSION ENTENDIBLE PTHREADS
+parallel_bfs.cpp - 
+problem_size/    - Folder que contiene los tamaños de problemas

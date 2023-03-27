@@ -2,6 +2,7 @@
 #include <queue>
 #include <vector>
 #include <map>
+#include <iomanip>
 
 //funcion get_neighbors para obtener los vecinos respecto a la matriz
 std::vector<std::pair<int, int>> get_neighbors(int i, int j, int rows, int cols) {
@@ -65,16 +66,51 @@ void bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<
   }
 }
 
+void parallel_bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<int>& distance,int rows, int cols,int num_threads) {
+
+}
+
+constexpr unsigned int str2int(const char* str, int h = 0){
+  return !str[h] ? 5381 : (str2int(str, h+1) * 33) ^ str[h];
+}
+
 int main(int argc, char* argv[]) {
 
-  ///////////////////////////////////////////////
-  // --PRINT  para mostrar el frente de onda
-  ///////////////////////////////////////////////
-  bool PRINT = false;
+  clock_t start, end;
   
-  if(argc == 2)
-    if(argv[1] == std::string("--SHOW"))
+  bool PRINT       = false;
+  bool show_result = false;
+  //bool show_time   = false;
+  int num_threads = 1;
+  
+  const char* MODE = "";
+  std::string MODO;
+  for(int count = 0; count < argc; count++ ){
+
+    //mostrar frente de onda
+    if(argv[count] == std::string("--SHOW"))
       PRINT = true;
+
+    //modo de programa
+    if(std::string(argv[count]).substr(0, 6) == std::string("--MODE")){
+      MODE = argv[count];
+    }
+    //numero de threads
+    if(std::string(argv[count]).substr(0,5) == std::string("--nth")){
+      
+      std::string prefijo("--nth=");
+      num_threads = std::stoi(std::string(argv[count]).substr(prefijo.size()));
+
+    }
+
+    if(std::string(argv[count]).substr(0,9) == std::string("--results")){
+      show_result = true;
+    }
+    
+        
+  }
+    
+  
   ///////////////////////////////////////////////
 
   int rows;
@@ -82,6 +118,8 @@ int main(int argc, char* argv[]) {
 
   std::cin >> rows >> cols;
 
+  start = clock();
+  
   //////////////////////////////////////////////////////////////////////
   //Creamos una representacion del grid para detectar las paredes y no
   //considerarlas como nodos en el grafo al construir la lista de adj
@@ -129,30 +167,107 @@ int main(int argc, char* argv[]) {
 
   std::cin >> start_node >> finish_node;
   
-  std::cout << "NODOS " << num_nodes << std::endl;
-
   //inicializar vector de distancias en -1
   //respecto a la cardinalidad num_nodes
   std::vector<int> distance(num_nodes, -1);
 
+  
+  
   //analizar pasandole el nodo inicio, nodo destino y vector de distancias
   //se analiza todo el mapa
-  if(PRINT){
-    bfs(adj_list, start_node, distance, rows, cols);
-  }else{
-    bfs(adj_list, start_node, distance, -1, -1);
+  switch(str2int(MODE)){
+
+  case str2int("--MODE=SECUENCIAL"):
+
+    if(PRINT){
+      bfs(adj_list, start_node, distance, rows, cols);
+    }else{
+      bfs(adj_list, start_node, distance, -1, -1);
+    }
+    
+    break;
+  case str2int("--MODE=PTHREADS"):
+
+    if(PRINT){
+      parallel_bfs(adj_list, start_node, distance,rows,cols, num_threads);
+    }else{
+      parallel_bfs(adj_list, start_node, distance, -1,-1, num_threads);
+    }
+    
+    break;
+  case str2int("--MODE=OPEN-MP"):
+    show_result = false;
+    std::cout << "ERROR: NO IMPLEMENTADO \n";
+    return -1;
+  case str2int("--MODE=OPEN-MPI"):
+    show_result = false;
+    std::cout << "ERROR: NO IMPLEMENTADO \n";
+    return -1;
+  case str2int("--MODE=HYBRID"):
+    show_result = false;
+    std::cout << "ERROR: NO IMPLEMENTADO \n";
+    return -1;
+  default:
+    
+    show_result = false;
+
+    std::cout << "LAS POSIBLES OPCIONES SON: \n"
+	      << "--SECUENCIAL\n"
+	      << "--PTHREADS\n"
+	      << "--OPEN-MP\n"
+	      << "--OPEN-MPI\n"
+	      << "--HYBRID\n"
+		<< std::endl;
+  
+    return -1;
+    
   }
   
-  //verificar si existe un camino
-  if(distance[finish_node] != -1){
-    std::cout << "Distancia del Nodo " << start_node
-	      << " a " << finish_node
-	      << " es " << distance[finish_node] << std::endl;
-  }else{
-    std::cout << "No existe un camino del nodo " << start_node
-	      << " a " << finish_node << std::endl;
+
+  if(show_result){
+    std::cout << "####################################" << std::endl;
+    std::cout << "NODOS: " << num_nodes << std::endl;
+    std::cout << MODE << std::endl;
+    std::cout << "threads: " << num_threads << std::endl;
+    std::cout << "####################################\n"
+	      << "RESULTADO\n" 
+	      << "####################################"
+	      << std::endl;
+    
+    
+    
+    
+    if(distance[finish_node] != -1){
+      
+      std::cout << "Distancia del Nodo " << start_node
+		<< " a " << finish_node
+		<< " es " << distance[finish_node] << std::endl;
+      std::cout << "####################################\n" << std::endl;
+    }else{
+      
+      std::cout << "No existe un camino del nodo " << start_node
+		<< " a " << finish_node << std::endl;
+      std::cout << "####################################\n" << std::endl;
+    }
+  }
+  
+  end = clock();
+  
+  double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
+
+  if(show_result)
+    
+    std::cout << "Tiempo ejecucion : "
+	      << std::fixed
+	      << time_taken << std::setprecision(9)
+	      << " seg " << std::endl;
+  else{
+    system("clear");
+    std::cout << std::fixed
+	      << time_taken << std::setprecision(9)
+	      << std::endl;
   }
   
   return 0;
-
+    
 }
