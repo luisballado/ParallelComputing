@@ -65,6 +65,7 @@ void *parallel_bfs_thread(void *arg) {
 
 // Breadth-first search algorithm with parallelization using pthreads
 void parallel_bfs(map<int, vector<int>> &adj_list, int start_node, map<int, int> &distance, int num_threads) {
+
   // Initialize distance and visited maps
   for (auto it = adj_list.begin(); it != adj_list.end(); it++) {
     distance[it->first] = -1;

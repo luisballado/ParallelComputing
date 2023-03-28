@@ -4,6 +4,16 @@
 #include <map>
 #include <iomanip>
 
+// Data structures used by the BFS algorithm
+struct ThreadData {
+  int thread_id;
+  std::queue<int> *frontiers;
+  std::map<int, bool> *visited;
+  std::vector<int> *distance;
+  pthread_mutex_t *mutex;
+  std::map<int, std::vector<int>> *adj_list;
+};
+
 //funcion get_neighbors para obtener los vecinos respecto a la matriz
 std::vector<std::pair<int, int>> get_neighbors(int i, int j, int rows, int cols) {
   
@@ -66,8 +76,80 @@ void bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<
   }
 }
 
+void *parallel_bfs_thread(void *arg) {
+
+  ThreadData *data = (ThreadData *)arg;
+  
+  std::queue<int> *frontiers = data->frontiers;
+  std::map<int, bool> *visited = data->visited;
+  std::vector<int> *distance = data->distance;
+  pthread_mutex_t *mutex = data->mutex;
+  std::map<int, std::vector<int>> *adj_list = data->adj_list;
+  
+  // Hasta que la cola se quede sin elementos
+  while (!frontiers->empty()) {
+    
+    //BLOQUEAR PARA ACTUALIZAR FRONTERA
+    pthread_mutex_lock(mutex);
+    int node = frontiers->front();
+    frontiers->pop();
+    pthread_mutex_unlock(mutex);
+
+    for(int neighbor : (*adj_list)[node]){
+
+      //std::cout << "VECINO: " << neighbor << std::endl;
+
+      if((*distance)[neighbor]==-1){
+	pthread_mutex_lock(mutex);
+	(*distance)[neighbor] = (*distance)[neighbor] + 1;
+	frontiers->push(neighbor);
+	//std::cout << "DENTRO DEL IF con: " << neighbor
+	//	  << " DISTANCIA - " << (*distance)[neighbor] << std::endl;
+	pthread_mutex_unlock(mutex);
+      }
+      
+    }
+  }
+  
+  // Exit thread
+  pthread_exit(NULL);
+}
+
 void parallel_bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<int>& distance,int rows, int cols,int num_threads) {
 
+  std::queue<int> frontiers;
+  
+  distance[start_node] = 0;
+  frontiers.push(start_node);
+  
+  std::map<int, bool> visited;
+  visited[start_node] = true;
+    
+  // Crear thread data e inicializar mutex
+  pthread_t threads[num_threads];
+  ThreadData thread_data[num_threads];
+  pthread_mutex_t mutex;
+  pthread_mutex_init(&mutex, NULL);
+
+  // POOL DE THREADS
+  for (int i = 0; i < num_threads; i++) {
+    thread_data[i].thread_id = i;
+    thread_data[i].frontiers = &frontiers;
+    thread_data[i].visited = &visited;
+    thread_data[i].distance = &distance;
+    thread_data[i].mutex = &mutex;
+    thread_data[i].adj_list = &adj_list;
+    pthread_create(&threads[i], NULL, parallel_bfs_thread, (void *)&thread_data[i]);
+  }
+  
+  // Join de threads
+  for (int i = 0; i < num_threads; i++) {
+    pthread_join(threads[i], NULL);
+  }
+  
+  // Clean mutex
+  pthread_mutex_destroy(&mutex);
+  
 }
 
 constexpr unsigned int str2int(const char* str, int h = 0){
@@ -170,8 +252,6 @@ int main(int argc, char* argv[]) {
   //inicializar vector de distancias en -1
   //respecto a la cardinalidad num_nodes
   std::vector<int> distance(num_nodes, -1);
-
-  
   
   //analizar pasandole el nodo inicio, nodo destino y vector de distancias
   //se analiza todo el mapa
@@ -211,12 +291,13 @@ int main(int argc, char* argv[]) {
     
     show_result = false;
 
-    std::cout << "LAS POSIBLES OPCIONES SON: \n"
-	      << "--SECUENCIAL\n"
-	      << "--PTHREADS\n"
-	      << "--OPEN-MP\n"
-	      << "--OPEN-MPI\n"
-	      << "--HYBRID\n"
+    std::cout << "ERROR: EL MODO DEBE SER ELEGIDO"
+	      << "LAS POSIBLES OPCIONES SON: \n"
+	      << "--MODE=SECUENCIAL\n"
+	      << "--MODE=PTHREADS\n"
+	      << "--MODE=OPEN-MP\n"
+	      << "--MODE=OPEN-MPI\n"
+	      << "--MODE=HYBRID\n"
 		<< std::endl;
   
     return -1;
