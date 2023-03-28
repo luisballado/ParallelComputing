@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <iomanip>
+#include <unistd.h>
 
 // Data structures used by the BFS algorithm
 struct ThreadData {
@@ -30,7 +31,7 @@ std::vector<std::pair<int, int>> get_neighbors(int i, int j, int rows, int cols)
 
 // print distance from source node to each node in grid
 void print_dist(int rows,int cols,std::vector<int>& distance) {
-  //sleep(1);
+  usleep(1000);
   system("clear");
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
@@ -208,13 +209,17 @@ int main(int argc, char* argv[]) {
   //para verificar en todo momento si algun vecino es pared y omitirlo
   //////////////////////////////////////////////////////////////////////
   std::vector<std::vector<char>> grid(rows, std::vector<char>(cols));
+
   for(int i=0;i<rows;i++){
     std::string line;
     std::cin >> line;
+
     for (int j = 0; j < cols; j++){
       grid[i][j] = line[j];
     }
+    
   }
+
   //////////////////////////////////////////////////////////////////////
 
   std::map<int, std::vector<int>> adj_list;
