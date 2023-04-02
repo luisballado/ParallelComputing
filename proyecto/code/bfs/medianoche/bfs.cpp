@@ -294,7 +294,8 @@ int main(int argc, char* argv[]) {
 
     for(int r = 0; r < num_robots; r++){
       
-      start_node = random(0, num_nodes);
+      start_node = random(0, num_nodes-1);
+      finish_node = random(0, num_nodes-1);
       
       start = clock();
       
@@ -319,6 +320,7 @@ int main(int argc, char* argv[]) {
     
     break;
 
+    //se paraleliza por exploracion de robot
   case str2int("--MODE=PTHREADS"):
 
     if(PRINT){

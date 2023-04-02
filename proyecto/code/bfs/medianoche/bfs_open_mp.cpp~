@@ -1,0 +1,69 @@
+#include <iostream>
+#include <queue>
+#include <vector>
+#include <omp.h>
+
+using namespace std;
+
+void bfs(int node, vector<vector<int>>& adj_list, vector<bool>& visited, vector<int>& distance) {
+    queue<int> q;
+
+    q.push(node);
+    visited[node] = true;
+    distance[node] = 0;
+
+    while (!q.empty()) {
+        int curr_node = q.front();
+        q.pop();
+
+        // Process the current node
+        cout << "visited node " << curr_node << " at thread " << omp_get_thread_num() << endl;
+
+        // Visit neighbors
+        #pragma omp parallel for
+        for (int i = 0; i < adj_list[curr_node].size(); i++) {
+            int neighbor = adj_list[curr_node][i];
+            if (!visited[neighbor]) {
+                visited[neighbor] = true;
+                distance[neighbor] = distance[curr_node] + 1;
+                q.push(neighbor);
+            }
+        }
+    }
+}
+
+int main() {
+    int num_threads = 4;
+
+    omp_set_num_threads(num_threads);
+
+    // Define the adjacency list for the graph
+    vector<vector<int>> adj_list {
+        {1, 2}, // Node 0
+        {0, 2, 3}, // Node 1
+        {0, 1, 4}, // Node 2
+        {1}, // Node 3
+        {2, 5}, // Node 4
+        {4} // Node 5
+    };
+
+    int num_nodes = adj_list.size();
+    vector<bool> visited(num_nodes, false);
+    vector<int> distance(num_nodes, -1);
+
+    #pragma omp parallel
+    {
+        #pragma omp single
+        {
+            // Start BFS from node 0
+            bfs(0, adj_list, visited, distance);
+        }
+    }
+
+    // Print distances from source node
+    for (int i = 0; i < num_nodes; i++) {
+        cout << "Distance from node 0 to node " << i << " is " << distance[i] << endl;
+    }
+
+    return 0;
+}
