@@ -4,6 +4,17 @@
 #include <map>
 #include <iomanip>
 #include <unistd.h>
+#include <iomanip>
+#include <random>
+ 
+std::random_device rd;
+std::mt19937 gen(rd());
+ 
+int random(int low, int high)
+{
+    std::uniform_int_distribution<> dist(low, high);
+    return dist(gen);
+}
 
 // Data structures used by the BFS algorithm
 struct ThreadData {
@@ -52,8 +63,8 @@ void print_dist(int rows,int cols,std::vector<int>& distance) {
 }
 
 //funcion bfs
-void bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<int>& distance,int rows, int cols) {
-
+void bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<int>& distance,int rows, int cols){
+  
   std::queue<int> q;
 
   distance[start_node] = 0;
@@ -160,11 +171,14 @@ constexpr unsigned int str2int(const char* str, int h = 0){
 int main(int argc, char* argv[]) {
 
   clock_t start, end;
+  clock_t start_all, end_all;
   
   bool PRINT       = false;
   bool show_result = false;
   //bool show_time   = false;
   int num_threads = 1;
+
+  int num_robots = 1;
   
   const char* MODE = "";
   std::string MODO;
@@ -189,19 +203,21 @@ int main(int argc, char* argv[]) {
     if(std::string(argv[count]).substr(0,9) == std::string("--results")){
       show_result = true;
     }
-    
-        
-  }
-    
-  
-  ///////////////////////////////////////////////
 
+    if(std::string(argv[count]).substr(0,8) == std::string("--robots")){
+      std::string prefijo_r("--robots=");
+      num_robots = std::stoi(std::string(argv[count]).substr(prefijo_r.size()));
+    }
+  }
+  
+  /////////////////////RESULTADOS///////////////////////
+  std::vector<std::tuple<int,int,double,int>> vec_res;
+  //////////////////////////////////////////////////////
+  
   int rows;
   int cols;
 
   std::cin >> rows >> cols;
-
-  start = clock();
   
   //////////////////////////////////////////////////////////////////////
   //Creamos una representacion del grid para detectar las paredes y no
@@ -248,29 +264,61 @@ int main(int argc, char* argv[]) {
   
   int num_nodes = rows*cols; //numero de nodos del grafo
 
+  //CUIDAR NO MOSTRAR TRANTOS NODOS
+  if(num_nodes > 300 && PRINT){
+    std::cout << "NUM NODES: " << num_nodes << " se omite el PRINT" << std::endl; 
+    PRINT = false;
+  }
   ////// TODO MANEJAR NODOS COMO COORDENADAS
   int start_node; //nodo inicio, donde se localiza el robot
   int finish_node; //nodo destino
-
+  double time_taken_all;
   std::cin >> start_node >> finish_node;
   
   //inicializar vector de distancias en -1
   //respecto a la cardinalidad num_nodes
+  //std::vector<int> distance(num_nodes, -1);
   std::vector<int> distance(num_nodes, -1);
+
+  start_all = clock();
   
   //analizar pasandole el nodo inicio, nodo destino y vector de distancias
   //se analiza todo el mapa
   switch(str2int(MODE)){
 
   case str2int("--MODE=SECUENCIAL"):
+    
+    //TODO
+    //iterar respecto al num_robots
+    //cambiar start_node cada barrida
 
-    if(PRINT){
-      bfs(adj_list, start_node, distance, rows, cols);
-    }else{
-      bfs(adj_list, start_node, distance, -1, -1);
+    for(int r = 0; r < num_robots; r++){
+      
+      start_node = random(0, num_nodes);
+      
+      start = clock();
+      
+      if(PRINT){
+	bfs(adj_list, start_node, distance, rows, cols);
+      }else{
+	bfs(adj_list, start_node, distance,   -1,   -1);
+      }
+
+      end = clock();
+            
+      double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
+      
+      //ir guardando resultados
+      //resultados[r].push_back(std::make_pair(std::make_pair(start_node, finish_node),time_taken));
+      vec_res.emplace_back(start_node,finish_node,time_taken,distance[finish_node]);
+      
+      //std::cout << start_node << "-" << finish_node << "--" <<distance[finish_node] << std::endl;
+      
+      distance.assign(num_nodes, -1);      
     }
     
     break;
+
   case str2int("--MODE=PTHREADS"):
 
     if(PRINT){
@@ -280,79 +328,76 @@ int main(int argc, char* argv[]) {
     }
     
     break;
-  case str2int("--MODE=OPEN-MP"):
-    show_result = false;
-    std::cout << "ERROR: NO IMPLEMENTADO \n";
-    return -1;
-  case str2int("--MODE=OPEN-MPI"):
-    show_result = false;
-    std::cout << "ERROR: NO IMPLEMENTADO \n";
-    return -1;
-  case str2int("--MODE=HYBRID"):
-    show_result = false;
-    std::cout << "ERROR: NO IMPLEMENTADO \n";
-    return -1;
+
   default:
     
     show_result = false;
 
-    std::cout << "ERROR: EL MODO DEBE SER ELEGIDO"
+    std::cout << "ERROR: EL MODO DEBE SER ELEGIDO. "
 	      << "LAS POSIBLES OPCIONES SON: \n"
 	      << "--MODE=SECUENCIAL\n"
 	      << "--MODE=PTHREADS\n"
-	      << "--MODE=OPEN-MP\n"
-	      << "--MODE=OPEN-MPI\n"
-	      << "--MODE=HYBRID\n"
-		<< std::endl;
-  
+	      << std::endl;
+    
     return -1;
     
-  }
-  
+  }  
 
+  end_all = clock();
+            
+  time_taken_all = double(end_all - start_all) / double(CLOCKS_PER_SEC);
+  
   if(show_result){
     std::cout << "####################################" << std::endl;
     std::cout << "NODOS: " << num_nodes << std::endl;
     std::cout << MODE << std::endl;
     std::cout << "threads: " << num_threads << std::endl;
+    std::cout << "robots: " << num_robots << std::endl;
     std::cout << "####################################\n"
 	      << "RESULTADO\n" 
 	      << "####################################"
 	      << std::endl;
     
-    
-    
-    
-    if(distance[finish_node] != -1){
+    for(const auto& tpl: vec_res){
       
-      std::cout << "Distancia del Nodo " << start_node
-		<< " a " << finish_node
-		<< " es " << distance[finish_node] << std::endl;
-      std::cout << "####################################\n" << std::endl;
-    }else{
+      std::cout << std::get<0>(tpl) << "," << std::get<1>(tpl) << "," << std::fixed << std::get<2>(tpl) << " distancia: " << std::get<3>(tpl) << std::endl;
       
-      std::cout << "No existe un camino del nodo " << start_node
-		<< " a " << finish_node << std::endl;
-      std::cout << "####################################\n" << std::endl;
+      if(std::get<3>(tpl) != -1){
+	
+	std::cout << "Distancia del Nodo " << std::get<0>(tpl)
+		  << " a " << std::get<1>(tpl)
+		  << " es " << std::get<3>(tpl)
+		  << " tiempo " << std::get<2>(tpl)
+		  << std::endl;
+	std::cout << "####################################" << std::endl;
+
+      }else{
+	
+	std::cout << "No existe un camino del nodo " << std::get<0>(tpl)
+		  << " a " << std::get<1>(tpl)
+		  << " tiempo " << std::get<2>(tpl)
+		  << std::endl;
+	std::cout << "####################################" << std::endl;
+      }
+      
     }
   }
   
-  end = clock();
   
-  double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
-
+  
   if(show_result)
     
     std::cout << "Tiempo ejecucion : "
 	      << std::fixed
-	      << time_taken << std::setprecision(9)
+	      << time_taken_all << std::setprecision(9)
 	      << " seg " << std::endl;
   else{
     system("clear");
     std::cout << std::fixed
-	      << time_taken << std::setprecision(9)
+	      << time_taken_all << std::setprecision(9)
 	      << std::endl;
   }
+  
   
   return 0;
     
