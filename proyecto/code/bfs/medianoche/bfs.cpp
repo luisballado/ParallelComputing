@@ -78,13 +78,12 @@ std::vector<int> get_workload(int robots, int threads){
 // Data structures used by the BFS algorithm
 struct ThreadData {
   int thread_id;
-  std::queue<int> *frontiers;
-  std::map<int, bool> *visited;
-  std::vector<int> *distance;
   pthread_mutex_t *mutex;
-  std::map<int, std::vector<int>> *adj_list;
   pthread_barrier_t* barrier;
-  int num_threads;
+  int num_nodes;
+  int num_robots;
+  std::map<int, std::vector<int>> adj_list;
+  std::vector<std::tuple<int,int,double,int>> *vec_res;
 };
 
 //funcion get_neighbors para obtener los vecinos respecto a la matriz
@@ -123,14 +122,14 @@ void print_dist(int rows,int cols,std::vector<int>& distance) {
   }
 }
 
-//funcion bfs
+// funcion bfs
 // regresar vector de resultados 
-void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance,int rows, int cols,int num_robots,std::vector<std::tuple<int,int,double,int>> &vec_res){
+void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance,
+	 int num_nodes, bool print,int num_robots,
+	 std::vector<std::tuple<int,int,double,int>> &vec_res, int rows, int cols){
   
   clock_t start, end;
-    
-  int num_nodes = rows*cols;
-
+  
   for(int r = 0; r < num_robots; r++){
 
     distance.assign(num_nodes, -1); //inicializar todas en -1
@@ -155,7 +154,7 @@ void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance,i
 	  q.push(neighbor);
 	}
       
-	if(rows != -1 && cols != -1){
+	if(print){
 	  print_dist(rows,cols,distance);
 	}
       }
@@ -168,69 +167,90 @@ void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance,i
   }
 }
 
+// trabajo que corre en paralelo
 void *parallel_bfs_thread(void *arg) {
 
+  /*
+    Se itera aqui respecto al numero de robots 
+  */
+
   ThreadData *data = (ThreadData *)arg;
-  
-  std::queue<int> *frontiers = data->frontiers;
-  std::map<int, bool> *visited = data->visited;
-  std::vector<int> *distance = data->distance;
+  int thread_id = data->thread_id;
   pthread_mutex_t *mutex = data->mutex;
-  std::map<int, std::vector<int>> *adj_list = data->adj_list;
+  int num_nodes = data->num_nodes;
+  std::map<int,std::vector<int>> adj_list = data->adj_list;
+  std::vector<std::tuple<int,int,double,int>> *vec_res = data->vec_res;
+  int num_robots = data->num_robots;
   
-  // Hasta que la cola se quede sin elementos
-  while (!frontiers->empty()) {
+  
+  
+  clock_t start, end;
+
+  //std::map<int, std::vector<int>> adj_list;
+  std::vector<int> distance(num_nodes, -1);
+  
+  for(int r = 0; r < num_robots; r++){
+    distance.assign(num_nodes, -1);
+    start = clock();
+
+    int start_node = random(0, num_nodes-1);
+    int finish_node = random(0, num_nodes-1);
+
+    std::queue<int> frontiers;
+    distance[start_node] = 0;    //cada quien tiene su fontera
+    frontiers.push(start_node);  //cada quien tiene su fontera
     
-    //BLOQUEAR PARA ACTUALIZAR FRONTERA
-    pthread_mutex_lock(mutex);
-    int node = frontiers->front();
-    frontiers->pop();
-    pthread_mutex_unlock(mutex);
-
-    for(int neighbor : (*adj_list)[node]){
-
-      //std::cout << "VECINO: " << neighbor << std::endl;
-
-      if((*distance)[neighbor]==-1){
-	pthread_mutex_lock(mutex);
-	(*distance)[neighbor] = (*distance)[neighbor] + 1;
-	frontiers->push(neighbor);
-	//std::cout << "DENTRO DEL IF con: " << neighbor
-	//	  << " DISTANCIA - " << (*distance)[neighbor] << std::endl;
-	pthread_mutex_unlock(mutex);
+    // Hasta que la cola se quede sin elementos
+    while (!frontiers.empty()) {
+      int node = frontiers.front();
+      frontiers.pop();
+      
+      for(int neighbor : adj_list[node]){
+	if(distance[neighbor]==-1){
+	  distance[neighbor] = distance[neighbor] + 1;
+	  frontiers.push(neighbor);
+	}
       }
     }
+    
+    end = clock();
+    double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
+    
+    vec_res->emplace_back(start_node,finish_node,time_taken,distance[finish_node]);
+
+    //std::cout << "THREADID: " << thread_id << "ROBOTS - " << num_robots << "modifique " << r << std::endl;
+
   }
   
   // Exit thread
   pthread_exit(NULL);
 }
 
-void parallel_bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std::vector<int>& distance,int rows, int cols,int num_threads, int num_robots) {
+void parallel_bfs(std::map<int, std::vector<int>> adj_list,
+		  int num_nodes, int num_threads, int num_robots,
+		  std::vector<std::tuple<int,int,double,int>> &vec_res){
+  
+  int start_node = random(0, num_nodes-1);
+  int finish_node = random(0, num_nodes-1);
 
+  std::vector<int> work_load;
+  
   // obtener la carga de trabajo
   // es un vector con la cardinalidad de hilos con el num de trabajo
   // para cada hilo
   // hacer este paso si la opcion es pthreads
-  if(num_threads>1){
-    std::vector<int> work_load = get_workload(num_robots, num_threads);
-    
-    //imprimir
-    
-    for(int w=0;w<work_load.size();++w){
-      std::cout << work_load[w] << std::endl;
-    }
+  if(num_threads>1)
+    work_load = get_workload(num_robots, num_threads);
+  else
+    work_load = {num_robots};
+
+  /**
+  for(int w=0;w<work_load.size();++w){
+    std::cout << work_load[w] << std::endl;
   }
-  
-  exit(-1);
-  
-  std::queue<int> frontiers;
-  
-  distance[start_node] = 0;
-  frontiers.push(start_node);
-  
-  std::map<int, bool> visited;
-  visited[start_node] = true;
+  **/
+    
+  //exit(-1);
     
   // Crear thread data e inicializar mutex
   pthread_t threads[num_threads];
@@ -244,16 +264,17 @@ void parallel_bfs(std::map<int, std::vector<int>>& adj_list, int start_node, std
   // POOL DE THREADS
   for (int i = 0; i < num_threads; i++) {
     thread_data[i].thread_id = i;
-    thread_data[i].frontiers = &frontiers;
-    thread_data[i].visited = &visited;
-    thread_data[i].distance = &distance;
     thread_data[i].mutex = &mutex;
-    thread_data[i].adj_list = &adj_list;
     thread_data[i].barrier = &barrier;
-    thread_data[i].num_threads = num_threads;
+    thread_data[i].num_nodes = num_nodes;
+    thread_data[i].num_robots = work_load[i];
+    thread_data[i].adj_list = adj_list;
+    thread_data[i].vec_res = &vec_res;
     pthread_create(&threads[i], NULL, parallel_bfs_thread, (void *)&thread_data[i]);
   }
   
+  
+
   // Join de threads
   for (int i = 0; i < num_threads; i++) {
     pthread_join(threads[i], NULL);
@@ -388,13 +409,8 @@ int main(int argc, char* argv[]) {
   switch(str2int(MODE)){
 
   case str2int("--MODE=SECUENCIAL"):
-    
-    if(!PRINT){
-      rows = -1;
-      cols = -1;
-    }
-    
-    bfs(adj_list, distance, rows, cols, num_robots, vec_res);
+        
+    bfs(adj_list, distance, num_nodes, PRINT, num_robots, vec_res, rows, cols);
     
     break;
 
@@ -405,9 +421,9 @@ int main(int argc, char* argv[]) {
     if(PRINT)
       std::cout << "NO PRINT EN PTHREADS" << std::endl;
         
-    //parallel_bfs(adj_list, start_node, distance,rows,cols, num_threads, num_robots);
-    
-    
+    parallel_bfs(adj_list, num_nodes, num_threads, num_robots, vec_res);
+
+        
     break;
 
   default:
@@ -438,7 +454,7 @@ int main(int argc, char* argv[]) {
 	      << "RESULTADO\n" 
 	      << "####################################"
 	      << std::endl;
-    
+
     for(const auto& tpl: vec_res){
       
       std::cout << std::get<0>(tpl) << "," << std::get<1>(tpl) << "," << std::fixed << std::get<2>(tpl) << " distancia: " << std::get<3>(tpl) << std::endl;
