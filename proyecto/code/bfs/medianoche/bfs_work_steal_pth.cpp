@@ -52,7 +52,8 @@ void bfs_range(NodeRange range, ThreadData* data) {
                     curr_node = data[idx].work_queue->front();
                     data[idx].work_queue->pop();
                 }
-                pthread_mutex_unlock(&data[idx].queue_mutex);
+
+		pthread_mutex_unlock(&data[idx].queue_mutex);
 
                 if (curr_node != -1) {
                     break;
