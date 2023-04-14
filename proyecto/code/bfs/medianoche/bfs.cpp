@@ -19,7 +19,7 @@ int random(int low, int high){
 }
 ///////////////////////////////////////////////////////
 
-// SPLIT WORK//////////////////////////////////////////////
+// SPLIT WORK /////////////////////////////////////////////
 // Repartir trabajo respecto al num robots y num threads //
 ///////////////////////////////////////////////////////////
 std::vector<int> get_workload(int robots, int threads){
@@ -67,8 +67,6 @@ std::vector<int> get_workload(int robots, int threads){
     
   }
   
-  
-  
   return workers;
   
 }
@@ -78,12 +76,12 @@ std::vector<int> get_workload(int robots, int threads){
 // Data structures used by the BFS algorithm
 struct ThreadData {
   int thread_id;
-  pthread_mutex_t *mutex;
-  pthread_barrier_t* barrier;
+  //pthread_mutex_t *mutex;
+  //pthread_barrier_t* barrier;
   int num_nodes;
   int num_robots;
   std::map<int, std::vector<int>> adj_list;
-  std::vector<std::tuple<int,int,double,int>> *vec_res;
+  //std::vector<std::tuple<int,int,double,int>> *vec_res;
 };
 
 //funcion get_neighbors para obtener los vecinos respecto a la matriz
@@ -131,7 +129,8 @@ void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance,
   clock_t start, end;
   
   for(int r = 0; r < num_robots; r++){
-
+    
+    //se inicializa en -1 para cada nuevo robot
     distance.assign(num_nodes, -1); //inicializar todas en -1
     
     start = clock();
@@ -147,7 +146,7 @@ void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance,
     while (!q.empty()) {
       int node = q.front();
       q.pop();
-    
+      
       for (int neighbor : adj_list[node]) {
 	if (distance[neighbor] == -1) {
 	  distance[neighbor] = distance[node] + 1;
@@ -176,18 +175,18 @@ void *parallel_bfs_thread(void *arg) {
 
   ThreadData *data = (ThreadData *)arg;
   int thread_id = data->thread_id;
-  pthread_mutex_t *mutex = data->mutex;
+  //pthread_mutex_t *mutex = data->mutex;
   int num_nodes = data->num_nodes;
   std::map<int,std::vector<int>> adj_list = data->adj_list;
-  std::vector<std::tuple<int,int,double,int>> *vec_res = data->vec_res;
+  //std::vector<std::tuple<int,int,double,int>> *vec_res = data->vec_res;
   int num_robots = data->num_robots;
   
-  
+  //std::cout << "dentro de parallel_bfs_thread se creo el thread: " << thread_id << " me tocaron:" << num_robots << std::endl; 
   
   clock_t start, end;
 
   //std::map<int, std::vector<int>> adj_list;
-  std::vector<int> distance(num_nodes, -1);
+  std::vector<int> distance;//(num_nodes, -1); //cada hilo tiene su vector de distancias
   
   for(int r = 0; r < num_robots; r++){
     distance.assign(num_nodes, -1);
@@ -196,43 +195,50 @@ void *parallel_bfs_thread(void *arg) {
     int start_node = random(0, num_nodes-1);
     int finish_node = random(0, num_nodes-1);
 
-    std::queue<int> frontiers;
+    //std::cout << "dentro de parallel_bfs_thread Nodo Inicio: " << start_node << std::endl;
+    //std::cout << "dentro de parallel_bfs_thread Nodo Fin: " << finish_node << std::endl; 
+    
+    std::queue<int> q;
     distance[start_node] = 0;    //cada quien tiene su fontera
-    frontiers.push(start_node);  //cada quien tiene su fontera
+    q.push(start_node);  //cada quien tiene su fontera
     
     // Hasta que la cola se quede sin elementos
-    while (!frontiers.empty()) {
-      int node = frontiers.front();
-      frontiers.pop();
+    while (!q.empty()) {
+      int node = q.front();
+      q.pop();
       
       for(int neighbor : adj_list[node]){
 	if(distance[neighbor]==-1){
 	  distance[neighbor] = distance[neighbor] + 1;
-	  frontiers.push(neighbor);
+	  q.push(neighbor);
 	}
       }
     }
     
+
     end = clock();
     double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
     
-    vec_res->emplace_back(start_node,finish_node,time_taken,distance[finish_node]);
-
+    //vec_res->emplace_back(start_node,finish_node,time_taken,distance[finish_node]);
+    
     //std::cout << "THREADID: " << thread_id << "ROBOTS - " << num_robots << "modifique " << r << std::endl;
 
   }
   
   // Exit thread
   pthread_exit(NULL);
+  
 }
 
-void parallel_bfs(std::map<int, std::vector<int>> adj_list,
-		  int num_nodes, int num_threads, int num_robots,
-		  std::vector<std::tuple<int,int,double,int>> &vec_res){
-  
-  int start_node = random(0, num_nodes-1);
-  int finish_node = random(0, num_nodes-1);
+//void parallel_bfs(std::map<int, std::vector<int>> adj_list,int num_nodes, int num_threads, int num_robots,std::vector<std::tuple<int,int,double,int>> &vec_res){
 
+void parallel_bfs(std::map<int, std::vector<int>> adj_list,
+		  int num_nodes, int num_threads, int num_robots){
+
+  //Se definen inicios random y destinos random
+  int start_node  = random(0, num_nodes-1);
+  int finish_node = random(0, num_nodes-1);
+  
   std::vector<int> work_load;
   
   // obtener la carga de trabajo
@@ -244,47 +250,44 @@ void parallel_bfs(std::map<int, std::vector<int>> adj_list,
   else
     work_load = {num_robots};
 
-  /**
+  /*
+  // Saber si el reparto de trabajos se realizo bien
   for(int w=0;w<work_load.size();++w){
-    std::cout << work_load[w] << std::endl;
+     std::cout << work_load[w] << std::endl;
   }
-  **/
+  exit(-1);
+  */
     
-  //exit(-1);
-    
-  // Crear thread data e inicializar mutex
-  pthread_t threads[num_threads];
+  // Crear thread data e inicializar
   ThreadData thread_data[num_threads];
-  pthread_mutex_t mutex;
-  pthread_mutex_init(&mutex, NULL);
-  
-  pthread_barrier_t barrier;
-  pthread_barrier_init(&barrier, NULL,num_threads);
+  //pthread_t threads[num_threads];
+  pthread_t* threads;
+  threads = (pthread_t*)malloc(sizeof(pthread_t)*num_threads);
 
   // POOL DE THREADS
   for (int i = 0; i < num_threads; i++) {
     thread_data[i].thread_id = i;
-    thread_data[i].mutex = &mutex;
-    thread_data[i].barrier = &barrier;
     thread_data[i].num_nodes = num_nodes;
     thread_data[i].num_robots = work_load[i];
     thread_data[i].adj_list = adj_list;
-    thread_data[i].vec_res = &vec_res;
+    //thread_data[i].vec_res = &vec_res;
     pthread_create(&threads[i], NULL, parallel_bfs_thread, (void *)&thread_data[i]);
   }
   
-  
-
   // Join de threads
   for (int i = 0; i < num_threads; i++) {
+    //std::cout << "TERMINE" << i << std::endl;
     pthread_join(threads[i], NULL);
   }
   
   // Clean mutex
-  pthread_mutex_destroy(&mutex);
-  
+  //pthread_mutex_destroy(&mutex);
+
+  free(threads);
+    
 }
 
+//string -> int
 constexpr unsigned int str2int(const char* str, int h = 0){
   return !str[h] ? 5381 : (str2int(str, h+1) * 33) ^ str[h];
 }
@@ -313,6 +316,7 @@ int main(int argc, char* argv[]) {
     if(std::string(argv[count]).substr(0, 6) == std::string("--MODE")){
       MODE = argv[count];
     }
+    
     //numero de threads
     if(std::string(argv[count]).substr(0,5) == std::string("--nth")){
       
@@ -386,12 +390,12 @@ int main(int argc, char* argv[]) {
   
   int num_nodes = rows*cols; //numero de nodos del grafo
 
-  //CUIDAR NO MOSTRAR TRANTOS NODOS
+  //CUIDAR NO MOSTRAR TANTOS NODOS
   if(num_nodes > 2000 && PRINT){
     std::cout << "NUM NODES: " << num_nodes << " se omite el PRINT" << std::endl; 
     PRINT = false;
   }
-  ////// TODO MANEJAR NODOS COMO COORDENADAS
+  
   int start_node; //nodo inicio, donde se localiza el robot
   int finish_node; //nodo destino
   double time_taken_all;
@@ -402,6 +406,7 @@ int main(int argc, char* argv[]) {
   //std::vector<int> distance(num_nodes, -1);
   std::vector<int> distance(num_nodes, -1);
 
+  //SE TOMA EL TIEMPO DEL ALGORITMO YA QUE AHI SE PARALELIZA O NO
   start_all = clock();
   
   //analizar pasandole el nodo inicio, nodo destino y vector de distancias
@@ -421,9 +426,9 @@ int main(int argc, char* argv[]) {
     if(PRINT)
       std::cout << "NO PRINT EN PTHREADS" << std::endl;
         
-    parallel_bfs(adj_list, num_nodes, num_threads, num_robots, vec_res);
-
-        
+    //parallel_bfs(adj_list, num_nodes, num_threads, num_robots, vec_res);
+    parallel_bfs(adj_list, num_nodes, num_threads, num_robots);
+    
     break;
 
   default:
@@ -448,35 +453,43 @@ int main(int argc, char* argv[]) {
     std::cout << "####################################" << std::endl;
     std::cout << "NODOS: " << num_nodes << std::endl;
     std::cout << MODE << std::endl;
-    std::cout << "threads: " << num_threads << std::endl;
+    
+    //No hay num threads si es secuencial
+    if (str2int("--MODE=SECUENCIAL")!=str2int(MODE)) {
+      std::cout << "threads: " << num_threads << std::endl;
+    }
+
     std::cout << "robots: " << num_robots << std::endl;
-    std::cout << "####################################\n"
-	      << "RESULTADO\n" 
-	      << "####################################"
-	      << std::endl;
 
-    for(const auto& tpl: vec_res){
+    //si vec_res no existe no mostrar
+    if(vec_res.size()!=0){
+      std::cout << "####################################\n"
+		<< "RESULTADO\n" 
+		<< "####################################"
+		<< std::endl;
       
-      std::cout << std::get<0>(tpl) << "," << std::get<1>(tpl) << "," << std::fixed << std::get<2>(tpl) << " distancia: " << std::get<3>(tpl) << std::endl;
-      
-      if(std::get<3>(tpl) != -1){
+      for(const auto& tpl: vec_res){
 	
-	std::cout << "Distancia del Nodo " << std::get<0>(tpl)
-		  << " a " << std::get<1>(tpl)
-		  << " es " << std::get<3>(tpl)
-		  << " tiempo " << std::get<2>(tpl)
-		  << std::endl;
-	std::cout << "####################################" << std::endl;
-
-      }else{
+	std::cout << std::get<0>(tpl) << "," << std::get<1>(tpl) << "," << std::fixed << std::get<2>(tpl) << " distancia: " << std::get<3>(tpl) << std::endl;
 	
-	std::cout << "No existe un camino del nodo " << std::get<0>(tpl)
-		  << " a " << std::get<1>(tpl)
-		  << " tiempo " << std::get<2>(tpl)
-		  << std::endl;
-	std::cout << "####################################" << std::endl;
+	if(std::get<3>(tpl) != -1){
+	  
+	  std::cout << "Distancia del Nodo " << std::get<0>(tpl)
+		    << " a " << std::get<1>(tpl)
+		    << " es " << std::get<3>(tpl)
+		    << " tiempo " << std::get<2>(tpl)
+		    << std::endl;
+	  std::cout << "####################################" << std::endl;
+	  
+	}else{
+	  
+	  std::cout << "No existe un camino del nodo " << std::get<0>(tpl)
+		    << " a " << std::get<1>(tpl)
+		    << " tiempo " << std::get<2>(tpl)
+		    << std::endl;
+	  std::cout << "####################################" << std::endl;
+	}
       }
-      
     }
   }
   
