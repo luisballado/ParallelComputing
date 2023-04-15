@@ -422,7 +422,7 @@ int main(int argc, char* argv[]) {
   int start_node; //nodo inicio, donde se localiza el robot
   int finish_node; //nodo destino
   double time_taken_all;
-
+  
   std::cin >> start_node >> finish_node;
   
   //inicializar vector de distancias en -1
@@ -431,16 +431,16 @@ int main(int argc, char* argv[]) {
   std::vector<int> distance(num_nodes, -1);
 
   //SE TOMA EL TIEMPO DEL ALGORITMO YA QUE AHI SE PARALELIZA O NO
-  start_all = clock();
+  
   
   //analizar pasandole el nodo inicio, nodo destino y vector de distancias
   //se analiza todo el mapa
   switch(str2int(MODE)){
 
   case str2int("--MODE=SECUENCIAL"):
-        
+    start_all = clock();
     bfs(adj_list, distance, num_nodes, PRINT, num_robots, vec_res, rows, cols, start_node, finish_node);
-    
+    end_all = clock();
     break;
 
     //se paraleliza por exploracion de robot
@@ -449,10 +449,10 @@ int main(int argc, char* argv[]) {
     //no hay print en este modulo
     if(PRINT)
       std::cout << "NO PRINT EN PTHREADS" << std::endl;
-    
+    start_all = clock();
     parallel_bfs(adj_list, num_nodes, num_threads, num_robots, vec_res, start_node, finish_node);
     //parallel_bfs(adj_list, num_nodes, num_threads, num_robots);
-    
+    end_all = clock();
     break;
 
   default:
@@ -469,7 +469,7 @@ int main(int argc, char* argv[]) {
     
   }  
 
-  end_all = clock();
+  
             
   time_taken_all = double(end_all - start_all) / double(CLOCKS_PER_SEC);
   
