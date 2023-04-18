@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include <iomanip>
 #include <random>
-
+#include <fstream>
+#include <string>
 #include <omp.h>
 
 // RANDOM /////////////////////////////////////////////
@@ -126,9 +127,7 @@ void print_dist(int rows,int cols,std::vector<int>& distance) {
 
 // funcion bfs
 // regresar vector de resultados 
-void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance,
-	 int num_nodes, bool print,int num_robots,
-	 std::vector<std::tuple<int,int,double,int>> &vec_res, int rows, int cols, int start_node, int finish_node){
+void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance, int num_nodes, bool print,int num_robots, std::vector<std::tuple<int,int,double,int>> &vec_res, int rows, int cols, int start_node, int finish_node, std::vector<std::vector<int>>& ubicaciones_robots){
 
   int thread_id = omp_get_thread_num();
   int n_threads = omp_get_num_threads();
@@ -179,28 +178,24 @@ void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance,
 
 // funcion bfs
 // regresar vector de resultados 
-void bfs_openmp(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance,
-	 int num_nodes, bool print,int num_robots,
-	 std::vector<std::tuple<int,int,double,int>> &vec_res, int rows, int cols, int start_node, int finish_node){
-
-  int thread_id = omp_get_thread_num();
-  int n_threads = omp_get_num_threads();
-  
-  //std::cout << "Hello from thread " << thread_id << " of " << n_threads << std::endl;
-  
-  clock_t start, end;
-
-
-  for(int r = 0; r < num_robots; r++){
+void bfs_openmp(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance, int num_nodes, bool print,int num_robots, std::vector<std::tuple<int,int,double,int>> &vec_res, int rows, int cols, int start_node, int finish_node, int num_threads, std::vector<std::vector<int>>& ubicaciones_robots){
     
+  clock_t start, end;
+#pragma omp parallel for num_threads(num_threads)
+  for(int r = 0; r < num_robots; r++){
+
+    //int thread_id = omp_get_thread_num();
+    //int n_threads = omp_get_num_threads();
+    
+    //std::cout << "Hello from thread " << thread_id << " of " << n_threads << std::endl;
     //se inicializa en -1 para cada nuevo robot
     distance.assign(num_nodes, -1); //inicializar todas en -1
     
     start = clock();
 
     //puede ser un vector
-    //int start_node = random(0, num_nodes-1);
-    //int finish_node = random(0, num_nodes-1);
+    int start_node  = ubicaciones_robots[r][0];
+    int finish_node = ubicaciones_robots[r][1];
   
     std::queue<int> q;
 
@@ -225,7 +220,7 @@ void bfs_openmp(std::map<int, std::vector<int>>& adj_list, std::vector<int>& dis
     
     end = clock();
     double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
-        
+    
     vec_res.emplace_back(start_node,finish_node,time_taken,distance[finish_node]);
   }
 }
@@ -248,12 +243,18 @@ int main(int argc, char* argv[]) {
   int num_threads = 1;
   int num_robots = 1;
   
+  std::string location_robots;
+
+  int robot_inicio, robot_fin;
+  
+  std::vector<std::vector<int>> ubicaciones_robots;
+
   const char* MODE = "";
 
   std::string MODO;
 
   for(int count = 0; count < argc; count++ ){
-    
+
     //mostrar frente de onda
     if(argv[count] == std::string("--SHOW"))
       PRINT = true;
@@ -280,10 +281,65 @@ int main(int argc, char* argv[]) {
       num_robots = std::stoi(std::string(argv[count]).substr(prefijo_r.size()));
     }
 
-    if(std::string(argv[count]).substr(0,8) == std::string("--robots_file")){
-      std::string prefijo_r("--robots_file=");
+    //ARCHIVO DE ROBOTS
+    if(std::string(argv[count]).substr(0,11) == std::string("--locations")){
+      std::string prefijo("--locations=");
+
+      //Hacer resize al vector de ubicaciones robot
+      ubicaciones_robots.resize(num_robots);
       
+      location_robots = std::string(argv[count]).substr(prefijo.size()); 
+    
+      std::ifstream infile(location_robots);
+
+      if (!infile.is_open()) {
+        std::cout << "Failed to open file: " << location_robots << "\n";
+        return 1;
+      }
+      
+      int _robots_ = 0;
+      std::string line;
+
+      while (std::getline(infile, line)) {
+        std::istringstream iss(line);
+	std::string word;
+	std::cout << "-------" << std::endl;
+	std::cout << "ROBOT: " << _robots_ << std::endl;
+
+	int count = 0;
+
+	while (iss >> word) {
+	  if(count==0){
+	    robot_inicio = std::stoi(word);
+	    std::cout << robot_inicio << std::endl;
+	    count = 1;
+	  }else{
+	    robot_fin = std::stoi(word);
+	    count = 0;
+	    std::cout << robot_fin << std::endl;
+	  }
+	}
+	
+	ubicaciones_robots[_robots_].push_back(robot_inicio);
+	ubicaciones_robots[_robots_].push_back(robot_fin);
+	
+	std::cout << "-------" << std::endl;
+	_robots_++;
+      }
+
+      //IMPRIMIR VECTOR UBICACIONES
+      /****
+      for(int i = 0; i < ubicaciones_robots.size(); i++){
+	std::cout << "ROBOT " << i << " --> [";
+	for(int j = 0; j < ubicaciones_robots[i].size(); j++){
+	  std::cout << ubicaciones_robots[i][j] << " ";
+	}
+	std::cout << "]" << std::endl;
+      }
+      exit(-1);
+      ***/
     }
+    
   }
   
   /////////////////////RESULTADOS///////////////////////
@@ -367,7 +423,7 @@ int main(int argc, char* argv[]) {
 
   case str2int("--MODE=SECUENCIAL"):
     start_all = clock();
-    bfs(adj_list, distance, num_nodes, PRINT, num_robots, vec_res, rows, cols, start_node, finish_node);
+    bfs(adj_list, distance, num_nodes, PRINT, num_robots, vec_res, rows, cols, start_node, finish_node, ubicaciones_robots);
     end_all = clock();
     break;
 
@@ -376,10 +432,11 @@ int main(int argc, char* argv[]) {
 
     //no hay print en este modulo
     if(PRINT)
-      std::cout << "NO PRINT EN PTHREADS" << std::endl;
+      std::cout << "NO PRINT EN HILOS" << std::endl;
     start_all = clock();
-#   pragma omp parallel num_threads(num_threads)
-    bfs_openmp(adj_list, distance, num_nodes, PRINT, num_robots, vec_res, rows, cols, start_node, finish_node);
+    
+    bfs_openmp(adj_list, distance, num_nodes, PRINT, num_robots, vec_res, rows, cols, start_node, finish_node, num_threads, ubicaciones_robots);
+  
     end_all = clock();
     break;
 
@@ -459,6 +516,16 @@ int main(int argc, char* argv[]) {
 	      << time_taken_all << std::setprecision(9)
 	      << std::endl;
   }
+
+  //IMPRIMIR VECTOR UBICACIONES
+  for(int i = 0; i < ubicaciones_robots.size(); i++){
+    std::cout << "ROBOT " << i << " --> [";
+    for(int j = 0; j < ubicaciones_robots[i].size(); j++){
+      std::cout << ubicaciones_robots[i][j] << " ";
+    }
+    std::cout << "]" << std::endl;
+  }
+  
   
   
   return 0;
