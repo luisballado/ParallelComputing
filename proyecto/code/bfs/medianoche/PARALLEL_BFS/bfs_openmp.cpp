@@ -5,24 +5,13 @@
 #include <iomanip>
 #include <unistd.h>
 #include <iomanip>
-#include <random>
 #include <fstream>
 #include <string>
 #include <omp.h>
 
-// RANDOM /////////////////////////////////////////////
-// Generar numeros random /////////////////////////////
-///////////////////////////////////////////////////////
-std::random_device rd;
-std::mt19937 gen(rd());
+//time ./bfs_openmp < problem_size/1M.txt --MODE=OPENMP --robots=10 --nth=1 --locations=robots.txt --results
 
-int random(int low, int high){
-    std::uniform_int_distribution<> dist(low, high);
-    return dist(gen);
-}
-///////////////////////////////////////////////////////
-
-// SPLIT WORK /////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 // Repartir trabajo respecto al num robots y num threads //
 ///////////////////////////////////////////////////////////
 std::vector<int> get_workload(int robots, int threads){
@@ -75,7 +64,6 @@ std::vector<int> get_workload(int robots, int threads){
 }
 
 ///////////////////////////////////////////////////////////
-
 // Data structures used by the BFS algorithm
 struct ThreadData {
   int thread_id;
@@ -415,8 +403,6 @@ int main(int argc, char* argv[]) {
   std::vector<int> distance(num_nodes, -1);
 
   //SE TOMA EL TIEMPO DEL ALGORITMO YA QUE AHI SE PARALELIZA O NO
-  
-  
   //analizar pasandole el nodo inicio, nodo destino y vector de distancias
   //se analiza todo el mapa
   switch(str2int(MODE)){
@@ -453,9 +439,7 @@ int main(int argc, char* argv[]) {
     return -1;
     
   }  
-
   
-            
   time_taken_all = double(end_all - start_all) / double(CLOCKS_PER_SEC);
   
   if(show_result){
@@ -501,9 +485,7 @@ int main(int argc, char* argv[]) {
       }
     }
   }
-  
-  
-  
+    
   if(show_result)
     
     std::cout << "Tiempo ejecucion : "
@@ -511,7 +493,7 @@ int main(int argc, char* argv[]) {
 	      << time_taken_all << std::setprecision(9)
 	      << " seg " << std::endl;
   else{
-    //system("clear");
+    system("clear");
     std::cout << std::fixed
 	      << time_taken_all << std::setprecision(9)
 	      << std::endl;
@@ -525,8 +507,6 @@ int main(int argc, char* argv[]) {
     }
     std::cout << "]" << std::endl;
   }
-  
-  
   
   return 0;
     
