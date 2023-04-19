@@ -401,7 +401,7 @@ int main(int argc, char* argv[]) {
   //respecto a la cardinalidad num_nodes
   //std::vector<int> distance(num_nodes, -1);
   std::vector<int> distance(num_nodes, -1);
-
+  
   //SE TOMA EL TIEMPO DEL ALGORITMO YA QUE AHI SE PARALELIZA O NO
   //analizar pasandole el nodo inicio, nodo destino y vector de distancias
   //se analiza todo el mapa
