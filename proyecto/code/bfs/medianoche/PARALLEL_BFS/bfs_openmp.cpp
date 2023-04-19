@@ -137,7 +137,7 @@ void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance, 
   clock_t start, end;
 
 
-  for(int r = 0; r < num_robots-1; r++){
+  for(int r = 0; r < num_robots; r++){
     
     //se inicializa en -1 para cada nuevo robot
     distance.assign(num_nodes, -1); //inicializar todas en -1
@@ -182,7 +182,7 @@ void bfs_openmp(std::map<int, std::vector<int>>& adj_list, std::vector<int>& dis
     
   clock_t start, end;
 #pragma omp parallel for num_threads(num_threads)
-  for(int r = 0; r < num_robots-1; r++){
+  for(int r = 0; r < num_robots; r++){
 
     //int thread_id = omp_get_thread_num();
     //int n_threads = omp_get_num_threads();

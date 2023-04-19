@@ -9,7 +9,9 @@
 #include <fstream>
 #include <string>
 
-//time ./bfs < problem_size/250K.txt --MODE=SECUENCIAL --robots=200 --nth=4
+//IMPORTANTE --locations=robots.txt debe ser de la cardinalidad de --robots=XX 
+//time ./bfs_openmp < problem_size/1M.txt --MODE=OPENMP --robots=10 --nth=2 --locations=robots.txt --results
+
 
 // RANDOM /////////////////////////////////////////////
 // Generar numeros random /////////////////////////////
