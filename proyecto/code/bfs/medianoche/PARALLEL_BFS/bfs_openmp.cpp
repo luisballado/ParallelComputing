@@ -21,9 +21,9 @@ std::vector<int> get_workload(int robots, int threads){
   int sobra;
   
   work = robots / threads;
-
+  
   std::vector<int> workers;
-
+  
   //si work no es entero
   if(work*threads != robots){
     
@@ -55,27 +55,12 @@ std::vector<int> get_workload(int robots, int threads){
     for(int i = 0;i<threads;i++){
       sum_work = sum_work + work;
       workers.push_back(work);
-    }
-    
+    }    
   }
   
   return workers;
   
 }
-
-///////////////////////////////////////////////////////////
-// Data structures used by the BFS algorithm
-struct ThreadData {
-  int thread_id;
-  //pthread_mutex_t *mutex;
-  //pthread_barrier_t* barrier;
-  int num_nodes;
-  int num_robots;
-  std::map<int, std::vector<int>> adj_list;
-  std::vector<std::tuple<int,int,double,int>> *vec_res;
-  int start_node;
-  int finish_node;
-};
 
 //funcion get_neighbors para obtener los vecinos respecto a la matriz
 std::vector<std::pair<int, int>> get_neighbors(int i, int j, int rows, int cols) {
@@ -115,7 +100,7 @@ void print_dist(int rows,int cols,std::vector<int>& distance) {
 
 // funcion bfs
 // regresar vector de resultados 
-void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance, int num_nodes, bool print,int num_robots, std::vector<std::tuple<int,int,double,int>> &vec_res, int rows, int cols, int start_node, int finish_node, std::vector<std::vector<int>>& ubicaciones_robots){
+void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance_bfs, int num_nodes, bool print,int num_robots, std::vector<std::tuple<int,int,double,int>> &vec_res, int rows, int cols, int start_node, int finish_node, std::vector<std::vector<int>>& ubicaciones_robots){
 
   int thread_id = omp_get_thread_num();
   int n_threads = omp_get_num_threads();
@@ -128,7 +113,7 @@ void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance, 
   for(int r = 0; r < num_robots; r++){
     
     //se inicializa en -1 para cada nuevo robot
-    distance.assign(num_nodes, -1); //inicializar todas en -1
+    distance_bfs.assign(num_nodes, -1); //inicializar todas en -1
     
     start = clock();
 
@@ -138,7 +123,7 @@ void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance, 
       
     std::queue<int> q;
 
-    distance[start_node] = 0;
+    distance_bfs[start_node] = 0;
     q.push(start_node);
   
     while (!q.empty()) {
@@ -146,13 +131,13 @@ void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance, 
       q.pop();
       
       for (int neighbor : adj_list[node]) {
-	if (distance[neighbor] == -1) {
-	  distance[neighbor] = distance[node] + 1;
+	if (distance_bfs[neighbor] == -1) {
+	  distance_bfs[neighbor] = distance_bfs[node] + 1;
 	  q.push(neighbor);
 	}
       
 	if(print){
-	  print_dist(rows,cols,distance);
+	  print_dist(rows,cols,distance_bfs);
 	}
       }
     }
@@ -160,15 +145,16 @@ void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance, 
     end = clock();
     double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
         
-    vec_res.emplace_back(start_node,finish_node,time_taken,distance[finish_node]);
+    vec_res.emplace_back(start_node,finish_node,time_taken,distance_bfs[finish_node]);
   }
 }
 
 // funcion bfs
 // regresar vector de resultados 
-void bfs_openmp(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance, int num_nodes, bool print,int num_robots, std::vector<std::tuple<int,int,double,int>> &vec_res, int rows, int cols, int start_node, int finish_node, int num_threads, std::vector<std::vector<int>>& ubicaciones_robots){
+void bfs_openmp(std::map<int, std::vector<int>>& adj_list, std::vector<std::vector<int>> &distance_openmp, int num_nodes, bool print,int num_robots, std::vector<std::tuple<int,int,double,int>> &vec_res, int rows, int cols, int start_node, int finish_node, int num_threads, std::vector<std::vector<int>>& ubicaciones_robots){
     
   clock_t start, end;
+  
 #pragma omp parallel for num_threads(num_threads)
   for(int r = 0; r < num_robots; r++){
 
@@ -177,7 +163,7 @@ void bfs_openmp(std::map<int, std::vector<int>>& adj_list, std::vector<int>& dis
     
     //std::cout << "Hello from thread " << thread_id << " of " << n_threads << std::endl;
     //se inicializa en -1 para cada nuevo robot
-    distance.assign(num_nodes, -1); //inicializar todas en -1
+    //distance.assign(num_nodes, -1); //inicializar todas en -1
     
     start = clock();
 
@@ -187,7 +173,7 @@ void bfs_openmp(std::map<int, std::vector<int>>& adj_list, std::vector<int>& dis
   
     std::queue<int> q;
 
-    distance[start_node] = 0;
+    distance_openmp[r][start_node] = 0;
     q.push(start_node);
   
     while (!q.empty()) {
@@ -195,13 +181,9 @@ void bfs_openmp(std::map<int, std::vector<int>>& adj_list, std::vector<int>& dis
       q.pop();
       
       for (int neighbor : adj_list[node]) {
-	if (distance[neighbor] == -1) {
-	  distance[neighbor] = distance[node] + 1;
+	if (distance_openmp[r][neighbor] == -1) {
+	  distance_openmp[r][neighbor] = distance_openmp[r][node] + 1;
 	  q.push(neighbor);
-	}
-      
-	if(print){
-	  print_dist(rows,cols,distance);
 	}
       }
     }
@@ -209,7 +191,7 @@ void bfs_openmp(std::map<int, std::vector<int>>& adj_list, std::vector<int>& dis
     end = clock();
     double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
     
-    vec_res.emplace_back(start_node,finish_node,time_taken,distance[finish_node]);
+    vec_res.emplace_back(start_node,finish_node,time_taken,distance_openmp[r][finish_node]);
   }
 }
 
@@ -396,11 +378,13 @@ int main(int argc, char* argv[]) {
   double time_taken_all;
   
   std::cin >> start_node >> finish_node;
-  
+
+  //HACER UN VECTOR DE VECTORES POR ROBOT
+  std::vector<std::vector<int>> distance_openmp(num_robots, std::vector<int>(num_nodes, -1));
+
   //inicializar vector de distancias en -1
   //respecto a la cardinalidad num_nodes
-  //std::vector<int> distance(num_nodes, -1);
-  std::vector<int> distance(num_nodes, -1);
+  std::vector<int> distance_bfs(num_nodes, -1);
   
   //SE TOMA EL TIEMPO DEL ALGORITMO YA QUE AHI SE PARALELIZA O NO
   //analizar pasandole el nodo inicio, nodo destino y vector de distancias
@@ -408,20 +392,21 @@ int main(int argc, char* argv[]) {
   switch(str2int(MODE)){
 
   case str2int("--MODE=SECUENCIAL"):
+    
     start_all = clock();
-    bfs(adj_list, distance, num_nodes, PRINT, num_robots, vec_res, rows, cols, start_node, finish_node, ubicaciones_robots);
+    bfs(adj_list, distance_bfs, num_nodes, PRINT, num_robots, vec_res, rows, cols, start_node, finish_node, ubicaciones_robots);
     end_all = clock();
     break;
 
     //se paraleliza por exploracion de robot
   case str2int("--MODE=OPENMP"):
-
+        
     //no hay print en este modulo
     if(PRINT)
       std::cout << "NO PRINT EN HILOS" << std::endl;
     start_all = clock();
     
-    bfs_openmp(adj_list, distance, num_nodes, PRINT, num_robots, vec_res, rows, cols, start_node, finish_node, num_threads, ubicaciones_robots);
+    bfs_openmp(adj_list, distance_openmp, num_nodes, PRINT, num_robots, vec_res, rows, cols, start_node, finish_node, num_threads, ubicaciones_robots);
   
     end_all = clock();
     break;
@@ -433,7 +418,7 @@ int main(int argc, char* argv[]) {
     std::cout << "ERROR: EL MODO DEBE SER ELEGIDO. "
 	      << "LAS POSIBLES OPCIONES SON: \n"
 	      << "--MODE=SECUENCIAL\n"
-	      << "--MODE=PTHREADS\n"
+	      << "--MODE=OPENMP\n"
 	      << std::endl;
     
     return -1;
