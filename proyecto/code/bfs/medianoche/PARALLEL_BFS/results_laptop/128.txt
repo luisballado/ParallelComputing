@@ -1,0 +1,393 @@
+NUM NODES: 1000000 se omite el PRINT
+####################################
+NODOS: 1000000
+--MODE=SECUENCIAL
+robots: 128
+####################################
+RESULTADO
+####################################
+72,507200,0.734347 distancia: 641
+Distancia del Nodo 72 a 507200 es 641 tiempo 0.734347
+####################################
+110,9209,0.720398 distancia: 108
+Distancia del Nodo 110 a 9209 es 108 tiempo 0.720398
+####################################
+64,397484,0.725466 distancia: -1
+No existe un camino del nodo 64 a 397484 tiempo 0.725466
+####################################
+113,861675,0.728258 distancia: 1423
+Distancia del Nodo 113 a 861675 es 1423 tiempo 0.728258
+####################################
+31,941046,0.737155 distancia: -1
+No existe un camino del nodo 31 a 941046 tiempo 0.737155
+####################################
+105,771778,0.723454 distancia: 1444
+Distancia del Nodo 105 a 771778 es 1444 tiempo 0.723454
+####################################
+1,347674,0.740989 distancia: 1048
+Distancia del Nodo 1 a 347674 es 1048 tiempo 0.740989
+####################################
+71,495413,0.724172 distancia: -1
+No existe un camino del nodo 71 a 495413 tiempo 0.724172
+####################################
+9,858631,0.741673 distancia: 1480
+Distancia del Nodo 9 a 858631 es 1480 tiempo 0.741673
+####################################
+39,375053,0.733250 distancia: -1
+No existe un camino del nodo 39 a 375053 tiempo 0.733250
+####################################
+61,113379,0.726603 distancia: 431
+Distancia del Nodo 61 a 113379 es 431 tiempo 0.726603
+####################################
+19,873893,0.740600 distancia: 1755
+Distancia del Nodo 19 a 873893 es 1755 tiempo 0.740600
+####################################
+115,890073,0.718990 distancia: -1
+No existe un camino del nodo 115 a 890073 tiempo 0.718990
+####################################
+7,706279,0.739476 distancia: 978
+Distancia del Nodo 7 a 706279 es 978 tiempo 0.739476
+####################################
+13,580577,0.736620 distancia: -1
+No existe un camino del nodo 13 a 580577 tiempo 0.736620
+####################################
+1,537467,0.739959 distancia: 1007
+Distancia del Nodo 1 a 537467 es 1007 tiempo 0.739959
+####################################
+112,737076,0.719165 distancia: 777
+Distancia del Nodo 112 a 737076 es 777 tiempo 0.719165
+####################################
+106,999926,0.733007 distancia: 1819
+Distancia del Nodo 106 a 999926 es 1819 tiempo 0.733007
+####################################
+114,8745,0.717980 distancia: 643
+Distancia del Nodo 114 a 8745 es 643 tiempo 0.717980
+####################################
+55,82662,0.724434 distancia: -1
+No existe un camino del nodo 55 a 82662 tiempo 0.724434
+####################################
+113,185202,0.729721 distancia: -1
+No existe un camino del nodo 113 a 185202 tiempo 0.729721
+####################################
+31,695203,0.740307 distancia: 869
+Distancia del Nodo 31 a 695203 es 869 tiempo 0.740307
+####################################
+78,131165,0.730153 distancia: 218
+Distancia del Nodo 78 a 131165 es 218 tiempo 0.730153
+####################################
+32,214916,0.753566 distancia: 1098
+Distancia del Nodo 32 a 214916 es 1098 tiempo 0.753566
+####################################
+48,619854,0.726046 distancia: 1427
+Distancia del Nodo 48 a 619854 es 1427 tiempo 0.726046
+####################################
+80,686835,0.725316 distancia: 1441
+Distancia del Nodo 80 a 686835 es 1441 tiempo 0.725316
+####################################
+9,247313,0.737184 distancia: 553
+Distancia del Nodo 9 a 247313 es 553 tiempo 0.737184
+####################################
+41,477718,0.730677 distancia: 1158
+Distancia del Nodo 41 a 477718 es 1158 tiempo 0.730677
+####################################
+73,27775,0.737442 distancia: 729
+Distancia del Nodo 73 a 27775 es 729 tiempo 0.737442
+####################################
+3,344446,0.740104 distancia: 791
+Distancia del Nodo 3 a 344446 es 791 tiempo 0.740104
+####################################
+73,233544,0.721849 distancia: 706
+Distancia del Nodo 73 a 233544 es 706 tiempo 0.721849
+####################################
+73,200676,0.732139 distancia: -1
+No existe un camino del nodo 73 a 200676 tiempo 0.732139
+####################################
+62,394233,0.719875 distancia: 573
+Distancia del Nodo 62 a 394233 es 573 tiempo 0.719875
+####################################
+92,120375,0.726537 distancia: 403
+Distancia del Nodo 92 a 120375 es 403 tiempo 0.726537
+####################################
+41,786210,0.738931 distancia: 955
+Distancia del Nodo 41 a 786210 es 955 tiempo 0.738931
+####################################
+85,470374,0.718161 distancia: 767
+Distancia del Nodo 85 a 470374 es 767 tiempo 0.718161
+####################################
+35,58261,0.740329 distancia: -1
+No existe un camino del nodo 35 a 58261 tiempo 0.740329
+####################################
+105,874989,0.722520 distancia: 1758
+Distancia del Nodo 105 a 874989 es 1758 tiempo 0.722520
+####################################
+70,383836,0.724901 distancia: 1149
+Distancia del Nodo 70 a 383836 es 1149 tiempo 0.724901
+####################################
+26,60873,0.731600 distancia: 907
+Distancia del Nodo 26 a 60873 es 907 tiempo 0.731600
+####################################
+44,977295,0.731568 distancia: 1232
+Distancia del Nodo 44 a 977295 es 1232 tiempo 0.731568
+####################################
+109,239006,0.728634 distancia: -1
+No existe un camino del nodo 109 a 239006 tiempo 0.728634
+####################################
+76,81921,0.724128 distancia: 928
+Distancia del Nodo 76 a 81921 es 928 tiempo 0.724128
+####################################
+108,898731,0.724087 distancia: 1521
+Distancia del Nodo 108 a 898731 es 1521 tiempo 0.724087
+####################################
+14,579140,0.743119 distancia: 705
+Distancia del Nodo 14 a 579140 es 705 tiempo 0.743119
+####################################
+47,547001,0.727978 distancia: -1
+No existe un camino del nodo 47 a 547001 tiempo 0.727978
+####################################
+99,800182,0.720366 distancia: 899
+Distancia del Nodo 99 a 800182 es 899 tiempo 0.720366
+####################################
+67,950493,0.722326 distancia: -1
+No existe un camino del nodo 67 a 950493 tiempo 0.722326
+####################################
+81,611383,0.724185 distancia: 923
+Distancia del Nodo 81 a 611383 es 923 tiempo 0.724185
+####################################
+75,933511,0.725546 distancia: 1371
+Distancia del Nodo 75 a 933511 es 1371 tiempo 0.725546
+####################################
+49,930351,0.729557 distancia: 1236
+Distancia del Nodo 49 a 930351 es 1236 tiempo 0.729557
+####################################
+35,681689,0.728955 distancia: 1335
+Distancia del Nodo 35 a 681689 es 1335 tiempo 0.728955
+####################################
+8,376561,0.746605 distancia: -1
+No existe un camino del nodo 8 a 376561 tiempo 0.746605
+####################################
+78,458941,0.720830 distancia: -1
+No existe un camino del nodo 78 a 458941 tiempo 0.720830
+####################################
+79,886954,0.726404 distancia: 1775
+Distancia del Nodo 79 a 886954 es 1775 tiempo 0.726404
+####################################
+112,853239,0.720848 distancia: -1
+No existe un camino del nodo 112 a 853239 tiempo 0.720848
+####################################
+118,716805,0.721113 distancia: 1403
+Distancia del Nodo 118 a 716805 es 1403 tiempo 0.721113
+####################################
+93,556094,0.721293 distancia: 581
+Distancia del Nodo 93 a 556094 es 581 tiempo 0.721293
+####################################
+127,876043,0.716196 distancia: -1
+No existe un camino del nodo 127 a 876043 tiempo 0.716196
+####################################
+118,616608,0.724913 distancia: 1106
+Distancia del Nodo 118 a 616608 es 1106 tiempo 0.724913
+####################################
+15,631788,0.732513 distancia: 1404
+Distancia del Nodo 15 a 631788 es 1404 tiempo 0.732513
+####################################
+69,901966,0.727130 distancia: -1
+No existe un camino del nodo 69 a 901966 tiempo 0.727130
+####################################
+127,599042,0.718258 distancia: -1
+No existe un camino del nodo 127 a 599042 tiempo 0.718258
+####################################
+55,786802,0.728135 distancia: 1533
+Distancia del Nodo 55 a 786802 es 1533 tiempo 0.728135
+####################################
+105,854669,0.720007 distancia: 1418
+Distancia del Nodo 105 a 854669 es 1418 tiempo 0.720007
+####################################
+111,951561,0.722154 distancia: 1401
+Distancia del Nodo 111 a 951561 es 1401 tiempo 0.722154
+####################################
+94,558979,0.722036 distancia: -1
+No existe un camino del nodo 94 a 558979 tiempo 0.722036
+####################################
+29,828557,0.732390 distancia: 1356
+Distancia del Nodo 29 a 828557 es 1356 tiempo 0.732390
+####################################
+114,137783,0.716255 distancia: -1
+No existe un camino del nodo 114 a 137783 tiempo 0.716255
+####################################
+126,937830,0.719959 distancia: 1641
+Distancia del Nodo 126 a 937830 es 1641 tiempo 0.719959
+####################################
+67,93166,0.725889 distancia: -1
+No existe un camino del nodo 67 a 93166 tiempo 0.725889
+####################################
+56,734080,0.723620 distancia: 760
+Distancia del Nodo 56 a 734080 es 760 tiempo 0.723620
+####################################
+8,135081,0.736701 distancia: 208
+Distancia del Nodo 8 a 135081 es 208 tiempo 0.736701
+####################################
+58,694704,0.729275 distancia: 1340
+Distancia del Nodo 58 a 694704 es 1340 tiempo 0.729275
+####################################
+38,388837,0.732227 distancia: -1
+No existe un camino del nodo 38 a 388837 tiempo 0.732227
+####################################
+32,358234,0.733591 distancia: 566
+Distancia del Nodo 32 a 358234 es 566 tiempo 0.733591
+####################################
+110,645148,0.723843 distancia: 687
+Distancia del Nodo 110 a 645148 es 687 tiempo 0.723843
+####################################
+22,666584,0.741292 distancia: 1228
+Distancia del Nodo 22 a 666584 es 1228 tiempo 0.741292
+####################################
+87,260844,0.722492 distancia: 1017
+Distancia del Nodo 87 a 260844 es 1017 tiempo 0.722492
+####################################
+124,598415,0.719249 distancia: 895
+Distancia del Nodo 124 a 598415 es 895 tiempo 0.719249
+####################################
+0,127537,0.739882 distancia: 666
+Distancia del Nodo 0 a 127537 es 666 tiempo 0.739882
+####################################
+8,746721,0.740530 distancia: -1
+No existe un camino del nodo 8 a 746721 tiempo 0.740530
+####################################
+22,360424,0.745307 distancia: 770
+Distancia del Nodo 22 a 360424 es 770 tiempo 0.745307
+####################################
+39,523880,0.731162 distancia: 1364
+Distancia del Nodo 39 a 523880 es 1364 tiempo 0.731162
+####################################
+59,417795,0.737263 distancia: 1163
+Distancia del Nodo 59 a 417795 es 1163 tiempo 0.737263
+####################################
+9,893353,0.737144 distancia: -1
+No existe un camino del nodo 9 a 893353 tiempo 0.737144
+####################################
+50,92392,0.740974 distancia: -1
+No existe un camino del nodo 50 a 92392 tiempo 0.740974
+####################################
+45,215892,0.723330 distancia: 1062
+Distancia del Nodo 45 a 215892 es 1062 tiempo 0.723330
+####################################
+18,913089,0.734140 distancia: 986
+Distancia del Nodo 18 a 913089 es 986 tiempo 0.734140
+####################################
+72,222701,0.722757 distancia: 851
+Distancia del Nodo 72 a 222701 es 851 tiempo 0.722757
+####################################
+118,440364,0.719978 distancia: -1
+No existe un camino del nodo 118 a 440364 tiempo 0.719978
+####################################
+6,230039,0.737655 distancia: 263
+Distancia del Nodo 6 a 230039 es 263 tiempo 0.737655
+####################################
+74,25617,0.723364 distancia: -1
+No existe un camino del nodo 74 a 25617 tiempo 0.723364
+####################################
+88,709062,0.725929 distancia: 739
+Distancia del Nodo 88 a 709062 es 739 tiempo 0.725929
+####################################
+89,169386,0.723848 distancia: -1
+No existe un camino del nodo 89 a 169386 tiempo 0.723848
+####################################
+19,690108,0.735283 distancia: 779
+Distancia del Nodo 19 a 690108 es 779 tiempo 0.735283
+####################################
+70,422336,0.728233 distancia: 688
+Distancia del Nodo 70 a 422336 es 688 tiempo 0.728233
+####################################
+124,530498,0.718379 distancia: 906
+Distancia del Nodo 124 a 530498 es 906 tiempo 0.718379
+####################################
+106,951012,0.727145 distancia: -1
+No existe un camino del nodo 106 a 951012 tiempo 0.727145
+####################################
+116,764702,0.716772 distancia: 1350
+Distancia del Nodo 116 a 764702 es 1350 tiempo 0.716772
+####################################
+107,158130,0.721633 distancia: 181
+Distancia del Nodo 107 a 158130 es 181 tiempo 0.721633
+####################################
+121,376226,0.720064 distancia: 481
+Distancia del Nodo 121 a 376226 es 481 tiempo 0.720064
+####################################
+80,737083,0.720181 distancia: -1
+No existe un camino del nodo 80 a 737083 tiempo 0.720181
+####################################
+102,491555,0.731488 distancia: 944
+Distancia del Nodo 102 a 491555 es 944 tiempo 0.731488
+####################################
+122,904043,0.716386 distancia: -1
+No existe un camino del nodo 122 a 904043 tiempo 0.716386
+####################################
+124,15692,0.716860 distancia: 583
+Distancia del Nodo 124 a 15692 es 583 tiempo 0.716860
+####################################
+56,936475,0.722883 distancia: 1363
+Distancia del Nodo 56 a 936475 es 1363 tiempo 0.722883
+####################################
+56,829084,0.725014 distancia: 865
+Distancia del Nodo 56 a 829084 es 865 tiempo 0.725014
+####################################
+35,661123,0.729900 distancia: 749
+Distancia del Nodo 35 a 661123 es 749 tiempo 0.729900
+####################################
+8,94161,0.738524 distancia: -1
+No existe un camino del nodo 8 a 94161 tiempo 0.738524
+####################################
+100,90428,0.728565 distancia: 418
+Distancia del Nodo 100 a 90428 es 418 tiempo 0.728565
+####################################
+108,410979,0.731606 distancia: 1281
+Distancia del Nodo 108 a 410979 es 1281 tiempo 0.731606
+####################################
+1,372446,0.736852 distancia: 821
+Distancia del Nodo 1 a 372446 es 821 tiempo 0.736852
+####################################
+99,692870,0.725394 distancia: 1463
+Distancia del Nodo 99 a 692870 es 1463 tiempo 0.725394
+####################################
+125,744139,0.716044 distancia: 776
+Distancia del Nodo 125 a 744139 es 776 tiempo 0.716044
+####################################
+26,377001,0.733388 distancia: 404
+Distancia del Nodo 26 a 377001 es 404 tiempo 0.733388
+####################################
+77,833487,0.719517 distancia: 1247
+Distancia del Nodo 77 a 833487 es 1247 tiempo 0.719517
+####################################
+124,929117,0.717485 distancia: 964
+Distancia del Nodo 124 a 929117 es 964 tiempo 0.717485
+####################################
+99,7631,0.722993 distancia: 539
+Distancia del Nodo 99 a 7631 es 539 tiempo 0.722993
+####################################
+25,927145,0.735288 distancia: 1047
+Distancia del Nodo 25 a 927145 es 1047 tiempo 0.735288
+####################################
+25,249368,0.728985 distancia: 592
+Distancia del Nodo 25 a 249368 es 592 tiempo 0.728985
+####################################
+69,693771,0.727160 distancia: 1395
+Distancia del Nodo 69 a 693771 es 1395 tiempo 0.727160
+####################################
+112,22207,0.720027 distancia: 119
+Distancia del Nodo 112 a 22207 es 119 tiempo 0.720027
+####################################
+98,952483,0.719471 distancia: -1
+No existe un camino del nodo 98 a 952483 tiempo 0.719471
+####################################
+98,430151,0.726849 distancia: 483
+Distancia del Nodo 98 a 430151 es 483 tiempo 0.726849
+####################################
+74,337346,0.722260 distancia: 613
+Distancia del Nodo 74 a 337346 es 613 tiempo 0.722260
+####################################
+102,714495,0.727782 distancia: 1113
+Distancia del Nodo 102 a 714495 es 1113 tiempo 0.727782
+####################################
+62,391595,0.722823 distancia: 926
+Distancia del Nodo 62 a 391595 es 926 tiempo 0.722823
+####################################
+Tiempo ejecucion : 93.467396 seg 

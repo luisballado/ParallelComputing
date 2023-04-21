@@ -1,0 +1,105 @@
+NUM NODES: 1000000 se omite el PRINT
+####################################
+NODOS: 1000000
+--MODE=SECUENCIAL
+robots: 32
+####################################
+RESULTADO
+####################################
+9,764020,0.737022 distancia: 775
+Distancia del Nodo 9 a 764020 es 775 tiempo 0.737022
+####################################
+10,280783,0.736928 distancia: -1
+No existe un camino del nodo 10 a 280783 tiempo 0.736928
+####################################
+23,334571,0.743983 distancia: 882
+Distancia del Nodo 23 a 334571 es 882 tiempo 0.743983
+####################################
+7,138899,0.737622 distancia: 1032
+Distancia del Nodo 7 a 138899 es 1032 tiempo 0.737622
+####################################
+6,304054,0.741885 distancia: 366
+Distancia del Nodo 6 a 304054 es 366 tiempo 0.741885
+####################################
+14,142415,0.735196 distancia: 543
+Distancia del Nodo 14 a 142415 es 543 tiempo 0.735196
+####################################
+0,232175,0.740226 distancia: 407
+Distancia del Nodo 0 a 232175 es 407 tiempo 0.740226
+####################################
+18,468713,0.734776 distancia: -1
+No existe un camino del nodo 18 a 468713 tiempo 0.734776
+####################################
+12,6502,0.735701 distancia: -1
+No existe un camino del nodo 12 a 6502 tiempo 0.735701
+####################################
+23,408856,0.736409 distancia: -1
+No existe un camino del nodo 23 a 408856 tiempo 0.736409
+####################################
+1,215032,0.738253 distancia: 246
+Distancia del Nodo 1 a 215032 es 246 tiempo 0.738253
+####################################
+29,390837,0.734340 distancia: -1
+No existe un camino del nodo 29 a 390837 tiempo 0.734340
+####################################
+26,706941,0.731670 distancia: -1
+No existe un camino del nodo 26 a 706941 tiempo 0.731670
+####################################
+0,214318,0.737145 distancia: 532
+Distancia del Nodo 0 a 214318 es 532 tiempo 0.737145
+####################################
+11,979743,0.731357 distancia: -1
+No existe un camino del nodo 11 a 979743 tiempo 0.731357
+####################################
+19,574852,0.744312 distancia: 1419
+Distancia del Nodo 19 a 574852 es 1419 tiempo 0.744312
+####################################
+31,814341,0.729437 distancia: 1124
+Distancia del Nodo 31 a 814341 es 1124 tiempo 0.729437
+####################################
+17,472850,0.733334 distancia: 1305
+Distancia del Nodo 17 a 472850 es 1305 tiempo 0.733334
+####################################
+24,4435,0.731628 distancia: 415
+Distancia del Nodo 24 a 4435 es 415 tiempo 0.731628
+####################################
+14,652656,0.732198 distancia: 1294
+Distancia del Nodo 14 a 652656 es 1294 tiempo 0.732198
+####################################
+2,856811,0.737939 distancia: -1
+No existe un camino del nodo 2 a 856811 tiempo 0.737939
+####################################
+10,393597,0.735083 distancia: 982
+Distancia del Nodo 10 a 393597 es 982 tiempo 0.735083
+####################################
+20,429860,0.732982 distancia: 1269
+Distancia del Nodo 20 a 429860 es 1269 tiempo 0.732982
+####################################
+21,680387,0.735852 distancia: 1052
+Distancia del Nodo 21 a 680387 es 1052 tiempo 0.735852
+####################################
+31,65995,0.731048 distancia: 1033
+Distancia del Nodo 31 a 65995 es 1033 tiempo 0.731048
+####################################
+15,326084,0.733455 distancia: 407
+Distancia del Nodo 15 a 326084 es 407 tiempo 0.733455
+####################################
+12,408480,0.732683 distancia: 878
+Distancia del Nodo 12 a 408480 es 878 tiempo 0.732683
+####################################
+26,728405,0.735480 distancia: 1113
+Distancia del Nodo 26 a 728405 es 1113 tiempo 0.735480
+####################################
+6,164724,0.733051 distancia: 882
+Distancia del Nodo 6 a 164724 es 882 tiempo 0.733051
+####################################
+29,385542,0.737065 distancia: 898
+Distancia del Nodo 29 a 385542 es 898 tiempo 0.737065
+####################################
+5,765051,0.734058 distancia: -1
+No existe un camino del nodo 5 a 765051 tiempo 0.734058
+####################################
+29,414909,0.735403 distancia: 1294
+Distancia del Nodo 29 a 414909 es 1294 tiempo 0.735403
+####################################
+Tiempo ejecucion : 23.603127 seg 

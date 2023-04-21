@@ -5,13 +5,23 @@
 #include <iomanip>
 #include <unistd.h>
 #include <iomanip>
-#include <fstream>
-#include <string>
+#include <random>
+
 #include <omp.h>
 
-//time ./bfs_openmp < problem_size/1M.txt --MODE=OPENMP --robots=10 --nth=1 --locations=robots.txt --results
+// RANDOM /////////////////////////////////////////////
+// Generar numeros random /////////////////////////////
+///////////////////////////////////////////////////////
+std::random_device rd;
+std::mt19937 gen(rd());
 
-///////////////////////////////////////////////////////////
+int random(int low, int high){
+    std::uniform_int_distribution<> dist(low, high);
+    return dist(gen);
+}
+///////////////////////////////////////////////////////
+
+// SPLIT WORK /////////////////////////////////////////////
 // Repartir trabajo respecto al num robots y num threads //
 ///////////////////////////////////////////////////////////
 std::vector<int> get_workload(int robots, int threads){
@@ -21,9 +31,9 @@ std::vector<int> get_workload(int robots, int threads){
   int sobra;
   
   work = robots / threads;
-  
+
   std::vector<int> workers;
-  
+
   //si work no es entero
   if(work*threads != robots){
     
@@ -55,12 +65,28 @@ std::vector<int> get_workload(int robots, int threads){
     for(int i = 0;i<threads;i++){
       sum_work = sum_work + work;
       workers.push_back(work);
-    }    
+    }
+    
   }
   
   return workers;
   
 }
+
+///////////////////////////////////////////////////////////
+
+// Data structures used by the BFS algorithm
+struct ThreadData {
+  int thread_id;
+  //pthread_mutex_t *mutex;
+  //pthread_barrier_t* barrier;
+  int num_nodes;
+  int num_robots;
+  std::map<int, std::vector<int>> adj_list;
+  std::vector<std::tuple<int,int,double,int>> *vec_res;
+  int start_node;
+  int finish_node;
+};
 
 //funcion get_neighbors para obtener los vecinos respecto a la matriz
 std::vector<std::pair<int, int>> get_neighbors(int i, int j, int rows, int cols) {
@@ -100,7 +126,9 @@ void print_dist(int rows,int cols,std::vector<int>& distance) {
 
 // funcion bfs
 // regresar vector de resultados 
-void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance_bfs, int num_nodes, bool print,int num_robots, std::vector<std::tuple<int,int,double,int>> &vec_res, int rows, int cols, int start_node, int finish_node, std::vector<std::vector<int>>& ubicaciones_robots){
+void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance,
+	 int num_nodes, bool print,int num_robots,
+	 std::vector<std::tuple<int,int,double,int>> &vec_res, int rows, int cols, int start_node, int finish_node){
 
   int thread_id = omp_get_thread_num();
   int n_threads = omp_get_num_threads();
@@ -113,17 +141,17 @@ void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance_b
   for(int r = 0; r < num_robots; r++){
     
     //se inicializa en -1 para cada nuevo robot
-    distance_bfs.assign(num_nodes, -1); //inicializar todas en -1
+    distance.assign(num_nodes, -1); //inicializar todas en -1
     
     start = clock();
 
     //puede ser un vector
-    int start_node  = ubicaciones_robots[r][0];
-    int finish_node = ubicaciones_robots[r][1];
-      
+    //int start_node = random(0, num_nodes-1);
+    //int finish_node = random(0, num_nodes-1);
+  
     std::queue<int> q;
 
-    distance_bfs[start_node] = 0;
+    distance[start_node] = 0;
     q.push(start_node);
   
     while (!q.empty()) {
@@ -131,13 +159,13 @@ void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance_b
       q.pop();
       
       for (int neighbor : adj_list[node]) {
-	if (distance_bfs[neighbor] == -1) {
-	  distance_bfs[neighbor] = distance_bfs[node] + 1;
+	if (distance[neighbor] == -1) {
+	  distance[neighbor] = distance[node] + 1;
 	  q.push(neighbor);
 	}
       
 	if(print){
-	  print_dist(rows,cols,distance_bfs);
+	  print_dist(rows,cols,distance);
 	}
       }
     }
@@ -145,35 +173,38 @@ void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance_b
     end = clock();
     double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
         
-    vec_res.emplace_back(start_node,finish_node,time_taken,distance_bfs[finish_node]);
+    vec_res.emplace_back(start_node,finish_node,time_taken,distance[finish_node]);
   }
 }
 
 // funcion bfs
 // regresar vector de resultados 
-void bfs_openmp(std::map<int, std::vector<int>>& adj_list, std::vector<std::vector<int>> distance_openmp, int num_nodes, bool print,int num_robots, std::vector<std::tuple<int,int,double,int>> &vec_res, int rows, int cols, int start_node, int finish_node, int num_threads, std::vector<std::vector<int>>& ubicaciones_robots){
-    
+void bfs_openmp(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance,
+	 int num_nodes, bool print,int num_robots,
+	 std::vector<std::tuple<int,int,double,int>> &vec_res, int rows, int cols, int start_node, int finish_node){
+
+  int thread_id = omp_get_thread_num();
+  int n_threads = omp_get_num_threads();
+  
+  //std::cout << "Hello from thread " << thread_id << " of " << n_threads << std::endl;
+  
   clock_t start, end;
 
-#pragma omp parallel for num_threads(num_threads)
-  for(int r = 0; r < num_robots; r++){
 
-    //int thread_id = omp_get_thread_num();
-    //int n_threads = omp_get_num_threads();
+  for(int r = 0; r < num_robots; r++){
     
-    //std::cout << "Hello from thread " << thread_id << " of " << n_threads << std::endl;
     //se inicializa en -1 para cada nuevo robot
-    //distance.assign(num_nodes, -1); //inicializar todas en -1
+    distance.assign(num_nodes, -1); //inicializar todas en -1
     
     start = clock();
 
     //puede ser un vector
-    int start_node  = ubicaciones_robots[r][0];
-    int finish_node = ubicaciones_robots[r][1];
+    //int start_node = random(0, num_nodes-1);
+    //int finish_node = random(0, num_nodes-1);
   
     std::queue<int> q;
 
-    distance_openmp[r][start_node] = 0;
+    distance[start_node] = 0;
     q.push(start_node);
   
     while (!q.empty()) {
@@ -181,23 +212,150 @@ void bfs_openmp(std::map<int, std::vector<int>>& adj_list, std::vector<std::vect
       q.pop();
       
       for (int neighbor : adj_list[node]) {
-	if (distance_openmp[r][neighbor] == -1) {
-	  distance_openmp[r][neighbor] = distance_openmp[r][node] + 1;
+	if (distance[neighbor] == -1) {
+	  distance[neighbor] = distance[node] + 1;
 	  q.push(neighbor);
+	}
+      
+	if(print){
+	  print_dist(rows,cols,distance);
 	}
       }
     }
     
     end = clock();
     double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
-    
-#pragma omp critical
-    {
-      vec_res.emplace_back(start_node,finish_node,time_taken,distance_openmp[r][finish_node]);
-    }
-    
+        
+    vec_res.emplace_back(start_node,finish_node,time_taken,distance[finish_node]);
   }
 }
+
+// trabajo que corre en paralelo
+void *parallel_bfs_thread(void *arg) {
+
+  /*
+    Se itera aqui respecto al numero de robots 
+  */
+
+  ThreadData *data = (ThreadData *)arg;
+  int thread_id = data->thread_id;
+  //pthread_mutex_t *mutex = data->mutex;
+  int num_nodes = data->num_nodes;
+  std::map<int,std::vector<int>> adj_list = data->adj_list;
+  std::vector<std::tuple<int,int,double,int>> *vec_res = data->vec_res;
+  int num_robots = data->num_robots;
+  int start_node = data->start_node;
+  int finish_node = data->finish_node;
+  
+  //std::cout << "dentro de parallel_bfs_thread se creo el thread: " << thread_id << " me tocaron:" << num_robots << std::endl; 
+  
+  clock_t start, end;
+
+  //std::map<int, std::vector<int>> adj_list;
+  std::vector<int> distance;//(num_nodes, -1); //cada hilo tiene su vector de distancias
+  
+  for(int r = 0; r < num_robots; r++){
+    distance.assign(num_nodes, -1);
+    start = clock();
+
+    //int start_node = random(0, num_nodes-1);
+    //int finish_node = random(0, num_nodes-1);
+
+    //std::cout << "dentro de parallel_bfs_thread Nodo Inicio: " << start_node << std::endl;
+    //std::cout << "dentro de parallel_bfs_thread Nodo Fin: " << finish_node << std::endl; 
+    
+    std::queue<int> q;
+    distance[start_node] = 0;    //cada quien tiene su fontera
+    q.push(start_node);  //cada quien tiene su fontera
+    
+    // Hasta que la cola se quede sin elementos
+    while (!q.empty()) {
+      int node = q.front();
+      q.pop();
+      
+      for(int neighbor : adj_list[node]){
+	if(distance[neighbor]==-1){
+	  distance[neighbor] = distance[node] + 1;
+	  q.push(neighbor);
+	}
+      }
+    }
+    
+
+    end = clock();
+    double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
+    
+    vec_res->emplace_back(start_node,finish_node,time_taken,distance[finish_node]);
+    
+    //std::cout << "THREADID: " << thread_id << "ROBOTS - " << num_robots << "modifique " << r << std::endl;
+
+  }
+  
+  // Exit thread
+  pthread_exit(NULL);
+  
+}
+
+
+
+void bfs_pthreads(std::map<int, std::vector<int>> adj_list,int num_nodes, int num_threads, int num_robots,std::vector<std::tuple<int,int,double,int>> &vec_res, int start_node, int finish_node){
+
+  //void parallel_bfs(std::map<int, std::vector<int>> adj_list,int num_nodes, int num_threads, int num_robots){
+
+  //Se definen inicios random y destinos random
+  //int start_node  = random(0, num_nodes-1);
+  //int finish_node = random(0, num_nodes-1);
+  
+  std::vector<int> work_load;
+  
+  // obtener la carga de trabajo
+  // es un vector con la cardinalidad de hilos con el num de trabajo
+  // para cada hilo
+  // hacer este paso si la opcion es pthreads
+  if(num_threads>1)
+    work_load = get_workload(num_robots, num_threads);
+  else
+    work_load = {num_robots};
+
+  /*
+  // Saber si el reparto de trabajos se realizo bien
+  for(int w=0;w<work_load.size();++w){
+     std::cout << work_load[w] << std::endl;
+  }
+  exit(-1);
+  */
+    
+  // Crear thread data e inicializar
+  ThreadData thread_data[num_threads];
+  //pthread_t threads[num_threads];
+  pthread_t* threads;
+  threads = (pthread_t*)malloc(sizeof(pthread_t)*num_threads);
+
+  // POOL DE THREADS
+  for (int i = 0; i < num_threads; i++) {
+    thread_data[i].thread_id = i;
+    thread_data[i].num_nodes = num_nodes;
+    thread_data[i].num_robots = work_load[i];
+    thread_data[i].adj_list = adj_list;
+    thread_data[i].vec_res = &vec_res;
+    thread_data[i].start_node = start_node;
+    thread_data[i].finish_node = finish_node;
+    pthread_create(&threads[i], NULL, parallel_bfs_thread, (void *)&thread_data[i]);
+  }
+  
+  // Join de threads
+  for (int i = 0; i < num_threads; i++) {
+    //std::cout << "TERMINE" << i << std::endl;
+    pthread_join(threads[i], NULL);
+  }
+  
+  // Clean mutex
+  //pthread_mutex_destroy(&mutex);
+
+  free(threads);
+    
+}
+
 
 //string -> int
 constexpr unsigned int str2int(const char* str, int h = 0){
@@ -217,18 +375,12 @@ int main(int argc, char* argv[]) {
   int num_threads = 1;
   int num_robots = 1;
   
-  std::string location_robots;
-
-  int robot_inicio, robot_fin;
-  
-  std::vector<std::vector<int>> ubicaciones_robots;
-
   const char* MODE = "";
 
   std::string MODO;
 
   for(int count = 0; count < argc; count++ ){
-
+    
     //mostrar frente de onda
     if(argv[count] == std::string("--SHOW"))
       PRINT = true;
@@ -255,65 +407,10 @@ int main(int argc, char* argv[]) {
       num_robots = std::stoi(std::string(argv[count]).substr(prefijo_r.size()));
     }
 
-    //ARCHIVO DE ROBOTS
-    if(std::string(argv[count]).substr(0,11) == std::string("--locations")){
-      std::string prefijo("--locations=");
-
-      //Hacer resize al vector de ubicaciones robot
-      ubicaciones_robots.resize(num_robots);
+    if(std::string(argv[count]).substr(0,8) == std::string("--robots_file")){
+      std::string prefijo_r("--robots_file=");
       
-      location_robots = std::string(argv[count]).substr(prefijo.size()); 
-    
-      std::ifstream infile(location_robots);
-
-      if (!infile.is_open()) {
-        std::cout << "Failed to open file: " << location_robots << "\n";
-        return 1;
-      }
-      
-      int _robots_ = 0;
-      std::string line;
-
-      while (std::getline(infile, line)) {
-        std::istringstream iss(line);
-	std::string word;
-	std::cout << "-------" << std::endl;
-	std::cout << "ROBOT: " << _robots_ << std::endl;
-
-	int count = 0;
-
-	while (iss >> word) {
-	  if(count==0){
-	    robot_inicio = std::stoi(word);
-	    std::cout << robot_inicio << std::endl;
-	    count = 1;
-	  }else{
-	    robot_fin = std::stoi(word);
-	    count = 0;
-	    std::cout << robot_fin << std::endl;
-	  }
-	}
-	
-	ubicaciones_robots[_robots_].push_back(robot_inicio);
-	ubicaciones_robots[_robots_].push_back(robot_fin);
-	
-	std::cout << "-------" << std::endl;
-	_robots_++;
-      }
-
-      //IMPRIMIR VECTOR UBICACIONES
-      /****
-      for(int i = 0; i < ubicaciones_robots.size(); i++){
-	std::cout << "ROBOT " << i << " --> [";
-	for(int j = 0; j < ubicaciones_robots[i].size(); j++){
-	  std::cout << ubicaciones_robots[i][j] << " ";
-	}
-	std::cout << "]" << std::endl;
-      }
-      exit(-1);
-      ***/
     }
-    
   }
   
   /////////////////////RESULTADOS///////////////////////
@@ -382,36 +479,44 @@ int main(int argc, char* argv[]) {
   double time_taken_all;
   
   std::cin >> start_node >> finish_node;
-
-  //HACER UN VECTOR DE VECTORES POR ROBOT
-  std::vector<std::vector<int>> distance_openmp(num_robots, std::vector<int>(num_nodes, -1));
-
+  
   //inicializar vector de distancias en -1
   //respecto a la cardinalidad num_nodes
-  std::vector<int> distance_bfs(num_nodes, -1);
-  
+  //std::vector<int> distance(num_nodes, -1);
+  std::vector<int> distance(num_nodes, -1);
+
   //SE TOMA EL TIEMPO DEL ALGORITMO YA QUE AHI SE PARALELIZA O NO
+  
+  
   //analizar pasandole el nodo inicio, nodo destino y vector de distancias
   //se analiza todo el mapa
   switch(str2int(MODE)){
 
   case str2int("--MODE=SECUENCIAL"):
-    
     start_all = clock();
-    bfs(adj_list, distance_bfs, num_nodes, PRINT, num_robots, vec_res, rows, cols, start_node, finish_node, ubicaciones_robots);
+    bfs(adj_list, distance, num_nodes, PRINT, num_robots, vec_res, rows, cols, start_node, finish_node);
     end_all = clock();
     break;
 
-    //se paraleliza por exploracion de robot
-  case str2int("--MODE=OPENMP"):
-        
+  case str2int("--MODE=PTHREADS"):
+    
     //no hay print en este modulo
     if(PRINT)
-      std::cout << "NO PRINT EN HILOS" << std::endl;
+      std::cout << "NO PRINT EN PTHREADS" << std::endl;
     start_all = clock();
+    bfs_pthreads(adj_list, num_nodes, num_threads, num_robots, vec_res, start_node, finish_node);
+    end_all = clock();
+    break;
     
-    bfs_openmp(adj_list, distance_openmp, num_nodes, PRINT, num_robots, vec_res, rows, cols, start_node, finish_node, num_threads, ubicaciones_robots);
-    
+    //se paraleliza por exploracion de robot
+  case str2int("--MODE=OPENMP"):
+
+    //no hay print en este modulo
+    if(PRINT)
+      std::cout << "NO PRINT EN PTHREADS" << std::endl;
+    start_all = clock();
+#   pragma omp parallel num_threads(num_threads)
+    bfs_openmp(adj_list, distance, num_nodes, PRINT, num_robots, vec_res, rows, cols, start_node, finish_node);
     end_all = clock();
     break;
 
@@ -422,13 +527,15 @@ int main(int argc, char* argv[]) {
     std::cout << "ERROR: EL MODO DEBE SER ELEGIDO. "
 	      << "LAS POSIBLES OPCIONES SON: \n"
 	      << "--MODE=SECUENCIAL\n"
-	      << "--MODE=OPENMP\n"
+	      << "--MODE=PTHREADS\n"
 	      << std::endl;
     
     return -1;
     
   }  
+
   
+            
   time_taken_all = double(end_all - start_all) / double(CLOCKS_PER_SEC);
   
   if(show_result){
@@ -474,7 +581,9 @@ int main(int argc, char* argv[]) {
       }
     }
   }
-    
+  
+  
+  
   if(show_result)
     
     std::cout << "Tiempo ejecucion : "
@@ -482,20 +591,12 @@ int main(int argc, char* argv[]) {
 	      << time_taken_all << std::setprecision(9)
 	      << " seg " << std::endl;
   else{
-    system("clear");
+    //system("clear");
     std::cout << std::fixed
 	      << time_taken_all << std::setprecision(9)
 	      << std::endl;
   }
-
-  //IMPRIMIR VECTOR UBICACIONES
-  for(int i = 0; i < ubicaciones_robots.size(); i++){
-    std::cout << "ROBOT " << i << " --> [";
-    for(int j = 0; j < ubicaciones_robots[i].size(); j++){
-      std::cout << ubicaciones_robots[i][j] << " ";
-    }
-    std::cout << "]" << std::endl;
-  }
+  
   
   return 0;
     
