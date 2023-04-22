@@ -81,7 +81,7 @@ std::vector<std::pair<int, int>> get_neighbors(int i, int j, int rows, int cols)
 ///////////////////////////////////////////////////////////////////////
 // FUNCION BFS
 ///////////////////////////////////////////////////////////////////////
-void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance, int num_nodes, int mis_robots, std::vector<std::tuple<int,int,double,int>> &vec_res, std::vector<std::vector<int>>& ubicaciones_robots, int mpiID, int start_robot, int finish_robot){
+void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance, int num_nodes, int mis_robots, std::vector<std::tuple<int,int,double,int>> &vec_res, std::vector<std::vector<int>>& ubicaciones_robots, int mpiID, int start_robot, int finish_robot,int num_proc){
 
   clock_t start, end;
   
@@ -140,18 +140,20 @@ void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int>& distance, 
     MPI_Pack(&time_taken, 1, MPI_DOUBLE, buffer, buffer_size, &position, MPI_COMM_WORLD);
     MPI_Pack(&distancia, 1, MPI_INT, buffer, buffer_size, &position, MPI_COMM_WORLD);
     
-    MPI_Send(buffer,buffer_size,MPI_PACKED,0,mpiID,MPI_COMM_WORLD);
+    MPI_Send(buffer,buffer_size,MPI_PACKED,0,0,MPI_COMM_WORLD);
     
     if(mpiID == 0){
       //unpack
-      MPI_Recv(buffer,buffer_size,MPI_PACKED,mpiID,0,MPI_COMM_WORLD,&status);
-      position = 0;
-      MPI_Unpack(buffer,buffer_size,&position,&nodo_inicio,1,MPI_INT,MPI_COMM_WORLD);
-      MPI_Unpack(buffer,buffer_size,&position,&nodo_fin,1,MPI_INT,MPI_COMM_WORLD);
-      MPI_Unpack(buffer,buffer_size,&position,&time_taken,1,MPI_DOUBLE,MPI_COMM_WORLD);
-      MPI_Unpack(buffer,buffer_size,&position,&distancia,1,MPI_INT,MPI_COMM_WORLD);
-      
-      vec_res.emplace_back(nodo_inicio,nodo_fin,time_taken,distancia);
+      for(int p = 1; p < num_proc; p++){
+	MPI_Recv(buffer,buffer_size,MPI_PACKED,mpiID,0,MPI_COMM_WORLD,&status);
+	position = 0;
+	MPI_Unpack(buffer,buffer_size,&position,&nodo_inicio,1,MPI_INT,MPI_COMM_WORLD);
+	MPI_Unpack(buffer,buffer_size,&position,&nodo_fin,1,MPI_INT,MPI_COMM_WORLD);
+	MPI_Unpack(buffer,buffer_size,&position,&time_taken,1,MPI_DOUBLE,MPI_COMM_WORLD);
+	MPI_Unpack(buffer,buffer_size,&position,&distancia,1,MPI_INT,MPI_COMM_WORLD);
+	
+	vec_res.emplace_back(nodo_inicio,nodo_fin,time_taken,distancia);
+      }
     }
     
     
@@ -192,7 +194,7 @@ int main(int argc, char* argv[]) {
   MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
   
   printf("PROCESO %d!\n", my_id);
-
+  printf("NUM PROC %d!\n", num_proc);
   clock_t start, end;
   clock_t start_all, end_all;
   
@@ -348,7 +350,7 @@ int main(int argc, char* argv[]) {
   //se analiza todo el mapa
 
   printf("############ANTES###############");
-  bfs(adj_list, distance, num_nodes, mis_robots, vec_res, ubicaciones_robots, my_id, start_robot, finish_robot);
+  bfs(adj_list, distance, num_nodes, mis_robots, vec_res, ubicaciones_robots, my_id, start_robot, finish_robot,num_proc);
   
     
   if(show_result){
