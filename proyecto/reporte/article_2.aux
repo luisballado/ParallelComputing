@@ -19,25 +19,50 @@
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \providecommand \oddpage@label [2]{}
 \babel@aux{english}{}
-\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{section.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {II}Serial Algorithm}{2}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {i}map\_init}{2}{subsection.2.1}\protected@file@percent }
-\@writefile{loa}{\contentsline {algocf}{\numberline {1}{\ignorespaces Map initialize\relax }}{2}{algocf.1}\protected@file@percent }
-\newlabel{alg:loop}{{1}{2}{map\_init}{algocf.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {ii}propagate\_wavefront}{3}{subsection.2.2}\protected@file@percent }
-\@writefile{loa}{\contentsline {algocf}{\numberline {2}{\ignorespaces Propagate wavefront\relax }}{3}{algocf.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introducción}{1}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {II}Algoritmo Secuencial}{3}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {i}main()}{3}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {ii}Frente de onda (BFS)}{4}{subsection.2.2}\protected@file@percent }
+\@writefile{loa}{\contentsline {algocf}{\numberline {1}{\ignorespaces BFS\relax }}{4}{algocf.1}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{alg:two}{{2}{3}{propagate\_wavefront}{algocf.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {iii}clear\_map}{3}{subsection.2.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {iv}explore\_neighbors}{4}{subsection.2.4}\protected@file@percent }
-\@writefile{loa}{\contentsline {algocf}{\numberline {3}{\ignorespaces Explore neighbors\relax }}{4}{algocf.3}\protected@file@percent }
-\newlabel{alg:two}{{3}{4}{explore\_neighbors}{algocf.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {v}show\_map}{5}{subsection.2.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {III}Results}{6}{section.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {i}Examples}{6}{subsection.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {ii}Plot \& table}{6}{subsection.3.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Problem Size vs Time\relax }}{6}{table.caption.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {IV}Conclusions}{6}{section.4}\protected@file@percent }
+\newlabel{alg:two}{{1}{4}{Frente de onda (BFS)}{algocf.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {III}Algoritmo Paralelo}{5}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Resultados}{6}{section.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Grid de resultados\relax }}{6}{figure.caption.2}\protected@file@percent }
+\newlabel{fig:grid_resultados}{{1}{6}{Grid de resultados\relax }{figure.caption.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {i}Resultados Secuencial}{7}{subsection.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Secuencial\relax }}{7}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:secuencial}{{2}{7}{Secuencial\relax }{figure.caption.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Resultados Pthreads}{8}{section.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Pthreads\relax }}{8}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:secuencial}{{3}{8}{Pthreads\relax }{figure.caption.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {i}ACELERACION}{9}{subsection.5.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Pthreads Aceleración\relax }}{9}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:secuencial}{{4}{9}{Pthreads Aceleración\relax }{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {ii}EFICIENCIA}{10}{subsection.5.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Pthreads Eficiencia\relax }}{10}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:secuencial}{{5}{10}{Pthreads Eficiencia\relax }{figure.caption.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Resultados OpenMP}{11}{section.6}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces OpenMP\relax }}{11}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:secuencial}{{6}{11}{OpenMP\relax }{figure.caption.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {i}ACELERACION}{12}{subsection.6.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces OpenMP Aceleración\relax }}{12}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:secuencial}{{7}{12}{OpenMP Aceleración\relax }{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {ii}EFICIENCIA}{13}{subsection.6.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces OpenMP Eficiencia\relax }}{13}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:secuencial}{{8}{13}{OpenMP Eficiencia\relax }{figure.caption.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Resultados Pthreads vs. OpenMP}{14}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {i}ACELERACION}{14}{subsection.7.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Aceleración 32 Robots\relax }}{14}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:secuencial}{{9}{14}{Aceleración 32 Robots\relax }{figure.caption.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Aceleración 512 Robots\relax }}{15}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:secuencial}{{10}{15}{Aceleración 512 Robots\relax }{figure.caption.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {ii}EFICIENCIA}{15}{subsection.7.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Eficiencia 32 Robots\relax }}{16}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:secuencial}{{11}{16}{Eficiencia 32 Robots\relax }{figure.caption.12}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Eficiencia 512 Robots\relax }}{16}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:secuencial}{{12}{16}{Eficiencia 512 Robots\relax }{figure.caption.13}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VIII}Conclusions}{17}{section.8}\protected@file@percent }
 \bibcite{GeorgeABekey:2005dg}{George A. Bekey, 2005}
 \bibcite{RonaldCArkin:1998dg}{Ronald C. Arkin, 1998}
 \bibcite{article1:2018dg}{Zidane,Issa and Ibrahim,Khalil, 2018}

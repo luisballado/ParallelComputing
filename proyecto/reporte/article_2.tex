@@ -98,11 +98,11 @@
 
 \pretitle{\begin{center}\Huge\bfseries} % Article title formatting
 \posttitle{\end{center}} % Article title closing formatting
-\title{Wavefront Propagation} % Article title
+\title{Propagación de frente de onda} % Article title
 \author{%
 \textsc{Luis Alberto Ballado Aradias} \\%\thanks{A thank you or further information} \\[1ex] % Your name
 \normalsize Cinvestav Unidad Tamaulipas \\ % Your institution
-\normalsize \href{mailto:luis.ballado@cinvestav.mx}{luis.ballado@cinvestav.mx} % Your email address
+\normalsize luis.ballado@cinvestav.mx % Your email address
 %\and % Uncomment if 2 authors are required, duplicate these 4 lines if more
 %\textsc{Jane Smith}\thanks{Corresponding author} \\[1ex] % Second author's name
 %\normalsize University of Utah \\ % Second author's institution
@@ -111,7 +111,7 @@
 \date{\today} % Leave empty to omit a date
 \renewcommand{\maketitlehookd}{%
 \begin{abstract}
-\noindent The task of building a map of an unknown environment and concurrently using that map to navigate is a central problem in mobile robotics research. This document trys to replicate one of the knows algorithm (wavefront expansion) to explore a map using plan C code in the first phase and parallelizate it to perform its calculations trying to reduce the total computation time. Parallel wavefront expansion can significantly improve the computational performance and speed of the algorithm, particularly when processing large environments or complex obstacles. By utilizing multiple processing units, the algorithm should process the environment, reducing the total computation time. However, parallel software also has some limitations, such as increased complexity in implementation and increased communication overhead between processing units. It is important to consider these limitations.
+\noindent The task of building a map of an unknown environment and concurrently using that map to navigate is a central problem in mobile robotics research. This document trys to replicate one of the knows algorithm (wavefront expansion) to explore a map using C++ code in the first phase and parallelizate it to perform its calculations trying to reduce the total computation time. Parallel wavefront expansion can significantly improve the computational performance and speed of the algorithm, particularly when processing large environments or complex obstacles. By utilizing multiple processing units, the algorithm should process the environment, reducing the total computation time. However, parallel software also has some limitations, such as increased complexity in implementation and increased communication overhead between processing units. It is important to consider these limitations.
 
 \end{abstract}
 }
@@ -136,232 +136,396 @@
 
 
     
-\section{Introduction}
+\section{Introducción}
 
-\lettrine[nindent=0em,lines=3]{W} avefront expansion is a popular path planning algorithm used in mobile robotics for determining the optimal path for a robot to move from its starting position to its goal while avoiding obstacles. The algorithm starts with the goal position and creates a wavefront that expands outward, considering the surrounding environment and updating the cost of reaching each cell. The final path is determined by selecting the lowest cost path from the starting position to the goal.\\
+\lettrine[nindent=0em,lines=3]{L} a propagación del frente de onda es un algoritmo popular para la planificación de rutas en robótica móvil, es usado para determinar el camino óptimo para que un robot se mueva desde su punto de inicio a un objetivo en particular. Evitando obstáculos que pueda presentar a su paso. El algoritmo comienza con la posición destino y crea movimientos de exploración en sus vecindarios creando un frente de onda que se expande (como una onda alrededor), se debe actualizar el costo de navegar a cada nueva casilla. La ruta final es determinada seleccionando el gradiente de menor costo hasta la posición final establecida.\\
 
-Beginning with mid-1960s, the path planning has attracted interests from a lot of scholars. The path planning problem can be described in the following: given a robot and its working environment, the mobile robots searches for an optimal or suboptimal path from the initial state to the target state according to a certain performance criteria. Good path planning technology of mobile robot can not only save a lot of time, but also reduce the wear and capital investment of mobile robot.\\
+Desde la epoca de los 60s, la planificación de rutas a tenido un gran interés. La planificación de rutas es un problema que se puede describir de la siguiente manera: dado un robot que conoce su entorno, el robot móvil buscará un camino óptimo o sub-óptimo desde su posición inicial hacia el objetivo marcado acorde al criterio del entorno en el que navega. El uso de buenos planificadores aplicados a la robótica móvil puede no solo ayudar mucho tiempo en su desplazamiento, si no también reducir algunos recursos vitales en la robótica como lo es el consumo de energía.\\
 
-Wavefront expansion is well-suited for real-time applications, as it can be executed efficiently in terms of computation time. The algorithm can handle complex environments with many obstacles and can produce an optimal path in a relatively short amount of time. Additionally, the algorithm can be modified to incorporate additional objectives, such as time constraints or energy consumption, by incorporating different cost functions.\\
+La propagación de frente de onda es de gran ayuda cuando a priori se conoce el mapa del robot, y puede ser usado a su beneficio eficientando su tiempo de computo en aplicaciones en tiempo real. El algoritmo puede soportar ambientes simples como complejos, con muchos y pocos obstáculos produciendo una ruta óptima, conociendo si existe o no un camino en un tiempo relativamente corto. Adicional a ello, podemos dotar al algoritmo de mayor complejidad incorporando funciones de costo por desplazamiento de punto A $\rightarrow$ B en cuestiones de energía añadiendo diferentes consideraciones a su función de costo por visitar una nueva celda.\\
 
-One of the key benefits of wavefront expansion is its simplicity, which makes it easy to understand and implement. The algorithm is also highly flexible, as it can be adapted to various types of robots and environments, from ground robots to aerial robots, and from indoor to outdoor environments. \\
+Uno de los beneficios de la propagación del frente de onda es su simplicidad, que la hace fácil de entender e implementar en lenguajes como C++ haciendo uso de estructuras como Queues (Colas). El algoritmo parte de su similitud al algoritmo de búsqueda en anchura (BFS), es por eso que se optó en cambiar la implementación para hacer uso de la representación del mapa en una estructura tipo grafo haciendo más entendible, pero a mi persona complicada la implementación. Pero una vez entendiendo la sintaxis del lenguaje C++ y el uso correcto de estructuras y la representación del mapa como una lista de adyacencia fué posible hacer uso del algoritmo en su forma correcta.\\
 
-However, wavefront expansion has some limitations that need to be considered. For example, the algorithm does not consider the dynamics of the robot or the motion constraints of the environment. As a result, the final path produced by the algorithm may not be feasible for the robot to follow.
+Aunque, la propagación del frente de onda tiene sus limitaciones, es caso de estudio para llegar a una eficiente implementación en una versión paralela.\\
+
+\textbf{Búsqueda en anchura (BFS - Breadth First Search)}, desde la universidad me facinaba y sorprendian los videos asiaticos de concursos de robótica, en donde resuelven un laberinto en cuestion de segundos \href{https://www.youtube.com/watch?v=kMOssi5IcP0}{ver video}, en ese momento sabia que lo resolvian mapeando antes el entorno y por las clases de matemáticas discretas lo resolvian aplicando algún algoritmo para grafos, pero desconocia del tema, al tomar la clase de Análisis y Diseño de Algoritmos y tomar algunas sesiones de algoritmos para grafos quede fascinado de su aplicación en el mundo real fuera de los tipicos ejemplos de redes sociales, ahí comprendí que es un campo ahora de mi interés replantiandome de nuevo el problema y viendolo como un grafo. Aplicando el algoritmo BFS cuya particularidad es encontrar el camino más corto en un grafo ponderado, el algoritmo inicia en algún nodo del grafo y explora los nodos vecinos primero antes de moverse al siguiente nodo.\\
+
+Muchos problemas en teoria de grafos pueden ser representados usando matrices. Estos son grafos implicitos que podemos determinar los vecinos del nodos basados en la ubicación en la matriz.\\
+
+Una forma de resolver problemas que pueden ser representados como matrices o gradillas, es primero convertir la matriz a un formato como una lista de adyacencia, esta lista representará los vecinos de dicho nodo. Partiendo que en nuestro problema se pueden presentar obstáculos que pueden incomunicar el camino de un nodo a otro que en nuestro caso es representado por \# , cada que encontremos dicho simbolo será omitido de ser agregado a la representación de su lista de adyacencia.\\
+
+\textbf{Dirección de exploración} Dado a que la estructura inicial es una gradilla, sabemos que nos podemos mover hacia direcciones como izquierda, derecha, arriba y abajo. Matemáticamente si partimos de una posición conocida (fila,columna), podemos hacer desplazamientos de fila-1,columna; fila,columna+1, fila+1,columna o fila,columna-1 para alcanzar las celdas adyacentes. Esto hace muy sencillo el acceso a los nodos vecinos desde un nodo dado.\\
+
+Hay una necesidad creciente en la exploración y análisis de grafos a gran escala en computación, redes sociales, y análisis de negocios. Aunque por la irregularidad e intenso uso de memoria, las aplicaciones en grafos son conocidos por su ineficiente y pobre performance en computación paralela haciendo un reto la paralelización de un algoritmo como BFS, encontrandose con cuellos de botella que aunque existen métodos que dan solución logrando separarlos en multiples hilos, en el presente trabajo no llegamos a explorarlos. Haciendo una paralelización a nivel de problemas de agentes de robots. Es decir correr el algoritmo en paralelo en diferentes hilos y no paralelizando el algoritmo per sé.
+
 
 %------------------------------------------------
 
 \newpage
 \onecolumn
-\section{Serial Algorithm}
+\section{Algoritmo Secuencial}
 
-The typical wavefront expansion algorithm uses the implementation of an adjacency list representation of graphs, storing the lists of adjacent nodes and the queue of nodes needed for BFS traversal.\\
+La implementación tipica de la expansión del frente de onda, se parte de una representación de la matriz de entrada como una lista de adyacencia que representa un grafo, ordenando la lista de adyacencia por nodos y poder encolar los nodos para poder análisar y recorrer el grafo con ayuda de algoritmos como BFS.\\
 
-At this first phase I am not using the BFS algorithm (because of my data-structure issues), not discarding also develop the bfs version of the algorithm and compare the results applying the parallelism techniques.\\
-
-The serial main program consists of the invocation of five functions:
+El programa secuencial consiste en la invocación de las siguientes funciones:
 
 \begin{itemize}
-\item \textbf{map\_init:} Initialize the map
-\item \textbf{propagate\_wavefront:} main function of the algorithm in charge of propagating and coordinating the exploration of new nodes to visit
-\item \textbf{clear\_map:} just crear the map for another experiments
-\item \textbf{explore\_neighbors:} explore and returns the min node cost
-
-\item \textbf{show\_map:} prints out the actual map to see whats going on
+\item \textbf{main:} Dentro la función main, se hace la lectura del mapa, creando su representación matricial dentro del programa, para despues pasarlo a una representación de lista de adyacencia.
+\item \textbf{bfs:} función principal del programa donde se desarrolla el algoritmo iterando respecto al número de robots a analizar
+\item \textbf{get\_neighbors:} función para explorar los vecinos respecto a la matriz
+\item \textbf{get\_workload:} función para dividir el trabajo respecto al numero de hilos y robots a repartir entre ellos
+\item \textbf{print\_dist:} función que imprime y muestra la animación del frente de onda en la consola en tiempo real
 \end{itemize}
 
-\subsection{map\_init}
+Se crearon diversas banderas para la ejecución del programa en la terminal:
 
-This part just initialize the map putting the elements at it.
+\begin{itemize}
+\item -{}-MODE : las posibles opciones son SECUENCIAL y PTHREADS, forma de uso --MODE=SECUENCIAL ó --MODE=PTHREADS
+\item -{}-SHOW : mostrar ó no la animación, forma de uso --SHOW
+\item -{}-nth  : número de hilos (threads) a utilizar, forma de uso --nth=2
+\item -{}-results : mostrar los resultados de los costos de visita a cada nodo del grafo
+\item -{}-locations : archivo de la ubicación de los robots a ser analizados
+\item -{}-robots : número de robots a ser analizados, la cardinalidad del archivo de locations debe considir con el número de robots, de lo contrario se presentará algún error de memoria por no ser iguales.  
+\end{itemize}
 
+Forma de correr el programa: \\
+
+ \$ ./bfs < problem\_size/1M.txt -{}-MODE=PTHREADS -{}-robots=10 -{}-nth=2 -{}-locations=robots.txt -{}-results 
+
+\subsection{main()}
+
+En la función princial del programa, aunque mi forma de programar no fué la más sencilla y modular, dentro de esta parte se realizan las siguientes tareas:
+
+\begin{itemize}
+\item Definir las estructuras de datos a utilizar
+\item Lectura de los argumentos de entrada (Banderas), respecto al MODO se corre la versión de PTHREADS o SECUENCIAL
+\item Lectura del archivo de las ubicaciones de los robots, que será almacenado dentro de un vector de ubicaciones para ser accesado dentro del programa
+\item Lectura la matriz (nuestro mapa) filas, columnas. Para así construir una matriz que podremos transformar a su representación de lista de adyacencia. \textbf{Se hace esete paso considerando el costo computacional del orden cuadratico, debido a que si en un primer barrido creo la lista de adyacencia y como condicion es saltarme el signo \# queda incompleta la representación del grafo, es por eso que primero construimos una matriz enbase de la lectura de la representación del mapa, para despues recorrerlo nuevamente aplicandole la exploracion de vecinos e ir agregando los nodos vecinos a su lista de adyacencia}
+\item Mostrar resultados, si la bandera fué indicada proveniente de los argumentos de la terminal
+\end{itemize}
+
+\subsection{Frente de onda (BFS)}
+
+\SetKwComment{Comment}{/* }{ */}
+
+\begin{algorithm}
+\caption{BFS}\label{alg:two}
+$QUEUE \gets nodo\_inicio$ \Comment*[r]{Agregar nodo inicio a la cola}
+$nodo\_inicio \gets visitado$ \Comment*[r]{Marcar el nodo inicio como visitado con costo 0}
+agregar nodo a vector distancia $\gets 0$
+
+\While{$!QUEUE.empty()$}{ \Comment*[r]{Hacer hasta no tener vecinos o nodos a explorar}
+  $v \gets$ sacar nodo de QUEUE\;
+  \For{para cada nodo adyacente del nodo dentro de $adj\_list[nodo]$}{
+    \If{$nodo\_adj$ no ha sido visitado}{
+      $QUEUE \gets nodo\_adj$ \Comment*[r]{Agregar nodo adyacente a la cola}
+      $nodo\_adj \gets visitado$\; \Comment*[r]{Marcar el nodo como visitado con costo previo más uno}
+      agregar a vector de distancia con costo $distancia[nodo]+1$\;
+    }
+  }
+}
+\end{algorithm}
+
+La complejidad del algoritmo depende del tamaño del grafo, quedando directamente proporcional al número de vértices y aristas que éste contenga. En nuestro caso al no considerar una parada al encontrar el objetivo nuestro costo computacional es $O(|V|+|E|)$ ya que visita todos los vértices del grafo, donde V es el número de vértices y E es el número de aristas del grafo.\\
+
+Como espacio computacional, al utilizar una estructura de datos tipo cola (queue) para guardar los nosdos que deben ser visitados, en nuestro caso debe visitar todos los nodos, haciendo la complejidad espacial a $O(V)$, donde V es el núm de nodos en el grafo. Por lo tanto la complejidad de nuestra implementación es $O(|V|+|E|)$ y en espacio $O(V)$ ya que no consideramos una condición de paro.
+
+\newpage
+\onecolumn
+\section{Algoritmo Paralelo}
+
+El Algoritmo de frente de onda es un algoritmo muy paralelizable repartiendo la carga de trabajo en la exploración de nuevos nodos dentro de la lista de adyacencia, dado que hacemos uso de una cola (queue) y para que el algoritmo siga funcionando todos los hilos deberán de agregar los nuevos nodos descubiertos a la misma cola compartida, es aquí donde se crea un cuello de botella. Conviertiendo nuestro algoritmo paralelo a secuencial nuevamente. Existen diversar formas de de evitarlo que no alcancé a explorar, algunas ideas es hacer uso de metodologias como work-stealing, donde cada hilo mantiene su propia cola, pero el hilo puede robar nodos de otros hilos cuando su cola este vacia. Creo que de esta forma se puede alcanzar un buen balanceo y escalabilidad buscada en un algoritmo paralelo, pero tiene un alto costo de sincronización.\\
+
+En nuestro trabajo solamente exploramos el paralelizar la carga respecto a un número de robots a explorar, convirtiendo nuestro problema de partir el mapa a explorar a partir el trabajo en diferentes hilos para los diferentes robots que parten de diferentes ubicaciones.\\
+
+Ahora el problema parte en repartir el trabajo respecto al número de hilos disponibles, es decir indicar a cada hilo cuantos robots le tocaron (función \textbf{get\_workload}) y que robots le tocaron pasandole un vector de las ubicaciones de robots indexado por el número de hilos indicado por el programa desde la ejecución de la terminal.\\
+
+Como consideramos un vector de resultados para almacenar el costo por nodo desde su nodo inicio visitando cada uno de los nodos, es aquí donde presentamos una zona critica. Que es protegida con un mutex. Agradezco al Dr. Mario Garza-Fabre en ver mi error en su versión de OpenMP, ya que se presentaba un error que en mis experimentos y desarrollo nunca se me presento hasta la hora de correr los experimentos.
+
+\newpage
+\onecolumn
+\section{Resultados}
+
+Para la corrida del proyecto se creo una matriz de 1000 filas x 1000 columnas generada de manera aleatoria de forma artesanal, generando así 1 Millón de nodos de manera tal de estresar el algoritmo para ver tiempos grandes de ejecución. Para tamaños pequeños la animación -{}-SHOW está disponible teniendo un resultado como la siguiente imágen.\\
+
+Para nuestros experimentos se proponen 5 tamaños de problemas que son el número de robots a analizar. \textbf{32, 64, 128, 256, 512}\\
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.80\textwidth]{grid.png}
+    \caption{Grid de resultados}
+    \label{fig:grid_resultados}
+\end{figure}
+
+\newpage
+\subsection{Resultados Secuencial}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.80\textwidth]{graficos/secuencial/secuencial.png}
+    \caption{Secuencial}
+    \label{fig:secuencial}
+\end{figure}
+
+La tabla de resultados nos deja claro que a medida que incrementamos el número de robots que deben de explorar su nodo inicio con su nodo fin, el tiempo incrementa de forma casi lineal. Siendo un gran ejemplo de paralelización para observar los resultados, teniendo una gran similaridad con la complejidad de nuestro algoritmo $O(|V|+|E|)$
+
+%TABLA SECUENCIAL
 \begin{center}
-  \begin{minipage}{0.7\linewidth} % Adjust the minipage width to accomodate for the length of algorithm lines
-    \begin{algorithm}[H] 
-      \DontPrintSemicolon
-      
-      \caption{Map initialize}
-      \label{alg:loop}
-            {$system("clear");$}\\
-            {$show map();$}\\
-            {$print("Se\;comienza\;wavefront");$}\\
-            {$sleep(1);$}\\
-            {$put\;robot\;at\;the\;map;$}\\
-            {$put\;goal\;at\;the\;map;$}\\
-            {$show\;map();$}\\
-            {$print("Se\;incluyo\;el\;objetivo\;y\;el\;robot")$}\\
-            {$sleep(1);$}
-    \end{algorithm}
-  \end{minipage}
+\begin{tabular}{ |p{2cm}||p{4cm}| }
+ \hline
+ \multicolumn{2}{|c|}{SECUENCIAL} \\
+ \hline
+ ROBOTS & Tiempo (en minutos)\\
+ \hline
+ 1    & 0.088\\
+ \hline
+ 32   & 0.554\\ \hline
+ 64   & 1.024\\ \hline
+ 128  & 1.969\\ \hline
+ 256  & 3.683\\ \hline
+ 512  & 7.498\\ \hline
+ \hline
+\end{tabular}
 \end{center}
 
 \newpage
+\onecolumn
+\section{Resultados Pthreads}
 
-\subsection{propagate\_wavefront}
+Al paralelizar con la biblioteca Pthreads obtenemos grandes resultados en especial en nuestro problema que consta de 512 ROBOTS a analizar logrando bajar su tiempo de poco más de 7 Minutos en su corrida con 1 Hilo que tiene gran similaridad al tiempo obtenido en su versión secuencial a poquito mas de 1 Minuto haciendo uso de 32 Cores de la infraestructura del Cinvestav Unidad Tamaulipas. Es aquí donde se puede observar los beneficios y la importancia del uso de bibliotecas que nos permiten sacar el máximo de jugo a nuestros programas obteniendo grandes resultados.\\
 
-This functions controls the propagations between the differents nodes at the matrix, every time a min neighbor is found and the value is not considered SPECIAL ITEM such as WALL or ROBOT is the min neighbor
+El uso de pthreads nos permite mejorar la eficiencia, así como el rendimiento de nuestra aplicación haciendo que los hilos realicen varias tareas simultáneamente, reduciendo así el tiempo de ejecución, aumentando la velociadad de procesamiento. Pero como el antiguo adagio \textbf{Un gran poder conlleva una gran responsabilidad}.
 
-\SetKwComment{Comment}{/* }{ */}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.80\textwidth]{graficos/pthreads/pthreads.png}
+    \caption{Pthreads}
+    \label{fig:secuencial}
+\end{figure}
 
-\begin{algorithm}
-\caption{Propagate wavefront}\label{alg:two}
-$MAX\_EXP \gets 20$ \Comment*[r]{MAX iter for exploration, if no solution}
-$min\_neigbor \gets 0$\;
-$counter \gets 0$\;
-\While{$counter \leq MAX\_EXP$}{
-  $x \gets 0$\;
-  $y \gets 0$\;
-  \While{$((x < SIZE\_MATRIX\_X)\&\&(y < SIZE\_MATRIX\_Y))$}{
-    \If{$((map[x][y]!=WALL)\&\&(map[x][y]!=ROBOT))$}{
-      $show\_map();$\\
-      $min\_neighbor \gets explore\_neighbors(x,y);$\\
-      {
-        \uIf{$((min\_neighbor < SPECIAL\_ITEM)\&\&(map[x][y]==GOAL))$}{
-          $show\_map();$\\
-          $print("termine")$
-        }
-        \uElseIf{$min\_node!=SPECIAL\_ITEM$}{
-          $map[x][y]=min\_node + 1;$
-        }
-      }
-    }
-
-    MAKE ROW EXPLORATION (y++)\;
-    
-    \If{$((y==SIZE\_MATRIX\_Y)\&\&(x!=SIZE\_MATRIX\_X))$}{
-      $x \gets x+1$\\
-      $y \gets 0$\\
-    }
-    
-  }
-  $show\_map();$\\
-  $counter \gets counter + 1$\\
-}
-\end{algorithm}
-
-\subsection{clear\_map}
-
-Function used to clean the map for the differents experiments
-
-\SetKwFor{For}{for (}{) $\lbrace$}{$\rbrace$}
-\begin{algorithm}
-
-  sleep()\; 
-  \For{$x = 0;\ x < SIZE\_MATRIX_X;\ x = x + 1$}{
-    \For{$y = 0;\ y < SIZE\_MATRIX\_Y;\ y = y + 1$}{
-      \If{map[x][y]!=WALL}{ 
-        map[x][y] = EMPTY\;
-      }
-    }
-  }
-  show\_map();
-\end{algorithm}
+%TABLA PTHREADS
+\begin{center}
+\begin{tabular}{ |p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}| }
+ \hline
+ \multicolumn{7}{|c|}{PTHREADS (tiempo en minutos)} \\
+ \hline
+ ROBOTS & 1 CORE & 2 CORE & 4 CORE & 8 CORE & 16 CORE & 32 CORE\\
+ \hline
+ 32   & 0.554 & 0.359 & 0.284 & 0.322 & 0.422 & 0.699\\ \hline
+ 64   & 1.183 & 0.599 & 0.397 & 0.360 & 0.466 & 0.790\\ \hline
+ 128  & 1.530 & 1.796 & 0.622 & 0.471 & 0.521 & 0.739\\ \hline
+ 256  & 3.415 & 1.549 & 1.406 & 0.704 & 0.657 & 0.816\\ \hline
+ 512  & 7.119 & 3.527 & 1.582 & 1.960 & 0.902 & 1.211\\ \hline
+ \hline
+\end{tabular}
+\end{center}
 
 \newpage
-\subsection{explore\_neighbors}
+\subsection{ACELERACION}
 
-Explore the neighbors, it starts once the robots is found. Consist to visit diferents nodes (UP,DOWN,LEFT,RIGHT)
+La aceleración usando pthreads nos proporciona una mejora muy significativa en el rendimiento de nuestro programa realizando multiples tareas simultáneamente. Al dividir la tarea que puede ser procesada en paralelo, se pueden aprovechar recursos de los múltiples núcleos de nuestra infraestructura disponible.\\
 
-\SetKwComment{Comment}{/* }{ */}
+En nuestra imágen podemos observar la rápida aceleración a medida que va incrementando el problema llegando a su punto más alto, para después reducir su aceleración debido a que los hilos requieren cierta cantidad de recursos como memoria y procesamiento, a medida que aumentamos el número de cores, también se incrementa la latencia de la comunicación entre los hilos reduciendo la eficiencia, es por ello que se puede notar la reducción a medida que llegamos al número de cores que cuenta nuestro equipo.
 
-\begin{algorithm}
-\caption{Explore neighbors}\label{alg:two}
-\KwData{$x,y$}
-\KwResult{$min\_node$}
-$min\_node \gets SPECIAL\_ITEM$\;
-\If{(x<SIZE\_MATRIX\_X-1)}{ 
-  \If{((map[x+1][y]<min\_node)\&\&(map[x+1][y]!=EMPTY))}{
-    min\_node = map[x+1][y]\;
-  } 
-}
-\If{x>0}{
- \If{((map[x-1][y]<min\_node)\&\&(map[x-1][y]!=EMPTY))}{
-   min\_node = map[x-1][y] \;
- } 
-}
-\If{(y>0)}{ 
-  \If{((map[x][y-1]<min\_node)\&\&(map[x][y-1]!=EMPTY))}{
-    min\_node = map[x][y-1]\;
-  } 
-}
-\If{y<SIZE\_MATRIX\_Y-1}{
- \If{((map[x][y+1]<min\_node)\&\&(map[x][y+1]!=EMPTY))}{
-   min\_node = map[x][y+1] \;
- } 
-}
-\end{algorithm}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.80\textwidth]{graficos/pthreads/pth_acc.png}
+    \caption{Pthreads Aceleración}
+    \label{fig:secuencial}
+\end{figure}
+
+%TABLA PTHREADS ACELERACION
+\begin{center}
+\begin{tabular}{ |p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}| }
+ \hline
+ \multicolumn{7}{|c|}{PTHREADS ACELERACION} \\
+ \hline
+ ROBOTS & 1 CORE & 2 CORE & 4 CORE & 8 CORE & 16 CORE & 32 CORE\\
+ \hline
+ 32   & 1     & 1.543 & 1.950 & 1.720 & 1.312 & 0.796\\ \hline
+ 64   & 0.865 & 1.709 & 2.579 & 2.844 & 2.197 & 1.296\\ \hline
+ 128  & 1.286 & 1.096 & 3.165 & 4.180 & 3.779 & 2.664\\ \hline
+ 256  & 0.927 & 2.377 & 2.619 & 5.231 & 5.605 & 4.513\\ \hline
+ 512  & 1.053 & 2.125 & 4.739 & 3.825 & 8.312 & 6.191\\ \hline
+ \hline
+\end{tabular}
+\end{center}
 
 \newpage
-\subsection{show\_map}
-\SetKwFor{For}{for (}{) $\lbrace$}{$\rbrace$}
-\begin{algorithm}
-  \For{$i = 0;\ i < SIZE\_MATRIX_X;\ i = i + 1$}{
-    \For{$j = 0;\ j < SIZE\_MATRIX\_Y;\ j = j + 1$}{
+\subsection{EFICIENCIA}
 
-      \uIf{map[i][j]==WALL}{
-        $print(\#\#\#);$
-      }
-      \uElseIf{map[i][j]==ROBOT}{
-        $print(-R-);$
-      }
-      \uElseIf{map[i][j]==GOAL}{
-        $print(-X-);$
-      }\uElse{}{
-        $print(map[i][j])$
-      }
-    }
-  }
-  $show\_map();$
-\end{algorithm}
+Podemos notar que nuestra eficiencia puede disminuir viendose afectada por diversas razones, como el tamaño del problema a resolver ó la implementación ineficiente de mis códigos o los problemas de comunicación entre los hilos. Como nuestro problema siempre lo estamos incrementando, cada vez requeire más memoria y tiempo de procesamiento para cada robot a analizar haciendo que la sobrecarga de recursos reduzca la eficiencia.
 
-The time complexity of the wavefront expansion algorithm without a queue is $O(n^3)$, where N is the size of the environment. This is because the algorithm iterates over all cells in the environment for each iteration of the algorithm, and each cell is processed once per iteration. The calculation of the cost of each cell is typically a constant time operation, so the total time complexity is proportional to the number of cells in the environment multiplied by the number of iterations.\\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.80\textwidth]{graficos/pthreads/pthreads_eff.png}
+    \caption{Pthreads Eficiencia}
+    \label{fig:secuencial}
+\end{figure}
 
-The space complexity of the wavefront expansion algorithm without a queue is $O(n^2)$, as it requires a 2D array to represent the environment and store the costs of each cell. Additionally, a variable may be used to keep track of whether each cell has been processed, which would also contribute to the space complexity.\\
+%TABLA PTHREADS EFICIENCIA
+\begin{center}
+\begin{tabular}{ |p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}| }
+ \hline
+ \multicolumn{7}{|c|}{PTHREADS EFICIENCIA} \\
+ \hline
+ ROBOTS & 1 CORE & 2 CORE & 4 CORE & 8 CORE & 16 CORE & 32 CORE\\
+ \hline
+ 32   & 1     & 0.771 & 0.487 & 0.215 & 0.082 & 0.024\\ \hline
+ 64   & 0.865 & 0.854 & 0.644 & 0.355 & 0.137 & 0.040\\ \hline
+ 128  & 1.286 & 0.548 & 0.791 & 0.522 & 0.236 & 0.083\\ \hline
+ 256  & 0.927 & 1.188 & 0.654 & 0.653 & 0.350 & 0.141\\ \hline
+ 512  & 1.053 & 1.062 & 1.184 & 0.478 & 0.519 & 0.193\\ \hline
+ \hline
+\end{tabular}
+\end{center}
+
+
+\newpage
+\onecolumn
+\section{Resultados OpenMP}
+
+Podemos observar la misma tendencia de resultados que con la biblioteca de Pthreads, no obstante la implementación de OpenMP fué más sencilla. Pero al no ser de grano fino, se presentaron condiciones de carrera que se puedieron observar en el servidor polifemo, teniendo una memoria corrupta. Gracias a la observación del Dr. Mario Garza-Fabre que logramos identificar y corregir la región critica en la escritura de un vector de resultados.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.80\textwidth]{graficos/openmp/openmp.png}
+    \caption{OpenMP}
+    \label{fig:secuencial}
+\end{figure}
+
+%TABLA OPENMP
+\begin{center}
+\begin{tabular}{ |p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}| }
+ \hline
+ \multicolumn{7}{|c|}{OPEN MP (tiempo en minutos)} \\
+ \hline
+ ROBOTS & 1 CORE & 2 CORE & 4 CORE & 8 CORE & 16 CORE & 32 CORE\\
+ \hline
+ 32   & 0.554 & 0.347 & 0.216 & 0.144 & 0.108 & 0.100\\ \hline
+ 64   & 1.170 & 0.621 & 0.357 & 0.212 & 0.144 & 0.123\\ \hline
+ 128  & 2.244 & 1.652 & 0.631 & 0.353 & 0.227 & 0.175\\ \hline
+ 256  & 3.383 & 2.851 & 1.971 & 0.627 & 0.377 & 0.290\\ \hline
+ 512  & 7.500 & 4.231 & 2.200 & 1.962 & 0.673 & 0.510\\ \hline
+ \hline
+\end{tabular}
+\end{center}
+
+\newpage
+\subsection{ACELERACION}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.80\textwidth]{graficos/openmp/openmp_acc.png}
+    \caption{OpenMP Aceleración}
+    \label{fig:secuencial}
+\end{figure}
+
+%TABLA OPENMP ACELERACION
+\begin{center}
+\begin{tabular}{ |p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}| }
+ \hline
+ \multicolumn{7}{|c|}{OPEN MP ACELERACION} \\
+ \hline
+ ROBOTS & 1 CORE & 2 CORE & 4 CORE & 8 CORE & 16 CORE & 32 CORE\\
+ \hline
+ 32   & 1     & 1.596 & 2.564 & 3.847 & 5.129  & 5.540\\ \hline
+ 64   & 0.875 & 1.648 & 2.868 & 4.830 & 7.111  & 8.325\\ \hline
+ 128  & 0.877 & 1.191 & 3.120 & 5.577 & 8.674  & 11.25\\ \hline
+ 256  & 1.088 & 1.291 & 1.868 & 1.868 & 9.769  & 12.70\\ \hline
+ 512  & 0.999 & 1.772 & 3.408 & 3.408 & 11.141 & 14.70\\ \hline
+ \hline
+\end{tabular}
+\end{center}
+
+\newpage
+\subsection{EFICIENCIA}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.80\textwidth]{graficos/openmp/openmp_eff.png}
+    \caption{OpenMP Eficiencia}
+    \label{fig:secuencial}
+\end{figure}
+
+%TABLA OPENMP EFICIENCIA
+\begin{center}
+\begin{tabular}{ |p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}||p{2cm}| }
+ \hline
+ \multicolumn{7}{|c|}{OPEN MP EFICIENCIA} \\
+ \hline
+ ROBOTS & 1 CORE & 2 CORE & 4 CORE & 8 CORE & 16 CORE & 32 CORE\\
+ \hline
+ 32   & 1     & 0.798 & 0.641 & 0.480 & 0.320 & 0.173\\ \hline
+ 64   & 0.875 & 0.824 & 0.717 & 0.603 & 0.444 & 0.260\\ \hline
+ 128  & 0.877 & 0.595 & 0.780 & 0.697 & 0.542 & 0.351\\ \hline
+ 256  & 1.088 & 0.645 & 0.467 & 0.233 & 0.610 & 0.396\\ \hline
+ 512  & 0.999 & 0.886 & 0.852 & 0.426 & 0.696 & 0.459\\ \hline
+ \hline
+\end{tabular}
+\end{center}
+
+\newpage
+\onecolumn
+\section{Resultados Pthreads vs. OpenMP}
+
+Ambas herramientas nos permiten paralelizar de forma eficiente atravez de múltiples cores de procesamiento. Teniendo mayor facilidad la biblioteca OpenMP en su implementación, pero siendo Pthreads la que nos ofrece mayor flexibilidad en terminos de como dividir la carga de trabajo en los hilos siendo este el grano fino de personalización que le da el toque que a mi gusto es más beneficioso.\\
+
+Ambas bibliotecas pueden mejorar la eficiencia al distribuir la carga en los diferentes cores. Pero el rendimiento depende de la forma de su implementación.
+
+\subsection{ACELERACION}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.80\textwidth]{graficos/comparacion/aceleracion_32.png}
+    \caption{Aceleración 32 Robots}
+    \label{fig:secuencial}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.80\textwidth]{graficos/comparacion/aceleracion_512.png}
+    \caption{Aceleración 512 Robots}
+    \label{fig:secuencial}
+\end{figure}
+
+\newpage
+\subsection{EFICIENCIA}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.80\textwidth]{graficos/comparacion/eficiencia_32.png}
+    \caption{Eficiencia 32 Robots}
+    \label{fig:secuencial}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.80\textwidth]{graficos/comparacion/eficiencia_512.png}
+    \caption{Eficiencia 512 Robots}
+    \label{fig:secuencial}
+\end{figure}
 
 %------------------------------------------------
+
 \newpage
-\twocolumn
-\section{Results}
-
-\subsection{Examples}
-The following image shows a table with different times after an iteration of ten differents robots changing the robot location so as the goal location.\\
-
-At this time the results are not confident because the locations are computed randomly and there is no equatity at the location, by that I mean maybe one problem could be harder than the other.
-
-\includegraphics[scale=0.5]{image1.png}
-
-\subsection{Plot \& table}
-
-The larger the matrix, the longer it will take to solve the problem.
-
-\begin{table}[!hbt]
-  \caption{Problem Size vs Time}
-  \centering
-  \begin{tabular}{|l|l|}
-    \hline
-    P1 & 0.232747 \\ \hline
-    P2 & 0.369061 \\ \hline
-    P3 & 0.809046 \\ \hline
-    P4 & 0.624046 \\ \hline
-    P5 & 0.787176 \\ \hline
-    P6 & 1.743657 \\ \hline
-  \end{tabular}
-\end{table}
-
-\includegraphics[scale=0.27]{plot.png}
-%------------------------------------------------
-
+\onecolumn
 \section{Conclusions}
 
-The wavefront expansion algorithm is a technique used to parallelize the processing of graph algorithms. This algorithm works by processing vertices in a wave-like manner, where vertices in the same wavefront are processed in parallel. The wavefront expansion algorithm has been shown to be highly efficient for certain types of graphs and is commonly used in parallel programming.
+El algoritmo de propagación de frente de onda es una forma de procesar un grafo trabajando con vertices de forma de onda, donde los vertices en la misma onda pueden ser procesados de forma paralela con diversas técnicas que no logramos explorar en el prensente trabajo. El algoritmo al tener una base en BFS hizo que cambiaramos el plantamiento de nuestro problema.\\
 
-It's worth noting that the actual complexity of the wavefront expansion algorithm without a queue may be influenced by the specifics of the environment and the requirements of the specific use case. For example, if the environment is sparse, with large areas of empty space, the number of iterations may be significantly reduced, which would decrease the time complexity.\\
+El algoritmo de frente de onda sin la estructura de tipo Queue no resulta ser eficiente y me llego a ser confunsa por el barrido constante para poder alterar las distancias.\\
 
-In general, the wavefront expansion algorithm without a queue is not as efficient as the version that uses a queue, as the time complexity is higher. However, this alternative version may still be useful in certain situations, such as environments where memory is limited and a queue data structure cannot be used.
+La programación paralela llevando un riguroso análisis se pueden obtener grandes beneficios, pero como dicta la ley de Amdahl que la parte secuencial de nuestro problema limita el rendimiento máximo que se puede obtener mediante la programación paralela, viendo el caso en que nuestro cuello de botella es la Cola donde almacenamos los siguientes nodos a visitar.\\
 
-Parallel programming refers to the design and development of applications that run simultaneously on multiple processors or cores. It enables faster and more efficient processing by dividing a problem into smaller, parallelizable tasks that can be executed in parallel. The wavefront expansion algorithm is an example of a parallel programming technique that can be used to speed up the processing of graph algorithms.
+La paralelización de algoritmos basados en grafos es de suma importancia ya que la WorldWideWeb puede ser representada como un grafo, siendo hasta el sol de hoy un tema de estudio del cual quede facinado.\\
+
+La paralelización del frente de onda puede mejorar significativamente su rendimiento, pero requeire de una comunicación efectiva y una implementación de grano fino, pero al tener un tiempo limitado decidimos no seguir explorando.
 
 %----------------------------------------------------------------------------------------
 %	REFERENCE LIST
 %----------------------------------------------------------------------------------------
+\newpage
 \onecolumn
 \begin{thebibliography}{99} % Bibliography - this is intentionally simple in this template
   

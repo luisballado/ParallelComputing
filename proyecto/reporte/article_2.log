@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.11.4)  20 APR 2023 21:24
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.11.4)  21 APR 2023 09:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -579,7 +579,34 @@ File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
 )
 (./article_2.aux
 
-LaTeX Warning: Label `alg:two' multiply defined.
+LaTeX Warning: Label `fig:secuencial' multiply defined.
+
+
+LaTeX Warning: Label `fig:secuencial' multiply defined.
+
+
+LaTeX Warning: Label `fig:secuencial' multiply defined.
+
+
+LaTeX Warning: Label `fig:secuencial' multiply defined.
+
+
+LaTeX Warning: Label `fig:secuencial' multiply defined.
+
+
+LaTeX Warning: Label `fig:secuencial' multiply defined.
+
+
+LaTeX Warning: Label `fig:secuencial' multiply defined.
+
+
+LaTeX Warning: Label `fig:secuencial' multiply defined.
+
+
+LaTeX Warning: Label `fig:secuencial' multiply defined.
+
+
+LaTeX Warning: Label `fig:secuencial' multiply defined.
 
 )
 \openout1 = `article_2.aux'.
@@ -741,8 +768,13 @@ Package microtype Info: Character `029' is missing
 (microtype)             Ignoring protrusion settings for this character.
 Package lettrine.sty Info: Targeted height = 30.07506pt
 (lettrine.sty)             (no accent, loversize=0),
-(lettrine.sty)             Lettrine height = 30.07518pt (W);
+(lettrine.sty)             Lettrine height = 30.07518pt (L);
 (lettrine.sty)             reported on input line 141.
+
+Underfull \hbox (badness 2600) in paragraph at lines 141--142
+\T1/pplx/m/n/10 (+20) para de-ter-mi-nar el camino óp-timo para
+ []
+
 
 Underfull \hbox (badness 10000) in paragraph at lines 141--142
 
@@ -754,9 +786,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 143--144
  []
 
 
-Underfull \hbox (badness 2529) in paragraph at lines 145--146
-[]\T1/pplx/m/n/10 (+20) Wavefront ex-pan-sion is well-suited for
- []
+Underfull \vbox (badness 1838) has occurred while \output is active []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 145--146
@@ -764,132 +794,342 @@ Underfull \hbox (badness 10000) in paragraph at lines 145--146
  []
 
 
-Underfull \vbox (badness 1838) has occurred while \output is active []
+Underfull \hbox (badness 1546) in paragraph at lines 147--148
+\T1/pplx/m/n/10 (+20) la im-ple-mentación para hacer uso de la
+ []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 147--148
 
  []
 
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+
+Underfull \vbox (badness 3029) has occurred while \output is active []
+
+ [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ]
+Underfull \hbox (badness 10000) in paragraph at lines 149--150
+
+ []
+
+
+Underfull \hbox (badness 1762) in paragraph at lines 151--152
+\T1/pplx/m/n/10 (+20) de Al-go-rit-mos y tomar al-gu-nas se-siones
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 151--152
+
+ []
+
+
+Underfull \hbox (badness 1342) in paragraph at lines 153--154
+[]\T1/pplx/m/n/10 (+20) Muchos prob-le-mas en teo-ria de grafos
+ []
+
+
+Underfull \hbox (badness 1107) in paragraph at lines 153--154
+\T1/pplx/m/n/10 (+20) Es-tos son grafos im-plic-i-tos que pode-mos
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 153--154
+
+ []
+
+
+Underfull \hbox (badness 1762) in paragraph at lines 155--156
+[]\T1/pplx/m/n/10 (+20) Una forma de re-solver prob-le-mas que
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 155--156
+
+ []
+
+
+Underfull \hbox (badness 6995) in paragraph at lines 157--158
+\T1/pplx/m/n/10 (+20) (fila,columna), pode-mos hacer de-splaza-
+ []
+
+
+Underfull \hbox (badness 1048) in paragraph at lines 157--158
+\T1/pplx/m/n/10 (+20) mien-tos de fila-1,columna; fila,columna+1,
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 157--158
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 159--160
+[2]
+Underfull \hbox (badness 10000) in paragraph at lines 168--169
 
  []
 
 LaTeX Font Info:    Trying to load font information for TS1+pplx on input line 
-164.
+173.
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1pplx.fd
 File: ts1pplx.fd 2004/09/06 font definitions for TS1/pplx.
-) [2
+)
+Underfull \hbox (badness 10000) in paragraph at lines 191--192
+
+ []
+
+[3
 
 ]
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 2
-06.
-
-(/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
+13.
+ (/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `cmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [3] [4]
-Underfull \hbox (badness 10000) in paragraph at lines 315--316
+
+Underfull \hbox (badness 10000) in paragraph at lines 229--230
+
+ []
+
+[4]
+Underfull \hbox (badness 10000) in paragraph at lines 237--238
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 317--318
+Underfull \hbox (badness 10000) in paragraph at lines 239--240
 
  []
 
-[5]
-Underfull \hbox (badness 10000) in paragraph at lines 325--326
+
+Underfull \hbox (badness 10000) in paragraph at lines 241--242
 
  []
 
-<image1.png, id=90, 406.51875pt x 459.7175pt>
-File: image1.png Graphic file (type png)
-<use image1.png>
-Package pdftex.def Info: image1.png  used on input line 329.
-(pdftex.def)             Requested size: 203.25887pt x 229.85818pt.
-
-Overfull \hbox (8.25658pt too wide) in paragraph at lines 329--330
-[][] 
- []
-
-<plot.png, id=92, 779.91376pt x 395.4775pt>
-File: plot.png Graphic file (type png)
-<use plot.png>
-Package pdftex.def Info: plot.png  used on input line 349.
-(pdftex.def)             Requested size: 210.57953pt x 106.78035pt.
-
-Overfull \hbox (15.57724pt too wide) in paragraph at lines 349--351
-[][] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 356--357
-
- []
-
-[6
-
- <./image1.png> <./plot.png>]
-Overfull \hbox (27.78506pt too wide) in paragraph at lines 389--392
-[]
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 394--396
-[]
- []
-
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 406.
-[7
+[5
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 406.
+Underfull \hbox (badness 10000) in paragraph at lines 249--250
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 251--252
+
+ []
+
+<grid.png, id=104, 956.57375pt x 527.9725pt>
+File: grid.png Graphic file (type png)
+<use grid.png>
+Package pdftex.def Info: grid.png  used on input line 255.
+(pdftex.def)             Requested size: 344.005pt x 189.86855pt.
+[6
+
+ <./grid.png>]
+<graficos/secuencial/secuencial.png, id=111, 462.528pt x 346.896pt>
+File: graficos/secuencial/secuencial.png Graphic file (type png)
+<use graficos/secuencial/secuencial.png>
+Package pdftex.def Info: graficos/secuencial/secuencial.png  used on input line
+ 265.
+(pdftex.def)             Requested size: 344.005pt x 258.01701pt.
+ [7 <./graficos/secuencial/secuencial.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 295--296
+
+ []
+
+<graficos/pthreads/pthreads.png, id=120, 462.528pt x 346.896pt>
+File: graficos/pthreads/pthreads.png Graphic file (type png)
+<use graficos/pthreads/pthreads.png>
+Package pdftex.def Info: graficos/pthreads/pthreads.png  used on input line 301
+.
+(pdftex.def)             Requested size: 344.005pt x 258.01701pt.
+
+Overfull \hbox (64.3339pt too wide) in paragraph at lines 308--321
+ [] 
+ []
+
+[8
+
+ <./graficos/pthreads/pthreads.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 326--327
+
+ []
+
+<graficos/pthreads/pth_acc.png, id=127, 462.528pt x 346.896pt>
+File: graficos/pthreads/pth_acc.png Graphic file (type png)
+<use graficos/pthreads/pth_acc.png>
+Package pdftex.def Info: graficos/pthreads/pth_acc.png  used on input line 332.
+
+(pdftex.def)             Requested size: 344.005pt x 258.01701pt.
+
+Overfull \hbox (64.3339pt too wide) in paragraph at lines 339--352
+ [] 
+ []
+
+[9 <./graficos/pthreads/pth_acc.png>]
+<graficos/pthreads/pthreads_eff.png, id=134, 462.528pt x 346.896pt>
+File: graficos/pthreads/pthreads_eff.png Graphic file (type png)
+<use graficos/pthreads/pthreads_eff.png>
+Package pdftex.def Info: graficos/pthreads/pthreads_eff.png  used on input line
+ 361.
+(pdftex.def)             Requested size: 344.005pt x 258.01701pt.
+
+Overfull \hbox (64.3339pt too wide) in paragraph at lines 368--381
+ [] 
+ []
+
+[10 <./graficos/pthreads/pthreads_eff.png>]
+<graficos/openmp/openmp.png, id=141, 462.528pt x 346.896pt>
+File: graficos/openmp/openmp.png Graphic file (type png)
+<use graficos/openmp/openmp.png>
+Package pdftex.def Info: graficos/openmp/openmp.png  used on input line 392.
+(pdftex.def)             Requested size: 344.005pt x 258.01701pt.
+
+Overfull \hbox (64.3339pt too wide) in paragraph at lines 399--412
+ [] 
+ []
+
+[11
+
+ <./graficos/openmp/openmp.png>]
+<graficos/openmp/openmp_acc.png, id=148, 462.528pt x 346.896pt>
+File: graficos/openmp/openmp_acc.png Graphic file (type png)
+<use graficos/openmp/openmp_acc.png>
+Package pdftex.def Info: graficos/openmp/openmp_acc.png  used on input line 419
+.
+(pdftex.def)             Requested size: 344.005pt x 258.01701pt.
+
+Overfull \hbox (64.3339pt too wide) in paragraph at lines 426--439
+ [] 
+ []
+
+[12 <./graficos/openmp/openmp_acc.png>]
+<graficos/openmp/openmp_eff.png, id=155, 462.528pt x 346.896pt>
+File: graficos/openmp/openmp_eff.png Graphic file (type png)
+<use graficos/openmp/openmp_eff.png>
+Package pdftex.def Info: graficos/openmp/openmp_eff.png  used on input line 446
+.
+(pdftex.def)             Requested size: 344.005pt x 258.01701pt.
+
+Overfull \hbox (64.3339pt too wide) in paragraph at lines 453--466
+ [] 
+ []
+
+[13 <./graficos/openmp/openmp_eff.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 472--473
+
+ []
+
+<graficos/comparacion/aceleracion_32.png, id=164, 462.528pt x 346.896pt>
+File: graficos/comparacion/aceleracion_32.png Graphic file (type png)
+<use graficos/comparacion/aceleracion_32.png>
+Package pdftex.def Info: graficos/comparacion/aceleracion_32.png  used on input
+ line 480.
+(pdftex.def)             Requested size: 344.005pt x 258.01701pt.
+<graficos/comparacion/aceleracion_512.png, id=165, 462.528pt x 346.896pt>
+File: graficos/comparacion/aceleracion_512.png Graphic file (type png)
+<use graficos/comparacion/aceleracion_512.png>
+Package pdftex.def Info: graficos/comparacion/aceleracion_512.png  used on inpu
+t line 487.
+(pdftex.def)             Requested size: 344.005pt x 258.01701pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[14
+
+ <./graficos/comparacion/aceleracion_32.png>]
+<graficos/comparacion/eficiencia_32.png, id=172, 462.528pt x 346.896pt>
+File: graficos/comparacion/eficiencia_32.png Graphic file (type png)
+<use graficos/comparacion/eficiencia_32.png>
+Package pdftex.def Info: graficos/comparacion/eficiencia_32.png  used on input 
+line 497.
+(pdftex.def)             Requested size: 344.005pt x 258.01701pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<graficos/comparacion/eficiencia_512.png, id=173, 462.528pt x 346.896pt>
+File: graficos/comparacion/eficiencia_512.png Graphic file (type png)
+<use graficos/comparacion/eficiencia_512.png>
+Package pdftex.def Info: graficos/comparacion/eficiencia_512.png  used on input
+ line 504.
+(pdftex.def)             Requested size: 344.005pt x 258.01701pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[15 <./graficos/comparacion/aceleracion_512.png>] [16 <./graficos/comparacion/e
+ficiencia_32.png> <./graficos/comparacion/eficiencia_512.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 515--516
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 517--518
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 519--520
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 521--522
+
+ []
+
+[17
+
+]
+Overfull \hbox (27.78506pt too wide) in paragraph at lines 553--556
+[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 558--560
+[]
+ []
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 570.
+[18
+
+]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 570.
  (./article_2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 406.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 406.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 570.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 570.
 Package rerunfilecheck Info: File `article_2.out' has not changed.
-(rerunfilecheck)             Checksum: 6ADA4CBC99B6E62C0C4FD0FC11947673;630.
+(rerunfilecheck)             Checksum: 25CE731367272DB6C04ACE58BBEAF961;983.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 406.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 570.
  ) 
 Here is how much of TeX's memory you used:
- 13887 strings out of 481239
- 213204 string characters out of 5920377
- 542228 words of memory out of 5000000
- 28647 multiletter control sequences out of 15000+600000
- 591231 words of font info for 236 fonts, out of 8000000 for 9000
+ 14004 strings out of 481239
+ 215959 string characters out of 5920377
+ 544243 words of memory out of 5000000
+ 28704 multiletter control sequences out of 15000+600000
+ 590827 words of font info for 255 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,21n,45p,918b,564s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,18n,45p,1043b,627s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-t1.enc}{/usr/share/texliv
 e/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/fpl/fpl
-rc8a.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt1000.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texlive/texmf-dist/font
-s/type1/urw/palatino/uplri8a.pfb>
-Output written on article_2.pdf (7 pages, 178940 bytes).
+ype1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/f
+pl/fplrc8a.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt1000.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on article_2.pdf (18 pages, 529170 bytes).
 PDF statistics:
- 155 PDF objects out of 1000 (max. 8388607)
- 132 compressed objects within 2 object streams
- 40 named destinations out of 1000 (max. 500000)
- 53859 words of extra memory for PDF output out of 61914 (max. 10000000)
+ 245 PDF objects out of 1000 (max. 8388607)
+ 192 compressed objects within 2 object streams
+ 59 named destinations out of 1000 (max. 500000)
+ 53957 words of extra memory for PDF output out of 61914 (max. 10000000)
 
