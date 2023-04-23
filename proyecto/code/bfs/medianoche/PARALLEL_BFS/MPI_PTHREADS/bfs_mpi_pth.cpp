@@ -81,10 +81,10 @@ std::vector<std::pair<int, int>> get_neighbors(int i, int j, int rows, int cols)
 ///////////////////////////////////////////////////////////////////////
 // FUNCION BFS
 ///////////////////////////////////////////////////////////////////////
-void bfs(std::map<int, std::vector<int>>& adj_list, int num_nodes, int mis_robots, std::vector<std::vector<int>>& ubicaciones_robots, int mpiID, int start_robot, int finish_robot,int num_proc){
+void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int> distance, int num_nodes, int mis_robots, std::vector<std::tuple<int,int,double,int>> &vec_res, std::vector<std::vector<int>>& ubicaciones_robots, int mpiID, int start_robot, int finish_robot,int num_proc,int num_threads){
 
   clock_t start, end;
-  std::vector<int> distance;
+  
   //talvez saber que proceso es
   printf("DENTRO DE BFS - PROCESO %d!\n", mpiID);
   
@@ -92,7 +92,7 @@ void bfs(std::map<int, std::vector<int>>& adj_list, int num_nodes, int mis_robot
   //saber la ubicacion de los robots que me tocaron
 
   //se debe compartir la información al nodo maestro
-  
+#pragma omp parallel for num_threads(num_threads)
   for(int r = start_robot; r <= finish_robot; r++){
     
     //se inicializa en -1 para cada nuevo robot
@@ -124,42 +124,49 @@ void bfs(std::map<int, std::vector<int>>& adj_list, int num_nodes, int mis_robot
     end = clock();
     MPI_Status status;
     double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
-
-    /*****
-    int nodo_inicio = start_node;
-    int nodo_fin = finish_node;
-    int distancia = distance[finish_node];
+    
+    if(num_proc==1){
       
-    // Empaquetar los datos en un búfer de memoria
-    int buffer_size = 3 * sizeof(int) + sizeof(double) + 1;
-    char* buffer = (char*) malloc(buffer_size);
-    int position = 0;
-    
-    //vec_res.emplace_back(start_node,finish_node,time_taken,distance[finish_node]);
-    MPI_Pack(&nodo_inicio, 1, MPI_INT, buffer, buffer_size, &position, MPI_COMM_WORLD);
-    MPI_Pack(&nodo_fin, 1, MPI_INT, buffer, buffer_size, &position, MPI_COMM_WORLD);
-    MPI_Pack(&time_taken, 1, MPI_DOUBLE, buffer, buffer_size, &position, MPI_COMM_WORLD);
-    MPI_Pack(&distancia, 1, MPI_INT, buffer, buffer_size, &position, MPI_COMM_WORLD);
-    
-    MPI_Send(buffer,buffer_size,MPI_PACKED,0,0,MPI_COMM_WORLD);
-    
-    if(mpiID == 0){
-      //unpack
-      for(int p = 1; p < num_proc; p++){
-	//printf("dentro del for desempaqutando%d\n",num_proc);
-	MPI_Recv(buffer,buffer_size,MPI_PACKED,mpiID,0,MPI_COMM_WORLD,&status);
-	position = 0;
-	MPI_Unpack(buffer,buffer_size,&position,&nodo_inicio,1,MPI_INT,MPI_COMM_WORLD);
-	MPI_Unpack(buffer,buffer_size,&position,&nodo_fin,1,MPI_INT,MPI_COMM_WORLD);
-	MPI_Unpack(buffer,buffer_size,&position,&time_taken,1,MPI_DOUBLE,MPI_COMM_WORLD);
-	MPI_Unpack(buffer,buffer_size,&position,&distancia,1,MPI_INT,MPI_COMM_WORLD);
-	
-	vec_res.emplace_back(nodo_inicio,nodo_fin,time_taken,distancia);
+#pragma omp critical
+      {
+	vec_res.emplace_back(start_node,finish_node,time_taken,distance[finish_node]);
+      }
+      
+    }else{
+      
+      int nodo_inicio = start_node;
+      int nodo_fin = finish_node;
+      int distancia = distance[finish_node];
+      
+      // Empaquetar los datos en un búfer de memoria
+      int buffer_size = 3 * sizeof(int) + sizeof(double) + 1;
+      char* buffer = (char*) malloc(buffer_size);
+      int position = 0;
+
+      MPI_Pack(&nodo_inicio, 1, MPI_INT, buffer, buffer_size, &position, MPI_COMM_WORLD);
+      MPI_Pack(&nodo_fin, 1, MPI_INT, buffer, buffer_size, &position, MPI_COMM_WORLD);
+      MPI_Pack(&time_taken, 1, MPI_DOUBLE, buffer, buffer_size, &position, MPI_COMM_WORLD);
+      MPI_Pack(&distancia, 1, MPI_INT, buffer, buffer_size, &position, MPI_COMM_WORLD);
+      
+      MPI_Send(buffer,buffer_size,MPI_PACKED,0,0,MPI_COMM_WORLD);
+      
+      if(mpiID == 0){
+
+	//unpack
+	for(int p = 1; p < num_proc; p++){
+	  MPI_Recv(buffer,buffer_size,MPI_PACKED,mpiID,0,MPI_COMM_WORLD,&status);
+	  position = 0;
+	  MPI_Unpack(buffer,buffer_size,&position,&nodo_inicio,1,MPI_INT,MPI_COMM_WORLD);
+	  MPI_Unpack(buffer,buffer_size,&position,&nodo_fin,1,MPI_INT,MPI_COMM_WORLD);
+	  MPI_Unpack(buffer,buffer_size,&position,&time_taken,1,MPI_DOUBLE,MPI_COMM_WORLD);
+	  MPI_Unpack(buffer,buffer_size,&position,&distancia,1,MPI_INT,MPI_COMM_WORLD);
+#pragma omp critical
+	  {
+	    vec_res.emplace_back(nodo_inicio,nodo_fin,time_taken,distancia);
+	  }
+	}
       }
     }
-    **/
-    
-    
   }
 }
 
@@ -203,7 +210,7 @@ int main(int argc, char* argv[]) {
   bool show_result = false;
   
   //-----DEFAULT---------
-  int num_threads = num_proc;
+  int num_threads = 1;
   int num_robots = 1;
   //---------------------
 
@@ -225,13 +232,18 @@ int main(int argc, char* argv[]) {
       std::string prefijo_r("--robots=");
       num_robots = std::stoi(std::string(argv[count]).substr(prefijo_r.size()));
     }
+
+    //NUM threads
+    if(std::string(argv[count]).substr(0,5) == std::string("--nth")){
+      std::string prefijo("--nth=");
+      num_threads = std::stoi(std::string(argv[count]).substr(prefijo.size()));
+    }
     
     //ARCHIVO DE ROBOTS
     if(std::string(argv[count]).substr(0,11) == std::string("--locations")){
       std::string prefijo("--locations=");
 
       //Hacer resize al vector de ubicaciones robot
-      
       ubicaciones_robots.resize(num_robots);
       
       location_robots = std::string(argv[count]).substr(prefijo.size()); 
@@ -345,11 +357,8 @@ int main(int argc, char* argv[]) {
   
   //inicializar vector de distancias en -1
   //respecto a la cardinalidad num_nodes
-  
-  //std::vector<int> distance(num_nodes, -1);
-  
-      
-  
+  std::vector<int> distance(num_nodes, -1);
+
   //SE TOMA EL TIEMPO DEL ALGORITMO YA QUE AHI SE PARALELIZA O NO
   
   //analizar pasandole el nodo inicio, nodo destino y vector de distancias
@@ -357,11 +366,13 @@ int main(int argc, char* argv[]) {
 
   printf("############ANTES###############");
 
-  bfs(adj_list,num_nodes, mis_robots,ubicaciones_robots, my_id, start_robot, finish_robot,num_proc);
-      
+  bfs(adj_list, distance, num_nodes, mis_robots, vec_res, ubicaciones_robots, my_id, start_robot, finish_robot,num_proc,num_threads);
+  
+    
   if(show_result){
     std::cout << "####################################" << std::endl;
     std::cout << "NODOS: " << num_nodes << std::endl;
+    std::cout << "nodos: " << num_proc << std::endl;
     std::cout << "threads: " << num_threads << std::endl;
     std::cout << "robots: " << num_robots << std::endl;
 
