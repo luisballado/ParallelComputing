@@ -11,6 +11,12 @@
 
 //#define DEBUG
 
+//compile
+//mpic++ bfs_mpi.cpp -o bfs_mpi
+
+//run
+//time mpirun -n 1 --use-hwthread-cpus ./bfs_mpi < problem_size/1M.txt  --robots=32 --locations=robot_32.txt --results
+
 //IMPORTANTE --locations=robots.txt debe ser de la cardinalidad de --robots=XX 
 //time ./bfs_openmp < problem_size/1M.txt --MODE=OPENMP --robots=10 --nth=2 --locations=robots.txt --results
 
@@ -85,12 +91,12 @@ void bfs(std::map<int, std::vector<int>>& adj_list, int num_nodes, int mis_robot
 
   clock_t start, end;
   std::vector<int> distance;
+
   //talvez saber que proceso es
-  printf("DENTRO DE BFS - PROCESO %d!\n", mpiID);
+  printf(">> DENTRO DE BFS - PROCESO %d!\n", mpiID);
   
   //saber cuantos robots me tocaron aqui
   //saber la ubicacion de los robots que me tocaron
-
   //se debe compartir la información al nodo maestro
   
   for(int r = start_robot; r <= finish_robot; r++){
@@ -125,6 +131,7 @@ void bfs(std::map<int, std::vector<int>>& adj_list, int num_nodes, int mis_robot
     MPI_Status status;
     double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
 
+    //QUITAMOS RESULTADOS
     /*****
     int nodo_inicio = start_node;
     int nodo_fin = finish_node;
@@ -210,9 +217,20 @@ int main(int argc, char* argv[]) {
   std::string location_robots;
 
   int robot_inicio, robot_fin;
-  
+  printf("ANTES DE UBUCACIONES\n");
+
   //vector para almacenar las ubicaciones
   //el hilo 0 se debe encargar de almacenarlas
+
+  if(my_id == 0){
+
+    
+    
+  }else{
+    
+  }
+  
+  
   std::vector<std::vector<int>> ubicaciones_robots;
   
   for(int count = 0; count < argc; count++ ){
@@ -272,7 +290,7 @@ int main(int argc, char* argv[]) {
   
   int rows; //fila
   int cols; //columna
-
+  
   //cargar fila columna desde archivo
   std::cin >> rows >> cols;
   
@@ -292,7 +310,8 @@ int main(int argc, char* argv[]) {
     }
     
   }
-
+  
+  
   std::map<int, std::vector<int>> adj_list;
 
   //////////////////////////////////////////////////////////////////////
@@ -315,6 +334,9 @@ int main(int argc, char* argv[]) {
       }
     }
   }
+
+  
+  
   //////////////////////////////////////////////////////////////////////
   
   int num_nodes = rows*cols; //numero de nodos del grafo
@@ -354,8 +376,6 @@ int main(int argc, char* argv[]) {
   
   //analizar pasandole el nodo inicio, nodo destino y vector de distancias
   //se analiza todo el mapa
-
-  printf("############ANTES###############");
 
   bfs(adj_list,num_nodes, mis_robots,ubicaciones_robots, my_id, start_robot, finish_robot,num_proc);
       
