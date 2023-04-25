@@ -11,6 +11,8 @@
 
 //#define DEBUG
 
+//time mpirun -n 2 --oversubscribe ./bfs_mpi_openmp < problem_size/1M.txt  --robots=32 --locations=robot_32.txt --nth=1
+
 //IMPORTANTE --locations=robots.txt debe ser de la cardinalidad de --robots=XX 
 //time mpirun -n 1 ./bfs_mpi_openmp < problem_size/1M.txt --robots=64 --locations=robot_64.txt --nth=2 --results
 
@@ -124,7 +126,7 @@ void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int> distance, i
     end = clock();
     MPI_Status status;
     double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
-    
+    /***
     if(num_proc==1){
       
 #pragma omp critical
@@ -167,6 +169,7 @@ void bfs(std::map<int, std::vector<int>>& adj_list, std::vector<int> distance, i
 	}
       }
     }
+    */
   }
 }
 
