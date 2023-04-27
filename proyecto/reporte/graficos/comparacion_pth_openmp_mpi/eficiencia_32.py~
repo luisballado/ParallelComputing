@@ -14,9 +14,9 @@ def graficar(ys,xc1, yc1, xc16, yc16):
     pxc16 = np.array(xc16)
     pyc16 = np.array(yc16)
     
-    plt.plot(pxc1, pyc1 ,lw=2, marker="o",linestyle='--',color="#ff3333",label='OPENMP')
+    plt.plot(pxc1, pyc1 ,lw=2, marker="o",linestyle='--',color="#ff3333",label='32 ROBOTS - OPENMP')
 
-    plt.plot(pxc16, pyc16, lw=2, marker="o",linestyle='--',color="#8333ff",label='PTHREADS')
+    plt.plot(pxc16, pyc16, lw=2, marker="o",linestyle='--',color="#8333ff",label='32 ROBOTS - PTHREADS')
         
     plt.title("EFICIENCIA 32 ROBOTS")
     plt.xlabel("Número de procesadores")
@@ -30,18 +30,12 @@ xs = [32,64,128,256,512]
 ys = [0.554,1.024,1.969,3.683,7.498]
 
 #openmp 32 ROBOTS
-#xc1 = [1,2,4,8,16,32]
-#yc1 = [ys[0]/(0.554*1),ys[0]/(0.347*2),ys[0]/(0.216*4),ys[0]/(0.144*8),ys[0]/(0.108*16),ys[0]/(0.100*32)]
-
 xc1 = [1,2,4,8,16,32]
-yc1 = [1,0.8,0.64,0.48,0.32,0.17]
+yc1 = [ys[0]/(0.554*1),ys[0]/(0.347*2),ys[0]/(0.216*4),ys[0]/(0.144*8),ys[0]/(0.108*16),ys[0]/(0.100*32)]
 
 #pthreads 32 ROBOTS
-#xc162 = [1,2,4,8,16,32]
-#yc162 = [ys[0]/(0.554*1),ys[0]/(0.359*2),ys[0]/(0.284*4),ys[0]/(0.322*8),ys[0]/(0.422*16),ys[0]/(0.699*32)]
-
 xc162 = [1,2,4,8,16,32]
-yc162 = [1,0.772,0.4876,0.22,0.08,0.02]
+yc162 = [ys[0]/(0.554*1),ys[0]/(0.359*2),ys[0]/(0.284*4),ys[0]/(0.322*8),ys[0]/(0.422*16),ys[0]/(0.699*32)]
 
 # create data
 graficar(ys,xc1,yc1,xc162,yc162)

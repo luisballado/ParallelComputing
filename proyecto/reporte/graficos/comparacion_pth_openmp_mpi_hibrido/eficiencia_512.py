@@ -1,3 +1,7 @@
+"""
+SE COMPARA LA IMAGEN DEL MISMO TAMANIO
+"""
+
 import time
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,26 +18,24 @@ def graficar(ys,xc1, yc1, xc16, yc16):
 
     plt.plot(pxc16, pyc16, lw=2, marker="o",linestyle='--',color="#8333ff",label='PTHREADS')
         
-    plt.title("ACELERACIÓN 32 ROBOTS")
+    plt.title("EFICIENCIA 512 ROBOTS")
     plt.xlabel("Número de procesadores")
-    plt.ylabel("Aceleración")
+    plt.ylabel("Eficiencia")
     plt.grid()
     plt.legend()
-    plt.savefig('aceleracion_32.png')
+    plt.savefig('eficiencia_512.png')
     plt.show()
 
 xs = [32,64,128,256,512]
 ys = [0.554,1.024,1.969,3.683,7.498]
 
-#OPENMP 32 ROBOTS
+#openmp 512 ROBOTS
 xc1 = [1,2,4,8,16,32]
-yc1 = [ys[0]/(0.554),ys[0]/(0.347),ys[0]/(0.216),ys[0]/(0.144),ys[0]/(0.108),ys[0]/(0.100)]
+yc1 = [ys[4]/(7.500*1),ys[4]/(4.231*2),ys[4]/(2.200*4),ys[4]/(1.962*8),ys[4]/(0.673*16),ys[4]/(0.510*32)]
 
-#PTH 32 ROBOTS
-#xc162 = [1,2,4,8,16,32]
-#yc162 = [ys[0]/0.554,ys[0]/0.359,ys[0]/0.284,ys[0]/0.322,ys[0]/0.422,ys[0]/0.699]
+#pthreads 512 ROBOTS
 xc162 = [1,2,4,8,16,32]
-yc162 = [ys[0]/0.554,ys[0]/0.359,ys[0]/0.284,ys[0]/0.322,ys[0]/0.422,ys[0]/0.699]
+yc162 = [ys[4]/(7.119*1),ys[4]/(3.527*2),ys[4]/(1.582*4),ys[4]/(1.960*8),ys[4]/(0.902*16),ys[4]/(1.211*32)]
 
 
 # create data

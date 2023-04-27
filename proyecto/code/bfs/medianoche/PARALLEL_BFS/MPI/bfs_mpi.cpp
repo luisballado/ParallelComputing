@@ -181,6 +181,9 @@ int mis_robots;
 int start_robot;
 int finish_robot;
 
+std::map<int, std::vector<int>> adj_list;
+std::vector<std::vector<int>> ubicaciones_robots;
+
 ///////////////VECTOR RESULTADOS///////////////////////
 std::vector<std::tuple<int,int,double,int>> vec_res;
 ///////////////////////////////////////////////////////
@@ -217,28 +220,21 @@ int main(int argc, char* argv[]) {
   std::string location_robots;
 
   int robot_inicio, robot_fin;
+  
   printf("ANTES DE UBUCACIONES\n");
 
   //vector para almacenar las ubicaciones
   //el hilo 0 se debe encargar de almacenarlas
 
-  if(my_id == 0){
-
-    
-    
-  }else{
-    
-  }
   
   
-  std::vector<std::vector<int>> ubicaciones_robots;
   
   for(int count = 0; count < argc; count++ ){
     
     if(std::string(argv[count]).substr(0,9) == std::string("--results")){
       show_result = true;
     }
-
+    
     if(std::string(argv[count]).substr(0,8) == std::string("--robots")){
       std::string prefijo_r("--robots=");
       num_robots = std::stoi(std::string(argv[count]).substr(prefijo_r.size()));
@@ -247,29 +243,29 @@ int main(int argc, char* argv[]) {
     //ARCHIVO DE ROBOTS
     if(std::string(argv[count]).substr(0,11) == std::string("--locations")){
       std::string prefijo("--locations=");
-
+      
       //Hacer resize al vector de ubicaciones robot
       
       ubicaciones_robots.resize(num_robots);
       
       location_robots = std::string(argv[count]).substr(prefijo.size()); 
-    
+      
       std::ifstream infile(location_robots);
-
+      
       if (!infile.is_open()) {
-        std::cout << "Failed to open file: " << location_robots << "\n";
-        return 1;
+	  std::cout << "Failed to open file: " << location_robots << "\n";
+	  return 1;
       }
       
       int _robots_ = 0;
       std::string line;
       
       while (std::getline(infile, line)) {
-        std::istringstream iss(line);
+	std::istringstream iss(line);
 	std::string word;
-
+	
 	int count = 0;
-
+	
 	while (iss >> word) {
 	  if(count==0){
 	    robot_inicio = std::stoi(word);
@@ -279,7 +275,7 @@ int main(int argc, char* argv[]) {
 	    count = 0;
 	  }	  
 	}
-
+	
 	ubicaciones_robots[_robots_].push_back(robot_inicio);
 	ubicaciones_robots[_robots_].push_back(robot_fin);
 	_robots_++;
@@ -300,11 +296,11 @@ int main(int argc, char* argv[]) {
   //para verificar en todo momento si algun vecino es pared y omitirlo
   //////////////////////////////////////////////////////////////////////
   std::vector<std::vector<char>> grid(rows, std::vector<char>(cols));
-
+  
   for(int i=0;i<rows;i++){
     std::string line;
     std::cin >> line;
-
+    
     for (int j = 0; j < cols; j++){
       grid[i][j] = line[j];
     }
@@ -312,8 +308,8 @@ int main(int argc, char* argv[]) {
   }
   
   
-  std::map<int, std::vector<int>> adj_list;
-
+  //std::map<int, std::vector<int>> adj_list;
+  
   //////////////////////////////////////////////////////////////////////
   //crear lista de adyacencia recorriendo matriz creada,
   //se omite el signo # ya que representa una pared incomunicada
@@ -331,12 +327,13 @@ int main(int argc, char* argv[]) {
 	    adj_list[node].push_back(neighbor_node);
 	  }
 	}
-      }
+	}
     }
   }
-
   
   
+  
+    
   //////////////////////////////////////////////////////////////////////
   
   int num_nodes = rows*cols; //numero de nodos del grafo
@@ -349,6 +346,8 @@ int main(int argc, char* argv[]) {
   if((num_robots%num_proc)==0){
     //A cada uno le tocan partes iguales
     printf("SON DIVISIBLES\n");
+  }else{
+    printf("NO SON DIVISIBLES\n");
   }
 
   //dividir la carga de trabajo entre los nodos
